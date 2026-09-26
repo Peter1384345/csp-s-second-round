@@ -47,6 +47,7 @@ h3{font-size:16px}
 .t-tier{background:#eef3ff;color:#2563eb}
 .t-know{background:var(--greenbg);color:var(--green)}
 .t-tag{background:var(--graybg);color:var(--gray)}
+/* 洛谷风格难度色 */
 .lv{display:inline-block;padding:2px 9px;border-radius:4px;font-size:12px;font-weight:700;color:#fff;letter-spacing:.3px}
 .chip{display:inline-block;padding:5px 12px;border-radius:999px;border:1px solid var(--line);background:#fff;cursor:pointer;font-size:13px;font-weight:600;color:var(--muted);margin:4px;transition:.15s}
 .chip:hover{border-color:var(--brand);color:var(--brand)}
@@ -66,6 +67,7 @@ tr:hover td{background:#f7fafd}
 .btn-ghost{background:#fff;color:var(--brand);border:1px solid var(--brand)}
 .btn-ghost:hover{background:#eef3ff}
 .btn-sm{padding:6px 12px;font-size:12.5px;border-radius:8px}
+/* problem layout */
 .problem-wrap{display:grid;grid-template-columns:minmax(300px,1fr) minmax(420px,1.15fr);gap:18px}
 @media(max-width:980px){.problem-wrap{grid-template-columns:1fr}}
 .panel{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden}
@@ -100,14 +102,17 @@ code.kbd{background:#eef2f7;padding:1px 6px;border-radius:5px;font-family:Consol
 .mockbar .pb.active{background:var(--brand)}
 .mockbar .pb.done{background:var(--green)}
 .mockbar .time{margin-left:auto;font-variant-numeric:tabular-nums;font-size:16px;font-weight:800;color:#7dd3fc}
+/* 搜索框 */
 .searchbox{display:flex;gap:10px;align-items:center;background:#fff;border:1px solid var(--line);border-radius:10px;padding:9px 14px;margin-bottom:12px}
 .searchbox input{flex:1;border:none;outline:none;font-size:14px;background:transparent}
 .searchbox .ic{color:var(--muted)}
+/* 题单卡片 */
 .pl-card{display:flex;flex-direction:column;height:100%}
 .pl-card .plist{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0}
 .pl-chip{display:inline-flex;align-items:center;gap:6px;padding:4px 10px;background:#f5f8fe;border:1px solid var(--line);border-radius:8px;font-size:12.5px;cursor:pointer;color:var(--ink);font-weight:600}
 .pl-chip:hover{border-color:var(--brand);color:var(--brand)}
 .pl-chip .lv{font-size:10px;padding:1px 6px}
+/* 难度分布条 */
 .lvbar{display:flex;height:14px;border-radius:999px;overflow:hidden;margin:8px 0}
 .lvbar>div{transition:.3s}
 .footer{max-width:1200px;margin:0 auto;padding:18px 20px;color:var(--muted);font-size:12.5px;border-top:1px solid var(--line)}
@@ -125,6 +130,41 @@ code.kbd{background:#eef2f7;padding:1px 6px;border-radius:5px;font-family:Consol
 select.tpl{border:1px solid var(--line);border-radius:8px;padding:6px 10px;font-size:12.5px;background:#fff;color:var(--ink);cursor:pointer}
 .hist{display:flex;gap:14px;font-size:12.5px;color:var(--muted);margin-top:10px;flex-wrap:wrap}
 .hist b{color:var(--ink)}
+/* 知识点卡片 */
+.kcard-row{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
+.kcard{flex:1;min-width:150px;border:1.5px solid var(--line);border-radius:12px;padding:12px 14px;background:#fbfcfe;cursor:pointer;transition:.15s;position:relative}
+.kcard:hover{border-color:var(--brand)}
+.kcard .kc-name{font-weight:800;font-size:14px;margin-bottom:4px}
+.kcard .kc-state{font-size:11.5px;font-weight:700;padding:2px 8px;border-radius:999px;display:inline-block}
+.ks-none{background:var(--graybg);color:var(--gray)}
+.ks-review{background:var(--redbg);color:var(--red);animation:pulse 1.6s infinite}
+.ks-ok{background:var(--greenbg);color:var(--green)}
+.kcard.flagged{border-color:var(--red);background:#fff7f7}
+.kcard.mastered{border-color:var(--green);background:#f4fbf6}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(220,38,38,.25)}50%{box-shadow:0 0 0 6px rgba(220,38,38,0)}}
+/* 算法可视化 */
+.viz-mask{position:fixed;inset:0;background:rgba(15,30,60,.55);z-index:100;display:flex;align-items:center;justify-content:center;padding:20px}
+.viz-box{background:#fff;border-radius:16px;max-width:880px;width:100%;max-height:90vh;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.3)}
+.viz-hd{padding:14px 20px;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:10px;font-weight:800}
+.viz-hd .x{margin-left:auto;cursor:pointer;color:var(--muted);font-size:20px;line-height:1}
+.viz-stage{padding:20px;overflow:auto;background:#fafbfe;flex:1;min-height:280px}
+.viz-desc{padding:12px 20px;background:#fff;border-top:1px solid var(--line);font-size:14px;min-height:48px}
+.viz-ctl{padding:10px 20px;border-top:1px solid var(--line);display:flex;gap:8px;align-items:flex-wrap;background:#fff}
+.viz-ctl .prog{margin-left:auto;font-size:12.5px;color:var(--muted);font-variant-numeric:tabular-nums}
+.viz-boxrow{display:flex;gap:6px;flex-wrap:wrap;align-items:flex-end;margin:10px 0}
+.vcell{min-width:38px;height:38px;border-radius:6px;background:#eef2f7;display:grid;place-items:center;font-weight:700;font-size:13px;font-family:Consolas,monospace;border:1px solid #dde5ef}
+.vcell.hi{background:var(--brand);color:#fff;border-color:var(--brand)}
+.vcell.ok{background:var(--green);color:#fff;border-color:var(--green)}
+.vcell.bad{background:var(--red);color:#fff;border-color:var(--red)}
+.vcell.lo{background:#fff3d6;color:#92600a;border-color:#f0d488}
+.vlbl{font-size:11px;color:var(--muted);text-align:center;margin-top:3px;font-family:Consolas,monospace}
+.vbar{display:inline-block;background:var(--brand);color:#fff;border-radius:4px 4px 0 0;display:grid;place-items:end;font-size:11px;font-weight:700;padding-bottom:3px;align-self:flex-end;transition:.3s}
+.vgrid{display:grid;gap:4px;margin:8px 0}
+.vcell.wall{background:#334155;color:#94a3b8}
+.vcell.start{background:#0ea5e9;color:#fff}
+.vcell.end{background:#f59e0b;color:#fff}
+.vcell.visited{background:#bbf7d0;color:#166534}
+.vcell.frontier{background:#93c5fd;color:#1e3a8a}
 </style>
 </head>
 <body>
@@ -238,6 +278,126 @@ Mat mul(Mat x,Mat y){
 }`
 };
 
+/*================ 算法可视化（经典算法逐步演示） ================*/
+/* 每一帧: {t:讲解文字, body:可视化 HTML} */
+const VIZ={};
+function rowCells(arr,hi,cls){ // hi: index or Set of indices to highlight
+  let s="<div class='viz-boxrow'>";
+  arr.forEach((v,i)=>{
+    const isHi = hi instanceof Set ? hi.has(i) : (hi===i);
+    s+=`<div style="text-align:center"><div class="vcell ${isHi?'hi':(cls||'')}">${v}</div><div class="vlbl">${i}</div></div>`;
+  });
+  return s+"</div>";
+}
+/* p02 前缀和 */
+VIZ.p02=()=>{
+  const a=[1,2,3,4,5],pre=[0,1,3,6,10,15];
+  return [
+   {t:"数组 a = [1,2,3,4,5]。先预处理前缀和 pre[i] = a[1]+...+a[i]。",body:"a："+rowCells(a)+"pre："+rowCells(pre)},
+   {t:"pre[0]=0, pre[1]=1, pre[2]=3, pre[3]=6, pre[4]=10, pre[5]=15。",body:rowCells(pre,new Set([1,2,3,4,5]))},
+   {t:"查询 [1,5]：pre[5] - pre[0] = 15 - 0 = 15。",body:rowCells(pre,new Set([5]))+"<p style='margin-top:8px;font-weight:700'>= 15 ✔</p>"},
+   {t:"查询 [2,3]：pre[3] - pre[1] = 6 - 1 = 5。",body:rowCells(pre,new Set([3,1]))+"<p style='margin-top:8px;font-weight:700'>= 5 ✔</p>"},
+   {t:"查询 [3,3]：pre[3] - pre[2] = 6 - 3 = 3。每次查询 O(1)。",body:rowCells(pre,new Set([3,2]))+"<p style='margin-top:8px;font-weight:700'>= 3 ✔</p>"}
+  ];
+};
+/* p03 二分答案 */
+VIZ.p03=()=>{
+  const steps=[
+   {lo:1,hi:9,mid:5,cuts:3,feasible:false,note:"mid=5：Σ(6/5+7/5+9/5)=1+1+1=3 < 5，段长太大切不够，hi=mid-1=4"},
+   {lo:1,hi:4,mid:2,cuts:10,feasible:true,note:"mid=2：3+3+4=10 ≥ 5，可行，记录 ans=2，lo=mid+1=3"},
+   {lo:3,hi:4,mid:3,cuts:7,feasible:true,note:"mid=3：2+2+3=7 ≥ 5，可行，记录 ans=3，lo=mid+1=4"},
+   {lo:4,hi:3,mid:null,cuts:null,feasible:null,note:"lo>hi，二分结束。最大段长 ans=3。"}
+  ];
+  return steps.map(s=>({
+    t:s.note,
+    body:`<div style="font-family:Consolas,monospace;font-size:14px">区间 [lo,hi]=[${s.lo},${s.hi}]${s.mid?`，中点 mid=<b style="color:var(--brand)">${s.mid}</b>`:""}<br>
+      <span class="vcell ${s.feasible===true?'ok':s.feasible===false?'bad':''}" style="min-width:120px">可切段数 = ${s.cuts??'-'}</span></div>
+      <div class="viz-boxrow" style="margin-top:14px">${[1,2,3,4,5,6,7,8,9].map(x=>`<div style="text-align:center"><div class="vcell ${x===s.mid?'hi':''} ${x===3?'ok':''}">${x}</div><div class="vlbl">${x<=s.hi?'':'×'}</div></div>`).join("")}</div>
+      <p style="margin-top:8px;color:var(--muted);font-size:12.5px">蓝色=当前中点，绿色=最终答案 3。</p>`
+  }));
+};
+/* p04 贪心区间调度 */
+VIZ.p04=()=>{
+  const iv=[[1,3],[2,5],[3,6],[5,7]];
+  const chosen=new Set([0,3]);
+  return [
+   {t:"4 场会议，按结束时间从早到晚排序：[1,3],[2,5],[3,6],[5,7]。",body:iv.map((v,i)=>`<div style="font-family:Consolas,monospace;margin:4px 0">[${v[0]},${v[1]}]</div>`).join("")},
+   {t:"贪心选结束最早的：[1,3]。上一场结束在 3。",body:iv.map((v,i)=>`<div style="font-family:Consolas,monospace;margin:4px 0"><span class="vcell ${i===0?'ok':''}" style="min-width:120px">[${v[0]},${v[1]}]</span></div>`).join("")},
+   {t:"[2,5] 开始于 2 < 3，冲突，跳过。[3,6] 开始于 3 但结束更晚，也不选。",body:iv.map((v,i)=>`<div style="font-family:Consolas,monospace;margin:4px 0"><span class="vcell ${i===0?'ok':i===1||i===2?'bad':''}" style="min-width:120px">[${v[0]},${v[1]}]</span></div>`).join("")},
+   {t:"[5,7] 开始于 5 ≥ 3，不冲突，选入。共 2 场。",body:iv.map((v,i)=>`<div style="font-family:Consolas,monospace;margin:4px 0"><span class="vcell ${chosen.has(i)?'ok':''}" style="min-width:120px">[${v[0]},${v[1]}]</span></div>`).join("")+"<p style='margin-top:8px;font-weight:700'>最多 2 场 ✔</p>"}
+  ];
+};
+/* p05 单调栈 */
+VIZ.p05=()=>{
+  const h=[2,1,5,6,2,3];
+  return [
+   {t:"柱形高度 [2,1,5,6,2,3]。维护单调递增栈，栈内存 (高度, 左边界)。",body:h.map(x=>`<span class="vbar" style="height:${x*14}px;width:30px">${x}</span>`).join("")},
+   {t:"i=0 高度2：栈空，入栈。栈=[(2,0)]。",body:"栈：(2,0)"},
+   {t:"i=1 高度1：1<2，弹出 (2,0)。以 2 为高的矩形宽=1-0=1，面积 2。再入栈 (1,-1)。",body:"弹出高2 → 面积=2×1=2<br>栈：(1,-1)"},
+   {t:"i=2 高度5：5>1，入栈。栈=[(1,-1),(5,2)]。",body:"栈：(1,-1) (5,2)"},
+   {t:"i=3 高度6：6>5，入栈。栈=[(1,-1),(5,2),(6,3)]。",body:"栈：(1,-1) (5,2) (6,3)"},
+   {t:"i=4 高度2：2<6 弹出，高6宽=4-3=1→面积6；2<5 弹出，高5宽=4-2=2→面积10。记录最大=10。入栈 (2,4)。",body:"弹出6→面积6；弹出5→面积 5×2=10 ✔<br>栈：(1,-1) (2,4)"},
+   {t:"i=5 高度3：3>2，入栈。最后弹空栈，最大面积=10。",body:"栈：(1,-1) (2,4) (3,5)<br><b>最大矩形面积 = 10 ✔</b>"}
+  ];
+};
+/* p07 高精度加法 */
+VIZ.p07=()=>{
+  return [
+   {t:"123 + 456，从低位对齐相加：",body:`<div style="font-family:Consolas,monospace;font-size:18px;line-height:2">
+     &nbsp;&nbsp;1 2 3<br>+&nbsp; 4 5 6<br>---------<br>&nbsp;&nbsp;5 7 9</div>`},
+   {t:"个位：3+6=9，无进位。",body:`<div style="font-family:Consolas,monospace;font-size:18px">个位 <span class="vcell ok">3</span>+<span class="vcell ok">6</span>=<span class="vcell hi">9</span></div>`},
+   {t:"十位：2+5=7。百位：1+4=5。结果 579。",body:`<div style="font-family:Consolas,monospace;font-size:18px">
+     十位 <span class="vcell ok">2</span>+<span class="vcell ok">5</span>=<span class="vcell hi">7</span><br>
+     百位 <span class="vcell ok">1</span>+<span class="vcell ok">4</span>=<span class="vcell hi">5</span><br><b>= 579 ✔</b></div>`},
+   {t:"遇到 999+1 这类情况：9+1=10，写 0 进 1，要持续向高位进位。这就是高精度要手动处理进位的原因。",body:"<div style='font-family:Consolas,monospace'>999<br>+&nbsp;&nbsp;1<br>----<br>1000</div>"}
+  ];
+};
+/* p08 LIS */
+VIZ.p08=()=>{
+  const seq=[1,3,2,4,3,5];
+  const tails=[[],[1],[1,3],[1,2],[1,2,4],[1,2,3],[1,2,3,5]];
+  return seq.map((x,i)=>({
+    t:`处理 a[${i}]=${x}：${i===0?"tails 为空，放入":(x>tails[i][tails[i].length-1]?"接在末尾，长度+1":"替换 tails 中第一个 ≥ "+x+" 的位置，不增长长度")}。`,
+    body:`当前序列：${rowCells(seq,new Set([i]))}<br>tails：${rowCells(tails[i+1])}<p style="margin-top:6px;color:var(--muted);font-size:12.5px">tails 长度 ${tails[i+1].length} = 当前 LIS 长度</p>`
+  })).concat([{t:"最终 tails 长度为 4，即最长严格上升子序列长度。",body:rowCells(tails[6],new Set([0,1,2,3]))+"<p style='margin-top:8px;font-weight:700'>LIS = 4 ✔</p>"}]);
+};
+/* p10 Dijkstra */
+VIZ.p10=()=>{
+  return [
+   {t:"图：1→2(2), 1→3(1), 2→4(5), 3→4(1)。dist 初始：[0, ∞, ∞, ∞]。",body:"节点：1,2,3,4<br>dist=[0,∞,∞,∞]"},
+   {t:"弹出 dist 最小的节点 1(=0)。松弛邻居：dist[2]=2, dist[3]=1。",body:"dist=[0,<span style='color:var(--brand)'>2</span>,<span style='color:var(--brand)'>1</span>,∞]，已确定节点：1"},
+   {t:"弹出节点 3(=1)。松弛邻居 4：dist[4]=1+1=2。",body:"dist=[0,2,1,<span style='color:var(--brand)'>2</span>]，已确定：1,3"},
+   {t:"弹出节点 2(=2)。松弛邻居 4：2+5=7 > 当前 dist[4]=2，不更新。",body:"dist=[0,2,1,2]，已确定：1,3,2"},
+   {t:"弹出节点 4(=2)。全部确定。最终最短路：0 2 1 2。",body:"<b>dist = [0, 2, 1, 2] ✔</b>"}
+  ];
+};
+/* p14 KMP */
+VIZ.p14=()=>{
+  return [
+   {t:"主串 s=ababab，模式串 t=aba。先求 t 的 pi 数组（最长相等真前后缀长度）。",body:"t：<span class='vcell'>a</span><span class='vcell'>b</span><span class='vcell'>a</span>"},
+   {t:"pi[0]=0；pi[1]：b 前后缀无相等=0；pi[2]：'a' 前后缀都是 a=1。pi=[0,0,1]。",body:"pi：<span class='vcell'>0</span><span class='vcell'>0</span><span class='vcell hi'>1</span>"},
+   {t:"i=0,j=0：s[0]=a=t[0]，j++。i=1,j=1：s[1]=b=t[1]，j++。i=2,j=2：s[2]=a=t[2]，j=3==|t|，匹配成功一次！",body:"s: a b a b a b<br>t: a b a → 命中 #1"},
+   {t:"命中后 j=pi[2]=1 继续。i=3,j=1：s[3]=b=t[1]。i=4,j=2：s[4]=a=t[2]，j=3，命中第二次（重叠）！",body:"s: . . a b a b<br>t: . . a b a → 命中 #2（重叠）"},
+   {t:"j=pi[2]=1，继续到末尾，无第三次。共出现 2 次。",body:"<b>出现次数 = 2 ✔</b>"}
+  ];
+};
+/* p15 BFS */
+VIZ.p15=()=>{
+  const grid=[[0,0,0],[0,1,0],[0,0,0]];
+  const layers=[
+   "起点(0,0)，dist=0。",
+   "扩展 (0,1)=1, (1,0)=1。",
+   "扩展 (0,2)=2, (1,1)是墙跳过, (2,0)=2。",
+   "扩展 (1,2)=2(从0,2), (2,1)=2(从2,0)。",
+   "扩展终点 (2,2)=3(从1,2或2,1)。最少步数=3。"
+  ];
+  const dist=[[0,1,2],[1,'墙',2],[2,2,3]];
+  return layers.map((l,i)=>({t:l,body:"<div class='vgrid' style='grid-template-columns:repeat(3,44px)'>"+dist.map((row,r)=>row.map((c,col)=>{
+    let cls=c==='墙'?'wall':(r===0&&col===0?'start':(r===2&&col===2?'end':c<=i?'visited':'frontier'));
+    return `<div class="vcell ${cls}" style="height:40px">${c}</div>`;
+  }).join("")).join("")+"</div><p style='font-size:12px;color:var(--muted)'>蓝色=已到达，绿=访问过，终点橙色。</p>"}));
+};
+
 /*================ 考点全覆盖（CSP-S 提高组第二轮·NOI大纲） ================*/
 const KNOWLEDGE=[
  {cat:"基础算法",items:["枚举与模拟","排序","贪心","二分答案","高精度","分治与倍增","前缀和 / 差分","离散化"]},
@@ -252,6 +412,7 @@ const KNOWLEDGE=[
  {cat:"STL 与 C++",items:["STL 容器","输入输出优化","代码风格与调试","复杂度分析"]}
 ];
 
+/* 两轮对比 */
 const ROUND_COMPARE=[
  ["认证形式","集中笔试","现场集中上机认证（机试）"],
  ["题目数量","约 20 题（选择 / 判断）","4 道编程题，每题 100 分，总分 400 分"],
@@ -348,8 +509,10 @@ function stats(){
 }
 function normDate(d){return d<10?"0"+d:d;}
 function countdownTo(){ return new Date(2026,9,31,14,30,0).getTime(); }
+
+/* 难度分布（洛谷风格） */
 function levelDist(){
-  const dist={1:[0,0],2:[0,0],3:[0,0],4:[0,0]};
+  const dist={1:[0,0],2:[0,0],3:[0,0],4:[0,0]}; // [ac,total]
   for(const p of PROBLEMS){ dist[p.diff][1]++; if(problemStatus(p.id)==="done") dist[p.diff][0]++; }
   return dist;
 }
@@ -379,7 +542,7 @@ function renderDashboard(){
   const days=Math.max(0,Math.ceil(cd/(86400000)));
   const dist=levelDist();
   const distBar=Object.keys(LEVELS).map(k=>{
-    const L=LEVELS[k];const [ac,tot]=dist[k];
+    const L=LEVELS[k];const [ac,tot]=dist[k];const w=tot?ac/tot*100:0;
     return `<div style="width:${tot/PROBLEMS.length*100}%;background:${L.color};opacity:${tot?0.35+0.65*(ac/tot):0.15}" title="${L.name} ${ac}/${tot}"></div>`;
   }).join("");
   app.innerHTML=`
@@ -474,6 +637,7 @@ function renderPracticeList(){
     }).join("")}</div></div>`;
   }
   app.innerHTML=html; afterRender();
+  // wire search & filters (re-render but keep focus)
   const qi=document.getElementById("pfQ");
   qi.oninput=e=>{pfState.q=e.target.value; renderPracticeList(); const nq=document.getElementById("pfQ"); nq.focus(); nq.setSelectionRange(nq.value.length,nq.value.length);};
   document.querySelectorAll("[data-lv]").forEach(c=>c.onclick=()=>{pfState.level=Number(c.dataset.lv);renderPracticeList();});
@@ -498,7 +662,70 @@ function renderPlaylists(){
 }
 
 /* ---------- 题目详情 + 作答 ---------- */
-let editor=null, currentProblem=null, submitting=false, mockCtx=null;
+/* ---------- 知识点卡片 ---------- */
+function knowState(k){return (getKnow()[k])||null;} // null=未标记, "1"=掌握, "2"=待巩固
+function knowCardHTML(p){
+  const know=getKnow();
+  return `<div class="mb" style="margin-top:16px">
+    <h3 style="margin-bottom:4px">知识点卡片</h3>
+    <div class="sub" style="margin:0 0 8px">做错本题会自动把下列考点标记为「待巩固」；AC 后自动记为「已掌握」。点击卡片可手动切换。</div>
+    <div class="kcard-row">
+    ${p.knowledge.map(k=>{
+      const st=know[k];
+      const cls=st==="1"?"mastered":st==="2"?"flagged":"";
+      const stCls=st==="1"?"ks-ok":st==="2"?"ks-review":"ks-none";
+      const stTxt=st==="1"?"✔ 已掌握":st==="2"?"⚠ 待巩固":"○ 未标记";
+      return `<div class="kcard ${cls}" data-know="${esc(k)}"><div class="kc-name">${esc(k)}</div><span class="kc-state ${stCls}">${stTxt}</span></div>`;
+    }).join("")}
+    </div></div>`;
+}
+function wireKnowCards(){
+  document.querySelectorAll("[data-know]").forEach(c=>c.onclick=()=>{
+    const k=c.dataset.know; const kk=getKnow();
+    const cur=kk[k]; kk[k]=(cur==="1")?"2":(cur==="2"?undefined:"1");
+    if(kk[k]===undefined)delete kk[k];
+    saveKnow(kk); renderProblem(currentProblem.id, currentPre||{});
+  });
+}
+/* ---------- 算法可视化播放器 ---------- */
+let vizTimer=null, vizIdx=0, vizFrames=[], vizPlaying=false, vizSpeed=1200;
+function openViz(pid){
+  const builder=VIZ[pid];
+  const old=document.getElementById("vizMask"); if(old)old.remove();
+  if(!builder){alert("本题暂未提供可视化（可在解析中看思路）。");return;}
+  vizFrames=builder(); vizIdx=0; vizPlaying=false;
+  const mask=document.createElement("div"); mask.className="viz-mask"; mask.id="vizMask";
+  mask.innerHTML=`<div class="viz-box" onclick="event.stopPropagation()">
+    <div class="viz-hd">▶ 算法可视化 · ${esc(currentProblem?currentProblem.title:"")}<span class="x" id="vizClose">×</span></div>
+    <div class="viz-stage" id="vizStage"></div>
+    <div class="viz-desc" id="vizDesc"></div>
+    <div class="viz-ctl">
+      <button class="btn btn-ghost btn-sm" id="vizPrev">⏮ 上一步</button>
+      <button class="btn btn-primary btn-sm" id="vizPlay">▶ 播放</button>
+      <button class="btn btn-ghost btn-sm" id="vizNext">下一步 ⏭</button>
+      <select class="tpl" id="vizSpeed"><option value="1600">慢</option><option value="1000" selected>中</option><option value="500">快</option></select>
+      <span class="prog" id="vizProg"></span>
+    </div></div>`;
+  document.body.appendChild(mask);
+  mask.onclick=()=>closeViz();
+  document.getElementById("vizClose").onclick=closeViz;
+  document.getElementById("vizPrev").onclick=()=>{vizPlaying=false;stopViz();vizIdx=Math.max(0,vizIdx-1);drawViz();};
+  document.getElementById("vizNext").onclick=()=>{vizPlaying=false;stopViz();vizIdx=Math.min(vizFrames.length-1,vizIdx+1);drawViz();};
+  document.getElementById("vizPlay").onclick=()=>{vizPlaying=!vizPlaying;document.getElementById("vizPlay").textContent=vizPlaying?"⏸ 暂停":"▶ 播放";if(vizPlaying)startViz();};
+  document.getElementById("vizSpeed").onchange=e=>{vizSpeed=Number(e.target.value);if(vizPlaying){stopViz();startViz();}};
+  drawViz();
+}
+function drawViz(){
+  const f=vizFrames[vizIdx];
+  document.getElementById("vizStage").innerHTML=f.body;
+  document.getElementById("vizDesc").textContent="步骤 "+(vizIdx+1)+" / "+vizFrames.length+"："+f.t;
+  document.getElementById("vizProg").textContent=vizIdx+1+" / "+vizFrames.length;
+}
+function startViz(){vizTimer=setInterval(()=>{if(vizIdx>=vizFrames.length-1){vizPlaying=false;stopViz();document.getElementById("vizPlay").textContent="▶ 播放";return;}vizIdx++;drawViz();},vizSpeed);}
+function stopViz(){if(vizTimer){clearInterval(vizTimer);vizTimer=null;}}
+function closeViz(){stopViz();vizPlaying=false;const m=document.getElementById("vizMask");if(m)m.remove();}
+
+let editor=null, currentProblem=null, currentPre=null, submitting=false, mockCtx=null;
 function initEditor(){
   if(editor) return;
   if(window.CodeMirror){
@@ -509,10 +736,11 @@ function initEditor(){
 }
 function renderProblem(id,pre){
   const p=PROBLEMS.find(x=>x.id===id); if(!p)return renderPracticeList();
-  currentProblem=p;
+  currentProblem=p; currentPre=pre||{};
   const inMock=!!(pre&&pre.mock);
   const btn=inMock?"提交到模拟赛":"提交评测";
   const bs=bestScore(id), sc=submitCount(id);
+  const hasViz=!!VIZ[id];
   app.innerHTML=`
   <button class="btn btn-ghost mb" data-go="${inMock?`mockExam/${pre.mock}`:"practice"}">← ${inMock?"返回模拟赛":"返回题库"}</button>
   <div class="problem-wrap">
@@ -527,8 +755,12 @@ function renderProblem(id,pre){
         <h3>样例</h3>
         <div class="sample-box"><div class="lbl">输入</div>${esc(p.sample.input)}</div>
         <div class="sample-box"><div class="lbl">输出</div>${esc(p.sample.output)}</div>
-        <button class="btn btn-ghost mt" id="showSol">查看思路解析</button>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:12px">
+          <button class="btn btn-ghost" id="showSol">查看思路解析</button>
+          ${hasViz?'<button class="btn btn-primary" id="vizBtn">▶ 算法可视化</button>':''}
+        </div>
         <div class="solbox hidden" id="solbox">${p.solution}</div>
+        ${knowCardHTML(p)}
       </div>
     </div>
     <div>
@@ -564,6 +796,8 @@ function renderProblem(id,pre){
     e.target.value="";
   };
   document.getElementById("showSol").onclick=e=>{document.getElementById("solbox").classList.toggle("hidden");e.currentTarget.textContent=document.getElementById("solbox").classList.contains("hidden")?"查看思路解析":"收起解析";};
+  const vb=document.getElementById("vizBtn"); if(vb) vb.onclick=()=>openViz(id);
+  wireKnowCards();
   afterRender();
 }
 async function submit(id,pre){
@@ -597,6 +831,26 @@ async function submit(id,pre){
   const rec={id:uid(),time:Date.now(),problem:id,title:p.title,tier:p.tier,score,verdict:verdictBest,code,mode:pre&&pre.mock?"mock":"practice",mockId:pre&&pre.mock?pre.mock:undefined};
   const subs=getSubs(); subs.push(rec); saveSubs(subs);
   if(score>0&&score<100){const w=getWrong(); if(!w.find(x=>x.problem===id))w.push({problem:id,title:p.title,score});saveWrong(w);}
+  // 知识点自动标记：做错→待巩固(2)，AC→已掌握(1)
+  {
+    const kk=getKnow(); let changed=false;
+    for(const k of p.knowledge){
+      if(score>=100){ if(kk[k]!=="1"){kk[k]="1";changed=true;} }
+      else { if(kk[k]!=="1"){kk[k]="2";changed=true;} } // 已掌握的不降级
+    }
+    if(changed){saveKnow(kk);
+      // 刷新知识点卡片状态（不重渲染整个页面，避免丢编辑器内容）
+      const box=document.querySelector(".kcard-row");
+      if(box){ p.knowledge.forEach((k,i)=>{
+        const st=kk[k]; const card=document.querySelectorAll("[data-know]")[i];
+        if(!card)return;
+        card.className="kcard "+(st==="1"?"mastered":st==="2"?"flagged":"");
+        const sc=card.querySelector(".kc-state");
+        sc.className="kc-state "+(st==="1"?"ks-ok":st==="2"?"ks-review":"ks-none");
+        sc.textContent=st==="1"?"✔ 已掌握":st==="2"?"⚠ 待巩固":"○ 未标记";
+      });}
+    }
+  }
   if(pre&&pre.mock){ syncMockUI(); }
   submitting=false; btn.disabled=false; btn.textContent=pre&&pre.mock?"提交到模拟赛":"提交评测";
 }
