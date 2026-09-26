@@ -8,27 +8,27 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.css">
 <style>
 :root{
-  --bg:#f5f6f7; --card:#ffffff; --ink:#1f2d3d; --muted:#6b7a90; --line:#e8ecf0;
-  --brand:#009a66; --brand2:#00b8a9; --green:#009a66; --greenbg:#e6f6ec; --red:#e74c3c; --redbg:#fdecec;
-  --amber:#d97706; --amberbg:#fdf3e3; --gray:#64748b; --graybg:#eef2f7;
-  --editor:#1e1e2e; --radius:10px; --shadow:0 2px 12px rgba(15,30,60,.06);
+  --bg:#f4f5f7; --card:#ffffff; --ink:#1f2d3d; --muted:#7b8a9a; --line:#ebedf0;
+  --brand:#00a65a; --brand2:#00b8a9; --green:#00a65a; --greenbg:#e7f6ee; --red:#e74c3c; --redbg:#fdecec;
+  --amber:#e6a23c; --amberbg:#fdf6ec; --gray:#64748b; --graybg:#f0f2f5;
+  --editor:#1e1e2e; --radius:6px; --shadow:0 1px 4px rgba(20,40,80,.05);
 }
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:-apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;background:var(--bg);color:var(--ink);line-height:1.6}
 a{color:var(--brand);text-decoration:none}
 pre{font-family:"JetBrains Mono",ui-monospace,Consolas,Menlo,monospace}
-.topbar{position:sticky;top:0;z-index:50;background:#ffffff;border-bottom:1px solid var(--line);box-shadow:0 1px 0 rgba(15,30,60,.04)}
-.topbar .in{max-width:1200px;margin:0 auto;padding:0 20px;display:flex;align-items:center;gap:18px;height:58px}
+.topbar{position:sticky;top:0;z-index:50;background:#ffffff;border-bottom:1px solid var(--line);box-shadow:none}
+.topbar .in{max-width:1200px;margin:0 auto;padding:0 20px;display:flex;align-items:stretch;gap:18px;height:56px}
 .logo{display:flex;align-items:center;gap:10px;font-weight:800;font-size:17px;color:var(--ink);white-space:nowrap}
-.logo .badge{background:linear-gradient(135deg,var(--brand),var(--brand2));color:#fff;padding:4px 9px;border-radius:9px;font-size:12px;letter-spacing:.5px}
-.nav{display:flex;gap:4px;margin-left:8px;flex-wrap:wrap}
-.nav button{background:none;border:none;padding:9px 13px;border-radius:9px;cursor:pointer;font-size:14px;color:var(--muted);font-weight:600;transition:.15s}
-.nav button:hover{background:#eef8f3;color:var(--brand)}
-.nav button.active{background:var(--brand);color:#fff}
-.navright{margin-left:auto;font-size:13px;color:var(--muted);display:flex;align-items:center;gap:10px}
-.countdown{display:inline-block;background:var(--graybg);padding:5px 11px;border-radius:999px;font-variant-numeric:tabular-nums}
+.logo .badge{background:var(--brand);color:#fff;padding:4px 10px;border-radius:5px;font-size:12px;letter:.5px}
+.nav{display:flex;gap:0;margin-left:8px;flex-wrap:wrap}
+.nav button{background:none;border:none;padding:0 14px;cursor:pointer;font-size:14.5px;color:#4a5568;font-weight:500;transition:.15s;border-bottom:2px solid transparent;margin-bottom:-1px}
+.nav button:hover{color:var(--brand)}
+.nav button.active{color:var(--brand);border-bottom-color:var(--brand);font-weight:700}
+.navright{margin-left:auto;align-self:center;font-size:13px;color:var(--muted);display:flex;align-items:center;gap:10px}
+.countdown{display:inline-block;background:var(--greenbg);color:var(--brand);padding:4px 12px;border-radius:999px;font-variant-numeric:tabular-nums;font-weight:600;font-size:12.5px}
 .wrap{max-width:1200px;margin:0 auto;padding:22px 20px 60px}
-.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:22px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:18px}
 .hidden{display:none !important}
 .grid{display:grid;gap:18px}
 .g2{grid-template-columns:1fr 1fr}.g3{grid-template-columns:repeat(3,1fr)}.g4{grid-template-columns:repeat(4,1fr)}
@@ -43,58 +43,61 @@ h3{font-size:16px}
 .stat .v small{font-size:13px;font-weight:600;color:var(--muted)}
 .bar{height:8px;background:var(--graybg);border-radius:99px;overflow:hidden;margin-top:6px}
 .bar>i{display:block;height:100%;background:linear-gradient(90deg,var(--brand),var(--brand2));border-radius:99px;transition:width .4s}
-.tag{display:inline-block;padding:2px 9px;border-radius:999px;font-size:12px;font-weight:600;margin:2px 3px 2px 0}
-.t-tier{background:#eef8f3;color:var(--brand)}
+.tag{display:inline-block;padding:2px 9px;border-radius:4px;font-size:12px;font-weight:600;margin:2px 3px 2px 0}
+.t-tier{background:var(--graybg);color:#5a6b7b}
 .t-know{background:var(--greenbg);color:var(--green)}
-.t-tag{background:var(--graybg);color:var(--gray)}
+.t-tag{background:#f4f5f7;color:#8a99a8}
 /* 洛谷风格难度色 */
-.lv{display:inline-block;padding:2px 9px;border-radius:4px;font-size:12px;font-weight:700;color:#fff;letter-spacing:.3px}
-.chip{display:inline-block;padding:5px 12px;border-radius:999px;border:1px solid var(--line);background:#fff;cursor:pointer;font-size:13px;font-weight:600;color:var(--muted);margin:4px;transition:.15s}
+.lv{display:inline-block;padding:2px 8px;border-radius:3px;font-size:12px;font-weight:700;color:#fff;letter-spacing:.3px}
+.chip{display:inline-block;padding:4px 12px;border-radius:999px;border:1px solid var(--line);background:#fff;cursor:pointer;font-size:13px;font-weight:500;color:var(--muted);margin:3px;transition:.15s}
 .chip:hover{border-color:var(--brand);color:var(--brand)}
 .chip.on{background:var(--brand);border-color:var(--brand);color:#fff}
 table{width:100%;border-collapse:collapse;font-size:14px}
-th,td{text-align:left;padding:9px 12px;border-bottom:1px solid var(--line)}
-th{color:var(--muted);font-weight:600;background:#fafbfe}
-tr:hover td{background:#f7fafd}
+th,td{text-align:left;padding:10px 12px;border-bottom:1px solid var(--line)}
+th{color:var(--muted);font-weight:600;background:#fafbfc;font-size:13px}
+tr:hover td{background:#f4faf7}
 .v-AC{color:var(--green);font-weight:700}
 .v-WA{color:var(--red);font-weight:700}
 .v-RE,.v-CE{color:var(--amber);font-weight:700}
 .v-TLE{color:var(--gray);font-weight:700}
-.btn{border:none;cursor:pointer;border-radius:8px;padding:11px 20px;font-size:14px;font-weight:700;transition:.15s}
+.btn{border:none;cursor:pointer;border-radius:5px;padding:9px 18px;font-size:14px;font-weight:600;transition:.15s}
 .btn-primary{background:var(--brand);color:#fff}
-.btn-primary:hover{background:#008356}
+.btn-primary:hover{background:#00884c}
 .btn-primary:disabled{opacity:.5;cursor:not-allowed}
 .btn-ghost{background:#fff;color:var(--brand);border:1px solid var(--brand)}
-.btn-ghost:hover{background:#eef8f3}
-.btn-sm{padding:6px 12px;font-size:12.5px;border-radius:6px}
+.btn-ghost:hover{background:var(--greenbg)}
+.btn-sm{padding:5px 11px;font-size:12.5px;border-radius:4px}
 /* problem layout */
 .problem-wrap{display:grid;grid-template-columns:minmax(300px,1fr) minmax(420px,1.15fr);gap:18px}
 @media(max-width:980px){.problem-wrap{grid-template-columns:1fr}}
 .panel{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden}
-.panel-hd{display:flex;align-items:center;gap:10px;padding:14px 18px;border-bottom:1px solid var(--line);background:#fafbfe;font-weight:700;font-size:14px}
+.panel-hd{display:flex;align-items:center;gap:10px;padding:11px 16px;border-bottom:1px solid var(--line);background:#fafbfc;font-weight:700;font-size:14px}
 .editor-tools{padding:10px 14px;background:#ffffff;border-bottom:1px solid var(--line);display:flex;gap:10px;align-items:center;flex-wrap:wrap}
 .editor-tools .btns{margin-left:auto;display:flex;gap:8px}
 .CodeMirror{height:430px;font-size:13.5px;line-height:1.5}
 .result-item{display:flex;justify-content:space-between;align-items:center;padding:9px 14px;border-bottom:1px solid var(--line);font-size:14px}
 .result-item .ti{color:var(--muted);font-size:12px}
 .diff-star{color:#f59e0b;letter-spacing:1px}
-.sample-box{background:#0f172a;color:#e2e8f0;border-radius:8px;padding:12px 14px;font-size:13px;overflow:auto;margin:6px 0}
-.sample-box .lbl{color:#94a3b8;font-size:11px;text-transform:uppercase;margin-bottom:4px}
+.sample-box{background:#f6f8fa;color:#24292e;border-radius:4px;padding:10px 14px;font-size:13px;overflow:auto;margin:6px 0;border:1px solid var(--line);font-family:Consolas,monospace}
+.sample-box .lbl{color:var(--muted);font-size:11px;text-transform:uppercase;margin-bottom:4px;font-family:inherit}
 code.kbd{background:#eef2f7;padding:1px 6px;border-radius:5px;font-family:Consolas,monospace;font-size:12.5px}
-.solbox{background:var(--amberbg);border:1px solid #f6e2c0;border-radius:8px;padding:14px 16px;margin-top:12px;font-size:14px}
+.solbox{background:var(--amberbg);border:1px solid #f6e2c0;border-radius:10px;padding:14px 16px;margin-top:12px;font-size:14px}
 .know-block{margin-bottom:18px}
 .know-block .cat{font-weight:800;margin-bottom:8px;display:flex;align-items:center;gap:10px}
 .know-block .cat .pct{margin-left:auto;font-size:12px;color:var(--muted);font-weight:600}
-.problem-row{display:flex;align-items:center;gap:14px;padding:13px 16px;border-bottom:1px solid var(--line);cursor:pointer;transition:.12s}
-.problem-row:hover{background:#f5faf7}
-.problem-row .id{font-family:Consolas,monospace;color:var(--muted);font-size:13px;width:46px}
-.problem-row .nm{font-weight:700;flex:1}
-.problem-row .status{font-size:12px;font-weight:700;padding:3px 9px;border-radius:999px}
+.problem-row{display:flex;align-items:center;gap:12px;padding:11px 14px 11px 16px;border-bottom:1px solid var(--line);cursor:pointer;transition:.12s;position:relative}
+.problem-row:last-child{border-bottom:none}
+.problem-row:hover{background:#f0f9f4}
+.problem-row::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--dc,#cbd5e0)}
+.problem-row .id{font-family:Consolas,monospace;color:var(--muted);font-size:13px;width:42px;font-weight:600}
+.problem-row .nm{font-weight:600;flex:1;color:#24292e;font-size:14.5px}
+.problem-row:hover .nm{color:var(--brand)}
+.problem-row .status{font-size:12px;font-weight:600;padding:2px 9px;border-radius:4px}
 .st-done{background:var(--greenbg);color:var(--green)}
 .st-part{background:var(--amberbg);color:var(--amber)}
-.st-none{background:var(--graybg);color:var(--gray)}
+.st-none{background:var(--graybg);color:#9aa7b5}
 .st-wa{background:var(--redbg);color:var(--red)}
-.mockbar{position:sticky;top:58px;z-index:40;background:#0f172a;color:#e2e8f0;padding:10px 0}
+.mockbar{position:sticky;top:56px;z-index:40;background:#0f172a;color:#e2e8f0;padding:10px 0}
 .mockbar .in{max-width:1200px;margin:0 auto;padding:0 20px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
 .mockbar .t{font-weight:700}
 .mockbar .probs{display:flex;gap:6px;flex-wrap:wrap}
@@ -103,13 +106,13 @@ code.kbd{background:#eef2f7;padding:1px 6px;border-radius:5px;font-family:Consol
 .mockbar .pb.done{background:var(--green)}
 .mockbar .time{margin-left:auto;font-variant-numeric:tabular-nums;font-size:16px;font-weight:800;color:#7dd3fc}
 /* 搜索框 */
-.searchbox{display:flex;gap:10px;align-items:center;background:#fff;border:1px solid var(--line);border-radius:10px;padding:9px 14px;margin-bottom:12px}
+.searchbox{display:flex;gap:10px;align-items:center;background:#fff;border:1px solid var(--line);border-radius:6px;padding:9px 14px;margin-bottom:12px}
 .searchbox input{flex:1;border:none;outline:none;font-size:14px;background:transparent}
 .searchbox .ic{color:var(--muted)}
 /* 题单卡片 */
 .pl-card{display:flex;flex-direction:column;height:100%}
 .pl-card .plist{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0}
-.pl-chip{display:inline-flex;align-items:center;gap:6px;padding:4px 10px;background:#f5faf7;border:1px solid var(--line);border-radius:8px;font-size:12.5px;cursor:pointer;color:var(--ink);font-weight:600}
+.pl-chip{display:inline-flex;align-items:center;gap:6px;padding:4px 10px;background:#f0f9f4;border:1px solid var(--line);border-radius:6px;font-size:12.5px;cursor:pointer;color:var(--ink);font-weight:600}
 .pl-chip:hover{border-color:var(--brand);color:var(--brand)}
 .pl-chip .lv{font-size:10px;padding:1px 6px}
 /* 难度分布条 */
@@ -118,7 +121,7 @@ code.kbd{background:#eef2f7;padding:1px 6px;border-radius:5px;font-family:Consol
 .footer{max-width:1200px;margin:0 auto;padding:18px 20px;color:var(--muted);font-size:12.5px;border-top:1px solid var(--line)}
 .mt{margin-top:18px}
 .mb{margin-bottom:12px}
-.alert{display:flex;gap:12px;align-items:flex-start;padding:14px 16px;border-radius:10px;font-size:13.5px}
+.alert{display:flex;gap:12px;align-items:flex-start;padding:14px 16px;border-radius:6px;font-size:13.5px}
 .alert.warn{background:var(--amberbg);border:1px solid #f6e2c0;color:#7c4a12}
 .compare th{width:50%}
 .ring{--p:0;--c:var(--brand);width:74px;height:74px;border-radius:50%;background:conic-gradient(var(--c) calc(var(--p)*1%),#e6ecf5 0);display:grid;place-items:center}
@@ -127,12 +130,12 @@ code.kbd{background:#eef2f7;padding:1px 6px;border-radius:5px;font-family:Consol
 .empty{text-align:center;color:var(--muted);padding:36px 0;font-size:14px}
 .spinner{display:inline-block;width:15px;height:15px;border:2px solid #cbd5e1;border-top-color:var(--brand);border-radius:50%;animation:sp 0.7s linear infinite;vertical-align:-2px}
 @keyframes sp{to{transform:rotate(360deg)}}
-select.tpl{border:1px solid var(--line);border-radius:8px;padding:6px 10px;font-size:12.5px;background:#fff;color:var(--ink);cursor:pointer}
+select.tpl{border:1px solid var(--line);border-radius:6px;padding:6px 10px;font-size:12.5px;background:#fff;color:var(--ink);cursor:pointer}
 .hist{display:flex;gap:14px;font-size:12.5px;color:var(--muted);margin-top:10px;flex-wrap:wrap}
 .hist b{color:var(--ink)}
 /* 知识点卡片 */
 .kcard-row{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
-.kcard{flex:1;min-width:150px;border:1.5px solid var(--line);border-radius:10px;padding:12px 14px;background:#fbfcfe;cursor:pointer;transition:.15s;position:relative}
+.kcard{flex:1;min-width:150px;border:1.5px solid var(--line);border-radius:6px;padding:12px 14px;background:#fbfcfe;cursor:pointer;transition:.15s;position:relative}
 .kcard:hover{border-color:var(--brand)}
 .kcard .kc-name{font-weight:800;font-size:14px;margin-bottom:4px}
 .kcard .kc-state{font-size:11.5px;font-weight:700;padding:2px 8px;border-radius:999px;display:inline-block}
@@ -141,11 +144,11 @@ select.tpl{border:1px solid var(--line);border-radius:8px;padding:6px 10px;font-
 .ks-ok{background:var(--greenbg);color:var(--green)}
 .kcard.flagged{border-color:var(--red);background:#fff7f7}
 .kcard.mastered{border-color:var(--green);background:#f4fbf6}
-@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(231,76,60,.25)}50%{box-shadow:0 0 0 6px rgba(231,76,60,0)}}
-/* 算法可视化（同页内嵌） */
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(220,38,38,.25)}50%{box-shadow:0 0 0 6px rgba(220,38,38,0)}}
+/* 算法可视化 */
 .viz-stage{padding:20px;overflow:auto;background:#fafbfe;flex:1;min-height:200px}
-.viz-desc{padding:12px 20px;background:#fff;border-top:1px solid var(--line);font-size:14px;min-height:48px}
-.viz-ctl{padding:10px 20px;border-top:1px solid var(--line);display:flex;gap:8px;align-items:flex-wrap;background:#fff}
+.viz-desc{padding:12px 0;background:transparent;border:none;font-size:14px;min-height:0}
+.viz-ctl{display:flex;gap:8px;align-items:flex-wrap;background:transparent;border:none;padding:0 0 8px}
 .viz-ctl .prog{margin-left:auto;font-size:12.5px;color:var(--muted);font-variant-numeric:tabular-nums}
 .viz-boxrow{display:flex;gap:6px;flex-wrap:wrap;align-items:flex-end;margin:10px 0}
 .vcell{min-width:38px;height:38px;border-radius:6px;background:#eef2f7;display:grid;place-items:center;font-weight:700;font-size:13px;font-family:Consolas,monospace;border:1px solid #dde5ef}
@@ -163,14 +166,13 @@ select.tpl{border:1px solid var(--line);border-radius:8px;padding:6px 10px;font-
 .vcell.frontier{background:#93c5fd;color:#1e3a8a}
 /* 跑我的算法对比 */
 .minebox{margin-top:12px;border-top:1px dashed var(--line);padding-top:12px}
-.minecmp{border-radius:10px;padding:12px 14px;margin-top:10px;font-size:13.5px;line-height:1.7}
+.minecmp{border-radius:6px;padding:12px 14px;margin-top:10px;font-size:13.5px;line-height:1.7}
 .minecmp.ok{background:var(--greenbg);border:1px solid #bfe6cc;color:#14532d}
 .minecmp.bad{background:var(--redbg);border:1px solid #f3c0c0;color:#7f1d1d}
 #ivStage{background:#fafbfe}
 /* 洛谷风格 */
-.problem-wrap h3{padding-left:10px;border-left:3px solid var(--brand);margin:14px 0 6px;font-size:15px}
-.luogu-id{font-family:Consolas,monospace;background:var(--brand);color:#fff;padding:2px 8px;border-radius:4px;font-size:12px;font-weight:700;margin-right:6px}
-.problem-row .id{background:var(--graybg);border-radius:5px;padding:2px 6px;color:var(--brand);font-weight:700}
+.problem-wrap h3{padding-left:10px;border-left:3px solid var(--brand);margin:14px 0 6px;font-size:15px;color:#24292e}
+.luogu-id{font-family:Consolas,monospace;color:var(--brand);font-size:14px;font-weight:700;margin-right:2px}
 .lk-check{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
 .lk-check .ck{font-family:Consolas,monospace;font-size:12.5px;padding:5px 10px;border-radius:6px;border:1px solid var(--line);background:#fff}
 .lk-check .ck.ok{background:var(--greenbg);border-color:#bfe6cc;color:#14532d}
@@ -394,6 +396,7 @@ VIZ.p14=()=>{
 };
 /* p15 BFS */
 VIZ.p15=()=>{
+  const grid=[[0,0,0],[0,1,0],[0,0,0]];
   const layers=[
    "起点(0,0)，dist=0。",
    "扩展 (0,1)=1, (1,0)=1。",
@@ -659,14 +662,15 @@ function renderPracticeList(){
   for(const t of tiers){
     const list=PROBLEMS.filter(p=>p.tier===t&&match(p));
     if(!list.length)continue;
-    html+=`<div class="card mb"><div style="display:flex;align-items:center"><h3 style="margin:0">${t} ${tierNote[t]}</h3><span class="countdown" style="margin-left:auto">${list.length} 题</span></div>
-    <div class="mt">${list.map(p=>{
+    html+=`<div class="card mb" style="padding:0;overflow:hidden"><div style="display:flex;align-items:center;padding:11px 16px;border-bottom:1px solid var(--line);background:#fafbfc"><h3 style="margin:0;font-size:14.5px">${t} <span style="font-weight:400;color:var(--muted);font-size:12.5px">${tierNote[t]}</span></h3><span class="sub" style="margin:0 0 0 auto;font-size:12.5px">${list.length} 题</span></div>
+    <div>${list.map(p=>{
       const st=problemStatus(p.id); const map={done:["✔ AC","st-done"],part:["部分分","st-part"],wa:["再试","st-wa"],none:["未做","st-none"]}[st];
-      return `<div class="problem-row" data-go="problem/${p.id}">
-        <span class="id">P${p.no}</span>
+      const dc=(LEVELS[p.diff]||LEVELS[1]).color;
+      return `<div class="problem-row" style="--dc:${dc}" data-go="problem/${p.id}">
+        <span class="id">P${String(p.no).padStart(3,"0")}</span>
         <span class="nm">${p.title}</span>
+        <span style="color:#9aa7b5;font-size:12.5px">${p.knowledge.slice(0,2).join(" / ")}</span>
         ${lvBadge(p)}
-        <span class="tag t-know">${p.knowledge.slice(0,2).join(" / ")}</span>
         <span class="status ${map[1]}">${map[0]}</span></div>`;
     }).join("")}</div></div>`;
   }
@@ -735,11 +739,11 @@ function renderInlineViz(pid){
       <select class="tpl" id="ivSpeed"><option value="1600">慢</option><option value="1000" selected>中</option><option value="500">快</option></select>
       <span class="prog" id="ivProg" style="margin-left:auto"></span>
     </div>
-    <div class="viz-stage" id="ivStage" style="min-height:200px;border:1px solid var(--line);border-radius:10px;padding:16px"></div>
-    <div class="viz-desc" id="ivDesc" style="border:none;background:transparent;padding:10px 0;min-height:0"></div>
+    <div class="viz-stage" id="ivStage" style="min-height:200px;border:1px solid var(--line);border-radius:6px;padding:16px"></div>
+    <div class="viz-desc" id="ivDesc"></div>
     <div class="minebox">
       <button class="btn btn-primary btn-sm" id="runMine">▶ 跑我的算法并对比</button>
-      <div class="sub" style="margin:6px 0 0">用你上方编辑器里的 C++ 代码在本题小输入上真实编译运行（Wandbox），和正确算法输出逐行/逐帧对比。</div>
+      <div class="sub" style="margin:6px 0 0">用你上方编辑器里的 C++ 代码在本题小输入上真实编译运行（Wandbox），和正确算法输出逐行对比。</div>
       <div id="mineResult"></div>
     </div>
   </div>`;
@@ -825,7 +829,7 @@ function renderProblem(id,pre){
   <button class="btn btn-ghost mb" data-go="${inMock?`mockExam/${pre.mock}`:"practice"}">← ${inMock?"返回模拟赛":"返回题库"}</button>
   <div class="problem-wrap">
     <div class="panel">
-      <div class="panel-hd"><span class="luogu-id">P${p.no}</span>${lvBadge(p)} <span class="tag t-tier">${p.tier}</span> <span style="font-weight:800">${p.title}</span> <span style="margin-left:auto;color:var(--muted);font-weight:600">${p.points} 分</span></div>
+      <div class="panel-hd"><span class="luogu-id">P${String(p.no).padStart(3,"0")}</span>${lvBadge(p)} <span class="tag t-tier">${p.tier}</span> <span style="font-weight:800">${p.title}</span> <span style="margin-left:auto;color:var(--muted);font-weight:600">${p.points} 分</span></div>
       <div style="padding:18px">
         <div class="hist"><span>我的最佳：<b class="${bs>=100?"v-AC":bs>0?"v-RE":"v-WA"}">${bs} / 100</b></span><span>累计提交：<b>${sc}</b> 次</span></div>
         <div class="sub mt" style="margin-bottom:14px"><span class="tag t-know">${p.knowledge.join(" / ")}</span><span class="tag t-tag">${p.tag}</span> ${diffStars(p.diff)} <span style="float:right">${p.constraints}</span></div>
