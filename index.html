@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CSP-S 2026 第二轮 · 在线刷题与实时评测</title>
+<meta name="description" content="CSP-S 提高组第二轮（机试）备考平台：在线答题 + 实时评测 + 考点全覆盖 + 模拟赛。零依赖单文件，可本地运行或托管于 GitHub Pages。">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.css">
+<style>
+:root{
+  --bg:#f4f6fb; --card:#ffffff; --ink:#1f2d3d; --muted:#6b7a90; --line:#e3e9f2;
+  --brand:#2563eb; --brand2:#0ea5e9; --green:#16a34a; --greenbg:#e6f6ec; --red:#dc2626; --redbg:#fdecec;
+  --amber:#d97706; --amberbg:#fdf3e3; --gray:#64748b; --graybg:#eef2f7;
+  --editor:#1e1e2e; --radius:14px; --shadow:0 6px 24px rgba(15,30,60,.08);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;background:var(--bg);color:var(--ink);line-height:1.6}
+a{color:var(--brand);text-decoration:none}
+pre{font-family:"JetBrains Mono",ui-monospace,Consolas,Menlo,monospace}
+.topbar{position:sticky;top:0;z-index:50;background:#ffffff;border-bottom:1px solid var(--line);box-shadow:0 1px 0 rgba(15,30,60,.04)}
+.topbar .in{max-width:1200px;margin:0 auto;padding:0 20px;display:flex;align-items:center;gap:18px;height:58px}
+.logo{display:flex;align-items:center;gap:10px;font-weight:800;font-size:17px;color:var(--ink);white-space:nowrap}
+.logo .badge{background:linear-gradient(135deg,var(--brand),var(--brand2));color:#fff;padding:4px 9px;border-radius:9px;font-size:12px;letter-spacing:.5px}
+.nav{display:flex;gap:4px;margin-left:8px;flex-wrap:wrap}
+.nav button{background:none;border:none;padding:9px 13px;border-radius:9px;cursor:pointer;font-size:14px;color:var(--muted);font-weight:600;transition:.15s}
+.nav button:hover{background:#eef3fb;color:var(--brand)}
+.nav button.active{background:var(--brand);color:#fff}
+.navright{margin-left:auto;font-size:13px;color:var(--muted);display:flex;align-items:center;gap:10px}
+.countdown{display:inline-block;background:var(--graybg);padding:5px 11px;border-radius:999px;font-variant-numeric:tabular-nums}
+.wrap{max-width:1200px;margin:0 auto;padding:22px 20px 60px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:22px}
+.hidden{display:none !important}
+.grid{display:grid;gap:18px}
+.g2{grid-template-columns:1fr 1fr}.g3{grid-template-columns:repeat(3,1fr)}.g4{grid-template-columns:repeat(4,1fr)}
+@media(max-width:900px){.g2,.g3,.g4{grid-template-columns:1fr 1fr}.nav{display:none}}
+@media(max-width:640px){.g2,.g3,.g4{grid-template-columns:1fr}}
+h2{font-size:20px;margin-bottom:4px}
+h3{font-size:16px}
+.sub{color:var(--muted);font-size:13px;margin-bottom:14px}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:16px 18px;box-shadow:var(--shadow)}
+.stat .k{font-size:12px;color:var(--muted)}
+.stat .v{font-size:26px;font-weight:800;margin-top:2px}
+.stat .v small{font-size:13px;font-weight:600;color:var(--muted)}
+.bar{height:8px;background:var(--graybg);border-radius:99px;overflow:hidden;margin-top:6px}
+.bar>i{display:block;height:100%;background:linear-gradient(90deg,var(--brand),var(--brand2));border-radius:99px;transition:width .4s}
+.tag{display:inline-block;padding:2px 9px;border-radius:999px;font-size:12px;font-weight:600;margin:2px 3px 2px 0}
+.t-tier{background:#eef3ff;color:#2563eb}
+.t-know{background:var(--greenbg);color:var(--green)}
+.t-tag{background:var(--graybg);color:var(--gray)}
+.chip{display:inline-block;padding:5px 12px;border-radius:999px;border:1px solid var(--line);background:#fff;cursor:pointer;font-size:13px;font-weight:600;color:var(--muted);margin:4px;transition:.15s}
+.chip:hover{border-color:var(--brand);color:var(--brand)}
+.chip.on{background:var(--brand);border-color:var(--brand);color:#fff}
+table{width:100%;border-collapse:collapse;font-size:14px}
+th,td{text-align:left;padding:9px 12px;border-bottom:1px solid var(--line)}
+th{color:var(--muted);font-weight:600;background:#fafbfe}
+tr:hover td{background:#f7fafd}
+.v-AC{color:var(--green);font-weight:700}
+.v-WA{color:var(--red);font-weight:700}
+.v-RE,.v-CE{color:var(--amber);font-weight:700}
+.v-TLE{color:var(--gray);font-weight:700}
+.btn{border:none;cursor:pointer;border-radius:10px;padding:11px 20px;font-size:14px;font-weight:700;transition:.15s}
+.btn-primary{background:var(--brand);color:#fff}
+.btn-primary:hover{background:#1d4ed8}
+.btn-primary:disabled{opacity:.5;cursor:not-allowed}
+.btn-ghost{background:#fff;color:var(--brand);border:1px solid var(--brand)}
+.btn-ghost:hover{background:#eef3ff}
+.problem-wrap{display:grid;grid-template-columns:minmax(300px,1fr) minmax(420px,1.15fr);gap:18px}
+@media(max-width:980px){.problem-wrap{grid-template-columns:1fr}}
+.panel{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden}
+.panel-hd{display:flex;align-items:center;gap:10px;padding:14px 18px;border-bottom:1px solid var(--line);background:#fafbfe;font-weight:700;font-size:14px}
+.editor-tools{padding:10px 14px;background:#ffffff;border-bottom:1px solid var(--line);display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.editor-tools .btns{margin-left:auto;display:flex;gap:8px}
+.CodeMirror{height:430px;font-size:13.5px;line-height:1.5}
+.result-item{display:flex;justify-content:space-between;align-items:center;padding:9px 14px;border-bottom:1px solid var(--line);font-size:14px}
+.result-item .ti{color:var(--muted);font-size:12px}
+.diff-star{color:#f59e0b;letter-spacing:1px}
+.sample-box{background:#0f172a;color:#e2e8f0;border-radius:9px;padding:12px 14px;font-size:13px;overflow:auto;margin:6px 0}
+.sample-box .lbl{color:#94a3b8;font-size:11px;text-transform:uppercase;margin-bottom:4px}
+code.kbd{background:#eef2f7;padding:1px 6px;border-radius:5px;font-family:Consolas,monospace;font-size:12.5px}
+.solbox{background:var(--amberbg);border:1px solid #f6e2c0;border-radius:10px;padding:14px 16px;margin-top:12px;font-size:14px}
+.know-block{margin-bottom:18px}
+.know-block .cat{font-weight:800;margin-bottom:8px;display:flex;align-items:center;gap:10px}
+.know-block .cat .pct{margin-left:auto;font-size:12px;color:var(--muted);font-weight:600}
+.problem-row{display:flex;align-items:center;gap:14px;padding:13px 16px;border-bottom:1px solid var(--line);cursor:pointer;transition:.12s}
+.problem-row:hover{background:#f5f8fe}
+.problem-row .id{font-family:Consolas,monospace;color:var(--muted);font-size:13px;width:46px}
+.problem-row .nm{font-weight:700;flex:1}
+.problem-row .status{font-size:12px;font-weight:700;padding:3px 9px;border-radius:999px}
+.st-done{background:var(--greenbg);color:var(--green)}
+.st-part{background:var(--amberbg);color:var(--amber)}
+.st-none{background:var(--graybg);color:var(--gray)}
+.st-wa{background:var(--redbg);color:var(--red)}
+.mockbar{position:sticky;top:58px;z-index:40;background:#0f172a;color:#e2e8f0;padding:10px 0}
+.mockbar .in{max-width:1200px;margin:0 auto;padding:0 20px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.mockbar .t{font-weight:700}
+.mockbar .probs{display:flex;gap:6px;flex-wrap:wrap}
+.mockbar .pb{background:rgba(255,255,255,.12);color:#fff;padding:4px 10px;border-radius:8px;font-size:12px;cursor:pointer}
+.mockbar .pb.active{background:var(--brand)}
+.mockbar .pb.done{background:var(--green)}
+.mockbar .time{margin-left:auto;font-variant-numeric:tabular-nums;font-size:16px;font-weight:800;color:#7dd3fc}
+.footer{max-width:1200px;margin:0 auto;padding:18px 20px;color:var(--muted);font-size:12.5px;border-top:1px solid var(--line)}
+.mt{margin-top:18px}
+.mb{margin-bottom:12px}
+.alert{display:flex;gap:12px;align-items:flex-start;padding:14px 16px;border-radius:12px;font-size:13.5px}
+.alert.warn{background:var(--amberbg);border:1px solid #f6e2c0;color:#7c4a12}
+.compare th{width:50%}
+.ring{--p:0;--c:var(--brand);width:74px;height:74px;border-radius:50%;background:conic-gradient(var(--c) calc(var(--p)*1%),#e6ecf5 0);display:grid;place-items:center}
+.ring b{width:56px;height:56px;background:#fff;border-radius:50%;display:grid;place-items:center;font-size:16px}
+.detail-pre{white-space:pre-wrap;word-break:break-word}
+.empty{text-align:center;color:var(--muted);padding:36px 0;font-size:14px}
+.spinner{display:inline-block;width:15px;height:15px;border:2px solid #cbd5e1;border-top-color:var(--brand);border-radius:50%;animation:sp 0.7s linear infinite;vertical-align:-2px}
+@keyframes sp{to{transform:rotate(360deg)}}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="in">
+    <div class="logo"><span class="badge">CSP-S</span>第二轮 · 在线刷题评测</div>
+    <nav class="nav" id="nav">
+      <button data-view="dashboard">首页</button>
+      <button data-view="practice">题库</button>
+      <button data-view="mock">模拟赛</button>
+      <button data-view="knowledge">知识图谱</button>
+      <button data-view="records">我的记录</button>
+    </nav>
+    <div class="navright"><span class="countdown" id="cd"></span></div>
+  </div>
+</header>
+
+<div class="mockbar hidden" id="mockbar">
+  <div class="in">
+    <span class="t">⚡ 模拟赛进行中</span>
+    <span class="probs" id="mockprobs"></span>
+    <span class="time" id="mocktime">--:--</span>
+  </div>
+</div>
+
+<main class="wrap" id="app"></main>
+
+<footer class="footer">
+  CSP-S 2026 第二轮备考工具 · 机试 4 题 × 100 分 = 400 分 · 官方时间 2026-10-31 14:30–18:30（以 CCF 通知为准）<br>
+  实时评测由 Wandbox 公共编译服务提供（GitHub Pages 无法直接编译 C++，故调用公共 API）。数据保存在本机浏览器 localStorage。
+</footer>
+
+<script>
+"use strict";
+/*================ 题库数据 ================*/
+window.CSP_PROBLEMS=__PROBLEMS__;
+const PROBLEMS=window.CSP_PROBLEMS||[];
+
+/*================ 考点全覆盖（CSP-S 提高组第二轮·NOI大纲） ================*/
+const KNOWLEDGE=[
+ {cat:"基础算法",items:["枚举与模拟","排序","贪心","二分答案","高精度","分治与倍增","前缀和 / 差分","离散化"]},
+ {cat:"搜索",items:["DFS 深度优先","BFS 广度优先","剪枝优化","双向 BFS / 迭代加深","A* 与启发式","状态压缩搜索"]},
+ {cat:"动态规划",items:["线性 DP","区间 DP","背包 DP","树形 DP","状压 DP","数位 DP","单调队列优化","斜率 / 四边形优化"]},
+ {cat:"图论",items:["最短路 Dijkstra / SPFA / Floyd","最小生成树","拓扑排序","二分图与匈牙利","Tarjan 强连通 / 割点桥","差分约束","树上 LCA / 直径 / 重心 / 换根","网络流基础"]},
+ {cat:"数据结构",items:["栈 / 队列 / 堆","并查集","树状数组 / 线段树","ST 表","平衡树","Trie 字典树","字符串哈希","分块 / 莫队"]},
+ {cat:"字符串",items:["KMP","Manacher","AC 自动机","后缀数组 / 自动机"]},
+ {cat:"数论",items:["素数筛 / 质因数分解","GCD / EXGCD","快速幂","矩阵快速幂","组合数学与逆元","欧拉函数","中国剩余定理","卡特兰数"]},
+ {cat:"数学进阶",items:["博弈论","概率与期望"]},
+ {cat:"计算几何",items:["向量基础","凸包"]},
+ {cat:"STL 与 C++",items:["STL 容器","输入输出优化","代码风格与调试","复杂度分析"]}
+];
+
+/* 两轮对比 */
+const ROUND_COMPARE=[
+ ["认证形式","集中笔试","现场集中上机认证（机试）"],
+ ["题目数量","约 20 题（选择 / 判断）","4 道编程题，每题 100 分，总分 400 分"],
+ ["考查范围","计算机基础 + C++ 语法 + 简单算法","算法设计与实现：数据结构 / DP / 图论 / 数论 / 字符串"],
+ ["答题方式","读题选答案","编写并提交 C++ 程序，机器评测"],
+ ["评分","按答案正确计分","按通过测试数据比例给分（可部分得分）"],
+ ["时长","约 2 小时","约 4 小时（2026-10-31 14:30–18:30）"],
+ ["晋级","第一轮达省分数线者进入第二轮","第二轮成绩作为省级认证成绩，供后续使用"]
+];
+
+const MOCK_EXAMS=[
+ {id:"A",name:"2026 模拟卷 A（稳扎稳打）",problems:["p02","p03","p05","p08"],minutes:240},
+ {id:"B",name:"2026 模拟卷 B（进阶突破）",problems:["p01","p15","p06","p10"],minutes:240},
+ {id:"C",name:"2026 模拟卷 C（挑战压轴）",problems:["p07","p12","p13","p16"],minutes:240}
+];
+const MOCK_DEADLINE_KEY="csps_mock_deadline";
+
+/*================ 存储 ================*/
+const LS={get(k,d){try{return JSON.parse(localStorage.getItem(k))??d}catch(e){return d}},set(k,v){localStorage.setItem(k,JSON.stringify(v))}};
+const getSubs=()=>LS.get("csps_subs",[]);
+const saveSubs=s=>LS.set("csps_subs",s);
+const getKnow=()=>LS.get("csps_know",{});
+const saveKnow=k=>LS.set("csps_know",k);
+const getWrong=()=>LS.get("csps_wrong",[]);
+const saveWrong=w=>LS.set("csps_wrong",w);
+const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,6);
+
+/*================ 判题（Wandbox） ================*/
+const WANDBOX="https://wandbox.org/api/compile.json";
+const COMPILER="gcc-13.2.0";
+const DEFAULT_CODE=`#include <bits/stdc++.h>
+using namespace std;
+int main(){
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+
+    return 0;
+}
+`;
+function normOut(s){return (s||"").replace(/\r\n/g,"\n").replace(/[ \t]+$/gm,"").replace(/\s+$/,"");}
+async function execWandbox(code,stdin){
+  const ctrl=new AbortController();const timer=setTimeout(()=>ctrl.abort(),26000);
+  const t0=Date.now();
+  try{
+    const res=await fetch(WANDBOX,{method:"POST",headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({code:code,compiler:COMPILER,stdin:stdin||""}),signal:ctrl.signal});
+    clearTimeout(timer);
+    if(!res.ok) return {verdict:"ERR",detail:"服务返回状态 "+res.status};
+    const j=await res.json(); const ms=Date.now()-t0;
+    if(j.status==="1" || (j.compiler_message&&j.compiler_message.trim()))
+      return {verdict:"CE",detail:(j.compiler_error||j.compiler_message||"").slice(0,600)};
+    if(j.signal&&j.signal.trim())
+      return {verdict:"RE",detail:j.signal+"  "+(j.program_error||"").trim().slice(0,200)};
+    return {verdict:"RUN",out:j.program_output||"",err:(j.program_error||""),ms};
+  }catch(e){
+    clearTimeout(timer);
+    return {verdict:"TLE",detail:"运行超时或服务无响应（约 26s）"};
+  }
+}
+async function judgeTest(code,t){
+  const r=await execWandbox(code,t.input);
+  if(r.verdict!=="RUN"){
+    const isCE=r.verdict==="CE";
+    return {verdict:isCE?"CE":"RE",score:0,out:r.out,detail:r.detail,ce:isCE};
+  }
+  const got=normOut(r.out), want=normOut(t.output);
+  if(got===want) return {verdict:"AC",score:t.score,ms:r.ms};
+  return {verdict:"WA",score:0,out:got,detail:"期望输出与你的输出不一致",ms:r.ms};
+}
+
+/*================ 状态计算 ================*/
+function problemStatus(id){
+  const subs=getSubs().filter(s=>s.problem===id&&s.mode!=="mock");
+  if(!subs.length) return "none";
+  const best=Math.max(...subs.map(s=>s.score));
+  if(best>=100) return "done";
+  if(best>0) return "part";
+  const last=subs[subs.length-1];
+  return last&&last.verdictBest==="WA"?"wa":"part";
+}
+function stats(){
+  const subs=getSubs(); const solved=new Set(); const full=new Set(); let totalScore=0,totalMax=0,wa=0;
+  for(const s of subs){ totalScore+=s.score; totalMax+=100; if(s.score>=100)full.add(s.problem); if(s.score>0)solved.add(s.problem); if(s.verdictBest==="WA")wa++; }
+  const know=getKnow(); let marked=0, mastered=0;
+  for(const c of KNOWLEDGE) for(const it of c.items){ if(know[it]){marked++; if(know[it]==="1")mastered++; } }
+  const knowTotal=KNOWLEDGE.reduce((a,c)=>a+c.items.length,0);
+  return {subs:solved.size,full:full.size,totalScore,totalMax,rate:totalMax?Math.round(totalScore/totalMax*100):0,wa,
+          knowMarked:marked,knowMastered:mastered,knowTotal,solvedSet:solved};
+}
+function normDate(d){return d<10?"0"+d:d;}
+function countdownTo(){ return new Date(2026,9,31,14,30,0).getTime(); } // 2026-10-31 14:30
+
+/*================ 渲染 ================*/
+const app=document.getElementById("app");
+const esc=s=>String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'\"':"&quot;"}[c]));
+
+function header(title,sub){return `<h2>${title}</h2><div class="sub">${sub}</div>`;}
+function diffStars(d){return `<span class="diff-star">${"★".repeat(d)}${"☆".repeat(5-d)}</span>`;}
+
+const VIEWS={
+dashboard(){renderDashboard();},
+practice(){renderPracticeList();},
+problem(id){renderProblem(id);},
+mock(){renderMockList();},
+mockExam(mid){renderMock(mid);},
+knowledge(){renderKnowledge();},
+records(){renderRecords();}
+};
+
+/* ---------- 首页 ---------- */
+function renderDashboard(){
+  const s=stats();
+  const cd=countdownTo()-Date.now();
+  const days=Math.max(0,Math.ceil(cd/(86400000)));
+  app.innerHTML=`
+  ${header("CSP-S 2026 第二轮 · 高效备考","机试：现场上机编程 · 4 题 × 100 分 = 400 分 · 官方时间 2026-10-31 14:30–18:30")}
+  <div class="alert warn mb"><div>📌</div><div><b>判题说明：</b>本站在浏览器中调用 <b>Wandbox</b> 公共编译服务实时运行你的 C++ 代码并按测试数据评分（GitHub Pages 无法直接编译 C++）。评测结果以官方评测环境为准，本工具用于高效备考练习。</div></div>
+  <div class="grid g4 mb">
+    <div class="stat"><div class="k">距第二轮机试</div><div class="v">${days}<small> 天</small></div></div>
+    <div class="stat"><div class="k">已 AC 题目</div><div class="v">${s.full}<small> / ${PROBLEMS.length}</small></div></div>
+    <div class="stat"><div class="k">平均得分率</div><div class="v">${s.rate}<small>%</small></div></div>
+    <div class="stat"><div class="k">已掌握考点</div><div class="v">${s.knowMastered}<small> / ${s.knowTotal}</small></div></div>
+  </div>
+  <div class="grid g2 mb">
+    <div class="card">
+      <h3>本轮怎么考</h3>
+      <div class="sub">第二轮为上机编程，按测试数据给分，重点考察算法设计与代码实现能力。</div>
+      <table><thead><tr><th>题型 / 位置</th><th>考察方向</th></tr></thead><tbody>
+      <tr><td><b>T1</b> 基础模拟</td><td>读题、边界、实现稳定：模拟 / 前缀和 / 简单数学</td></tr>
+      <tr><td><b>T2</b> 思维题</td><td>贪心、二分答案、搜索 BFS，常需观察性质</td></tr>
+      <tr><td><b>T3</b> 工程模拟 / 数据结构</td><td>题面长、细节多、代码量大，常用单调栈 / 并查集 / BIT / 线段树</td></tr>
+      <tr><td><b>T4</b> 高级算法</td><td>DP 优化、图论（最短路 / 树上 / 拓扑）、数论、字符串</td></tr>
+      </tbody></table>
+      <a class="btn btn-ghost mt" data-go="practice">进入题库开始刷题</a>
+    </div>
+    <div class="card">
+      <h3>两轮对比</h3>
+      <div class="sub">从第一轮到第二轮的备考思路切换。</div>
+      <table class="compare"><thead><tr><th>维度</th><th>第一轮（笔试）</th><th>第二轮（机试）</th></tr></thead><tbody>
+      ${ROUND_COMPARE.map(r=>`<tr><td><b>${r[0]}</b></td><td>${r[1]}</td><td>${r[2]}</td></tr>`).join("")}
+      </tbody></table>
+      <a class="btn btn-ghost mt" data-go="knowledge">查看考点全覆盖图谱</a>
+    </div>
+  </div>
+  <div class="grid g3 mb">
+    <div class="card"><h3>📚 全考点题库</h3><div class="sub">${PROBLEMS.length} 道题，覆盖 T1–T4 各题型与九大知识板块。</div><a class="btn btn-ghost" data-go="practice">刷题</a></div>
+    <div class="card"><h3>⏱ 模拟赛</h3><div class="sub">3 套模拟卷，每套 4 题 400 分，限时 240 分钟。</div><a class="btn btn-ghost" data-go="mock">开赛</a></div>
+    <div class="card"><h3>📊 知识图谱</h3><div class="sub">40+ 考点自评掌握度，查漏补缺。</div><a class="btn btn-ghost" data-go="knowledge">进入</a></div>
+  </div>
+  <div class="card">
+    <h3>备考建议（基于 CCF 高分选手经验）</h3>
+    <div class="sub">来自 CSP 高分选手的共性与考场策略</div>
+    <ul style="padding-left:20px;font-size:14px">
+      <li><b>稳拿 T1/T2：</b>前两题是定海神针，务必又快又稳，先吃透基础语法、排序、模拟、前缀和、二分、贪心。</li>
+      <li><b>啃下 T3：</b>题面长、细节多，边读题边在草稿上记录对象、状态与操作顺序，用模板库简化实现。</li>
+      <li><b>突破 T4：</b>系统掌握 DP（线性/区间/背包/树形/状压）与图论（最短路/生成树/拓扑/树上），并学会复杂度分析。</li>
+      <li><b>以题带点：</b>先刷真题，遇到盲区再回头学对应算法，切忌死磕超纲内容。</li>
+      <li><b>写对暴力：</b>不会正解时先写朴素算法拿部分分，O(n) 与 O(n²) 数据分档非常明显。</li>
+    </ul>
+  </div>`;
+  afterRender();
+}
+
+/* ---------- 题库 ---------- */
+function renderPracticeList(){
+  const byTier={T1:[],T2:[],T3:[],T4:[]};
+  PROBLEMS.forEach(p=>byTier[p.tier].push(p));
+  const tiers=["T1","T2","T3","T4"];
+  const tierNote={T1:"基础：模拟 / 前缀和 / 简单数学",T2:"思维：贪心 / 二分 / 搜索",T3:"数据结构与工程模拟：栈 / 并查集 / BIT",T4:"高级：DP 优化 / 图论 / 数论 / 字符串"};
+  let html=header("题库 · 在线答题","点击题目进入作答，提交后实时评测并按测试数据给分。每题 100 分，可反复练习。");
+  for(const t of tiers){
+    const list=byTier[t];
+    html+=`<div class="card mb"><div style="display:flex;align-items:center"><h3 style="margin:0">${t} ${tierNote[t]}</h3><span class="countdown" style="margin-left:auto">${list.length} 题</span></div>
+    <div class="mt">${list.map(p=>{
+      const st=problemStatus(p.id); const map={done:["✔ AC","st-done"],part:["部分分","st-part"],wa:["再试","st-wa"],none:["未做","st-none"]}[st];
+      return `<div class="problem-row" data-go="problem/${p.id}">
+        <span class="id">${p.id.toUpperCase()}</span>
+        <span class="nm">${p.title} ${diffStars(p.diff)}</span>
+        <span class="tag t-know">${p.knowledge.slice(0,2).join(" / ")}</span>
+        <span class="status ${map[1]}">${map[0]}</span></div>`;
+    }).join("")}</div></div>`;
+  }
+  app.innerHTML=html; afterRender();
+}
+
+/* ---------- 题目详情 + 作答 ---------- */
+let editor=null, currentProblem=null, submitting=false, mockCtx=null;
+function initEditor(){
+  if(editor) return;
+  if(window.CodeMirror){
+    editor=CodeMirror(document.getElementById("ed"),{value:DEFAULT_CODE,mode:"text/x-c++src",lineNumbers:true,lineWrapping:false,theme:"default",indentUnit:4,tabSize:4,styleActiveLine:true,extraKeys:{"Tab":(cm)=>{cm.replaceSelection("    ")}}});
+  }else{
+    const ta=document.getElementById("ed"); ta.removeAttribute("hidden"); editor={getValue:()=>ta.value,setValue:v=>{ta.value=v},isTA:true};
+  }
+}
+function renderProblem(id,pre){
+  const p=PROBLEMS.find(x=>x.id===id); if(!p)return renderPracticeList();
+  currentProblem=p;
+  const inMock=!!(pre&&pre.mock);
+  const btn=inMock?"提交到模拟赛":"提交评测";
+  app.innerHTML=`
+  <button class="btn btn-ghost mb" data-go="${inMock?`mockExam/${pre.mock}`:"practice"}">← ${inMock?"返回模拟赛":"返回题库"}</button>
+  <div class="problem-wrap">
+    <div class="panel">
+      <div class="panel-hd"><span class="tag t-tier">${p.tier}</span> <span>${p.id.toUpperCase()} · ${p.title}</span> <span style="margin-left:auto;color:var(--muted);font-weight:600">${p.points} 分</span></div>
+      <div style="padding:18px">
+        <div class="sub mb"><span class="tag t-know">${p.knowledge.join(" / ")}</span><span class="tag t-tag">${p.tag}</span> ${diffStars(p.diff)} <span style="float:right">${p.constraints}</span></div>
+        <h3>题目描述</h3><p class="mb">${p.statement}</p>
+        <h3>输入格式</h3><p class="mb">${p.inputFormat}</p>
+        <h3>输出格式</h3><p class="mb">${p.outputFormat}</p>
+        <h3>样例</h3>
+        <div class="sample-box"><div class="lbl">输入</div>${esc(p.sample.input)}</div>
+        <div class="sample-box"><div class="lbl">输出</div>${esc(p.sample.output)}</div>
+        <button class="btn btn-ghost mt" id="showSol">查看思路解析</button>
+        <div class="solbox hidden" id="solbox">${p.solution}</div>
+      </div>
+    </div>
+    <div>
+      <div class="panel">
+        <div class="editor-tools">
+          <b style="font-size:13px">main.cpp</b><span class="tag t-tag">C++17 · gcc</span>
+          <span class="btns">
+            <button class="btn btn-ghost" id="resetCode">重置</button>
+            <button class="btn btn-primary" id="submitBtn">${btn}</button>
+          </span>
+        </div>
+        <textarea id="ed" spellcheck="false" style="width:100%;height:430px;background:var(--editor);color:#e2e8f0;border:none;padding:12px;font-family:ui-monospace,Consolas,monospace;font-size:13px" hidden>${DEFAULT_CODE}</textarea>
+        <div id="edhost"></div>
+      </div>
+      <div class="panel mt" id="resultPanel">
+        <div class="panel-hd">评测结果 <span style="margin-left:auto;font-weight:600" id="resScore"></span></div>
+        <div id="resBody"><div class="empty">提交代码后，将按测试数据逐条实时评测。</div></div>
+      </div>
+    </div>
+  </div>`;
+  const eh=document.getElementById("edhost"); const ta=document.getElementById("ed");
+  if(window.CodeMirror){ eh.appendChild(ta); initEditor(); } else { ta.hidden=false; initEditor(); }
+  const saved=LS.get("csps_code_"+id,null);
+  if(saved) editor.setValue(saved);
+  document.getElementById("submitBtn").onclick=()=>submit(id,pre);
+  document.getElementById("resetCode").onclick=()=>{editor.setValue(DEFAULT_CODE);LS.set("csps_code_"+id,DEFAULT_CODE);};
+  document.getElementById("showSol").onclick=e=>{document.getElementById("solbox").classList.toggle("hidden");e.currentTarget.textContent=document.getElementById("solbox").classList.contains("hidden")?"查看思路解析":"收起解析";};
+  afterRender();
+}
+async function submit(id,pre){
+  if(submitting)return; submitting=true;
+  const p=PROBLEMS.find(x=>x.id===id); const code=editor.getValue(); LS.set("csps_code_"+id,code);
+  const btn=document.getElementById("submitBtn"); btn.disabled=true; btn.innerHTML='<span class="spinner"></span> 评测中…';
+  const resBody=document.getElementById("resBody"); const resScore=document.getElementById("resScore");
+  resScore.textContent="";
+  const rows=[];
+  let score=0, ce=false;
+  const verdictLabel={AC:"AC 正确",WA:"WA 答案错误",RE:"RE 运行错误",CE:"CE 编译错误",TLE:"TLE/无响应",ERR:"服务异常"};
+  for(let i=0;i<p.judge.length;i++){
+    const t=p.judge[i];
+    rows.push(`<div class="result-item" data-i="${i}"><span>测试点 ${i+1} <span class="ti">${t.score} 分</span></span><span class="spinner"></span></div>`);
+    resBody.innerHTML=rows.join("");
+    const r=await judgeTest(code,t);
+    if(ce){/* already CE */ }
+    else if(r.verdict==="CE"){ce=true;score=0;}
+    else if(r.verdict==="AC")score+=t.score;
+    let detail="";
+    if(r.verdict==="WA")detail=`<div class="sub" style="margin-top:6px">${esc(r.detail)}<br>你的输出：<code class="kbd">${esc((r.out||"").slice(0,120))}</code> 期望：<code class="kbd">${esc((t.output||"").slice(0,120))}</code></div>`;
+    else if(r.verdict==="CE")detail=`<div class="sub" style="margin-top:6px"><pre class="detail-pre">${esc(r.detail||"")}</pre></div>`;
+    else if(r.verdict==="RE")detail=`<div class="sub" style="margin-top:6px">${esc(r.detail||"")}</div>`;
+    rows[i]=`<div class="result-item"><span>测试点 ${i+1} <span class="ti">${t.score} 分</span></span><span class="v-${r.verdict}">${verdictLabel[r.verdict]}${r.ms?" · "+r.ms+"ms":""}</span></div>${detail}`;
+    resBody.innerHTML=rows.join("");
+    await new Promise(r=>setTimeout(r,120));
+  }
+  if(ce){resBody.innerHTML=rows.join("");resScore.innerHTML=`<span class="v-CE">编译错误 · 0 分</span>`;}
+  else{resScore.innerHTML=`<span class="v-${score>=100?"AC":"WA"}" style="font-size:18px">${score} / 100 分</span>`;}
+  const verdictBest=score>=100?"AC":(ce?"CE":(score>0?"部分":"WA"));
+  const rec={id:uid(),time:Date.now(),problem:id,title:p.title,tier:p.tier,score,verdict:verdictBest,code,mode:pre&&pre.mock?"mock":"practice",mockId:pre&&pre.mock?pre.mock:undefined};
+  const subs=getSubs(); subs.push(rec); saveSubs(subs);
+  if(score>0&&score<100){const w=getWrong(); if(!w.find(x=>x.problem===id))w.push({problem:id,title:p.title,score});saveWrong(w);}
+  if(pre&&pre.mock){ syncMockUI(); }
+  submitting=false; btn.disabled=false; btn.textContent=pre&&pre.mock?"提交到模拟赛":"提交评测";
+}
+
+/* ---------- 模拟赛 ---------- */
+function renderMockList(){
+  let html=header("模拟赛 · 全真上机","3 套模拟卷，每套 4 题对应 T1–T4，总分 400 分，限时 240 分钟（与官方时长一致）。");
+  html+=`<div class="grid g3 mb">`;
+  for(const m of MOCK_EXAMS){
+    const bestScore=LS.get("csps_mockscore_"+m.id,null);
+    html+=`<div class="card"><h3>${m.name}</h3><div class="sub">${m.problems.map(id=>PROBLEMS.find(p=>p.id===id).title).join(" · ")}</div>
+    ${bestScore!=null?`<div class="stat" style="padding:10px 0;border:none;box-shadow:none"><span class="v" style="font-size:22px">${bestScore}</span><small> / 400 分</small></div>`:""}
+    <a class="btn btn-primary" data-go="mockExam/${m.id}">${bestScore!=null?"再次挑战":"开始模拟赛"}</a></div>`;
+  }
+  html+=`</div><div class="card"><h3>使用说明</h3><div class="sub" style="margin:0">
+  <ul style="padding-left:20px;font-size:14px;line-height:2">
+    <li>开赛后倒计时开始（默认 240 分钟），可在顶部模拟赛栏内切换 4 道题作答。</li>
+    <li>每道题可多次提交，以<b>最高分</b>计入该场总分；关闭页面计时仍在后台继续。</li>
+    <li>时间到后自动锁定提交，页面刷新后可查看该场成绩。</li>
+  </ul></div></div>`;
+  app.innerHTML=html; afterRender();
+}
+function renderMock(mid){
+  const m=MOCK_EXAMS.find(x=>x.id===mid); if(!m)return renderMockList();
+  const deadline=Number(LS.get(MOCK_DEADLINE_KEY,0));
+  const now=Date.now();
+  if(!deadline||now>=deadline){
+    LS.set(MOCK_DEADLINE_KEY,now+m.minutes*60000);
+    LS.set("csps_mockset_"+mid,m.problems);
+  }
+  mockCtx={mid,problems:m.problems,minutes:m.minutes};
+  showMockbar(mockCtx);
+  renderProblem(m.problems[0],{mock:mid});
+  syncMockUI(); tickMock();
+}
+function showMockbar(ctx){
+  const bar=document.getElementById("mockbar"); bar.classList.remove("hidden");
+  const probs=document.getElementById("mockprobs");
+  probs.innerHTML=ctx.problems.map(id=>{
+    const p=PROBLEMS.find(x=>x.id===id); const best=bestMockScore(ctx.mid,id);
+    return `<span class="pb" data-go="problem/${id}" data-mock="${ctx.mid}">${p.tier}${best>=100?" ✔":""}</span>`;
+  }).join("");
+  document.querySelectorAll("#mockbar .pb").forEach(el=>el.onclick=()=>{nav("problem/"+el.dataset.go.split("/")[1],{mock:el.dataset.mock});syncMockUI();});
+}
+function bestMockScore(mid,id){
+  const subs=getSubs().filter(s=>s.mode==="mock"&&s.problem===id&&(mockCtx&&s.mockId===mid));
+  if(!subs.length)return 0; return Math.max(...subs.map(s=>s.score));
+}
+function tickMock(){
+  const bar=document.getElementById("mockbar"); const el=document.getElementById("mocktime");
+  const iv=setInterval(()=>{
+    const deadline=Number(LS.get(MOCK_DEADLINE_KEY,0));
+    const left=Math.max(0,deadline-Date.now());
+    const h=Math.floor(left/3600000),m=Math.floor(left%3600000/60000),s=Math.floor(left%60000/1000);
+    el.textContent=`${h}:${normDate(m)}:${normDate(s)}`;
+    if(left<=0){clearInterval(iv); const subs=getSubs().filter(s=>s.mode==="mock");
+      let total=0; for(const sp of (mockCtx?mockCtx.problems:[])) total+=bestMockScore(mockCtx.mid,sp);
+      LS.set("csps_mockscore_"+mockCtx.mid,total);
+      if(mockCtx){el.textContent="已结束"; const names=mockCtx.problems.map(id=>PROBLEMS.find(p=>p.id===id).title);
+        if(!LS.get("csps_mockend_"+mockCtx.mid)){LS.set("csps_mockend_"+mockCtx.mid,1);
+          alert(`⏱ 模拟赛结束！\n${names.join(" · ")}\n本场总分：${total} / 400`);} }
+      }
+  },1000);
+}
+function syncMockUI(){
+  if(!mockCtx)return; const bar=document.getElementById("mockbar");
+  if(bar.classList.contains("hidden"))bar.classList.remove("hidden");
+  showMockbar(mockCtx);
+}
+
+/* ---------- 知识图谱 ---------- */
+function renderKnowledge(){
+  const know=getKnow(); let marked=0,mastered=0,total=0;
+  for(const c of KNOWLEDGE){for(const it of c.items){total++; if(know[it]){marked++; if(know[it]==="1")mastered++;}}}
+  const pct=Math.round(mastered/total*100);
+  const byCat=cat=>{const items=KNOWLEDGE.find(c=>c.cat===cat).items;let ms=0;for(const it of items)if(know[it]==="1")ms++;return {ms,total:items.length};};
+  let html=header("知识图谱 · 考点全覆盖","CSP-S 提高组第二轮机试考点自评。点击标签切换“掌握 / 待巩固”，红色进度条为你的掌握进度。");
+  html+=`<div class="card mb" style="display:flex;align-items:center;gap:24px;flex-wrap:wrap">
+    <div class="ring" style="--p:${pct};--c:${pct>=70?"var(--green)":"var(--brand)"}"><b>${pct}%</b></div>
+    <div><div class="sub" style="margin:0">整体掌握度 · 已掌握 ${mastered} / ${total} 考点</div>
+    <div class="bar" style="width:260px;margin-top:8px"><i style="width:${pct}%"></i></div>
+    <div class="sub mt" style="margin:0">点击下方任意考点可在“掌握”与“待巩固”间切换；结合<b>题库</b>中对应题目的 AC 情况查漏补缺。</div></div></div>`;
+  for(const c of KNOWLEDGE){
+    const b=byCat(c.cat); const cp=Math.round(b.ms/b.total*100);
+    html+=`<div class="card mb know-block"><div class="cat"><span>${c.cat}</span><span class="tag t-tag">${b.ms}/${b.total} 掌握</span><span class="pct">${cp}%</span>
+      <div class="bar" style="width:120px;margin:0 0 0 6px"><i style="width:${cp}%"></i></div></div>
+      <div>${c.items.map(it=>{const st=know[it];return `<span class="chip ${st==="1"?"on":""}" data-k="${esc(it)}" ${st==="2"?"style='border-color:var(--red);color:var(--red)'":""}>${esc(it)}${st==="2"?" <b style='color:var(--red)'>(待)</b>":""}</span>`;}).join("")}</div></div>`;
+  }
+  app.innerHTML=html; afterRender();
+  document.querySelectorAll("[data-k]").forEach(el=>el.onclick=()=>{
+    const k=el.dataset.k; const cur=getKnow()[k]; const nxt=cur==="1"?"2":"1"; const kk=getKnow(); kk[k]=nxt; saveKnow(kk); renderKnowledge();
+  });
+}
+
+/* ---------- 记录 ---------- */
+function renderRecords(){
+  const subs=getSubs().slice().reverse(); const wrong=getWrong();
+  let html=header("我的记录 · 提交历史与错题本","所有数据仅保存在本机浏览器，不会上传。");
+  html+=`<div class="grid g2 mb">
+    <div class="card"><h3>📕 错题本（部分分 / 未通过）</h3>
+      ${wrong.length?wrong.map(w=>`<div class="problem-row" data-go="problem/${w.problem}"><span class="nm">${w.title}</span><span class="status st-wa">${w.score} 分</span><span style="color:var(--brand);font-size:13px">去重做 →</span></div>`).join(""):`<div class="empty">暂无错题，继续加油 🎯</div>`}
+    </div>
+    <div class="card"><h3>🧮 统计</h3><div class="sub">累计提交 ${subs.length} 次</div>
+      <div class="grid g2" style="margin-top:8px">
+        <div class="stat"><div class="k">满分题目</div><div class="v">${stats().full}<small> / ${PROBLEMS.length}</small></div></div>
+        <div class="stat"><div class="k">平均得分率</div><div class="v">${stats().rate}<small>%</small></div></div>
+      </div>
+    </div></div>`;
+  html+=`<div class="card"><h3>🕘 提交记录</h3>
+    ${subs.length?`<table><thead><tr><th>时间</th><th>题目</th><th>类型</th><th>分数</th><th>结果</th><th></th></tr></thead><tbody>
+    ${subs.slice(0,120).map(s=>{const d=new Date(s.time);const cls={AC:"v-AC",WA:"v-WA",CE:"v-CE","部分":"v-WA"}[s.verdict]||"v-WA";
+      return `<tr><td>${d.getMonth()+1}-${d.getDate()} ${normDate(d.getHours())}:${normDate(d.getMinutes())}</td><td>${esc(s.title)}</td><td>${s.mode==="mock"?"模拟赛":"练习"}</td><td><b>${s.score}/100</b></td><td class="${cls}">${s.verdict==="AC"?"AC 正确":s.verdict==="CE"?"编译错误":s.verdict==="部分"?"部分分":"未通过"}</td><td><a data-viewcode="${s.id}">查看代码</a></td></tr>`;
+    }).join("")}</tbody></table>`:`<div class="empty">还没有提交记录，去题库刷一道题吧。</div>`}</div>`;
+  app.innerHTML=html; afterRender();
+  document.querySelectorAll("[data-viewcode]").forEach(a=>a.onclick=()=>{const s=getSubs().find(x=>x.id===a.dataset.viewcode);if(s)alert(s.code);});
+}
+
+/*================ 路由 ================*/
+function nav(hash,opts){
+  const seg=hash.replace(/^#\//,"").split("/");
+  document.querySelectorAll("#nav button").forEach(b=>b.classList.toggle("active",b.dataset.view===seg[0]));
+  if(seg[0]==="problem"){ VIEWS.problem(seg[1],opts); }
+  else if(seg[0]==="mockExam"){ VIEWS.mockExam(seg[1]); }
+  else if(VIEWS[seg[0]]){ VIEWS[seg[0]](); }
+  else VIEWS.dashboard();
+  window.scrollTo(0,0);
+}
+function afterRender(){
+  document.querySelectorAll("[data-go]").forEach(a=>a.onclick=()=>{const v=a.dataset.go;nav(v,{mock:a.dataset.mock});});
+  document.querySelectorAll("#nav button").forEach(b=>b.onclick=()=>nav(b.dataset.view));
+}
+
+/*================ 启动 ================*/
+function boot(){
+  const cd=document.getElementById("cd");
+  const tick=()=>{const left=countdownTo()-Date.now();if(left<=0){cd.textContent="考试已开始 🎯";return;}
+    const d=Math.floor(left/86400000),h=Math.floor(left%86400000/3600000),m=Math.floor(left%3600000/60000);
+    cd.textContent=`距机试 ${d}天 ${h}时 ${m}分`;};
+  tick(); setInterval(tick,60000);
+  const deadline=Number(LS.get(MOCK_DEADLINE_KEY,0));
+  if(deadline>Date.now()){
+    const mid=LS.get("csps_mockset_last","A"); const probs=LS.get("csps_mockset_"+mid,[]);
+    if(probs.length){mockCtx={mid,problems:probs}; showMockbar(mockCtx); tickMock();}
+  }
+  nav((location.hash||"#/dashboard"));
+  window.addEventListener("hashchange",()=>nav(location.hash));
+}
+document.addEventListener("DOMContentLoaded",boot);
+</script>
+</body>
+</html>
