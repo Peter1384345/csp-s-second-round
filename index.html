@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>CSP-S 2026 第二轮 · 在线刷题与实时评测</title>
-<meta name="description" content="CSP-S 提高组第二轮（机试）备考平台：在线答题 + 实时评测 + 考点全覆盖 + 模拟赛。零依赖单文件，可本地运行或托管于 GitHub Pages。">
+<meta name="description" content="CSP-S 提高组第二轮（机试）备考平台：在线答题 + 实时评测 + 考点全覆盖 + 模拟赛 + 题单。单文件零依赖。">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.css">
 <style>
 :root{
@@ -47,6 +47,7 @@ h3{font-size:16px}
 .t-tier{background:#eef3ff;color:#2563eb}
 .t-know{background:var(--greenbg);color:var(--green)}
 .t-tag{background:var(--graybg);color:var(--gray)}
+.lv{display:inline-block;padding:2px 9px;border-radius:4px;font-size:12px;font-weight:700;color:#fff;letter-spacing:.3px}
 .chip{display:inline-block;padding:5px 12px;border-radius:999px;border:1px solid var(--line);background:#fff;cursor:pointer;font-size:13px;font-weight:600;color:var(--muted);margin:4px;transition:.15s}
 .chip:hover{border-color:var(--brand);color:var(--brand)}
 .chip.on{background:var(--brand);border-color:var(--brand);color:#fff}
@@ -64,6 +65,7 @@ tr:hover td{background:#f7fafd}
 .btn-primary:disabled{opacity:.5;cursor:not-allowed}
 .btn-ghost{background:#fff;color:var(--brand);border:1px solid var(--brand)}
 .btn-ghost:hover{background:#eef3ff}
+.btn-sm{padding:6px 12px;font-size:12.5px;border-radius:8px}
 .problem-wrap{display:grid;grid-template-columns:minmax(300px,1fr) minmax(420px,1.15fr);gap:18px}
 @media(max-width:980px){.problem-wrap{grid-template-columns:1fr}}
 .panel{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden}
@@ -98,6 +100,16 @@ code.kbd{background:#eef2f7;padding:1px 6px;border-radius:5px;font-family:Consol
 .mockbar .pb.active{background:var(--brand)}
 .mockbar .pb.done{background:var(--green)}
 .mockbar .time{margin-left:auto;font-variant-numeric:tabular-nums;font-size:16px;font-weight:800;color:#7dd3fc}
+.searchbox{display:flex;gap:10px;align-items:center;background:#fff;border:1px solid var(--line);border-radius:10px;padding:9px 14px;margin-bottom:12px}
+.searchbox input{flex:1;border:none;outline:none;font-size:14px;background:transparent}
+.searchbox .ic{color:var(--muted)}
+.pl-card{display:flex;flex-direction:column;height:100%}
+.pl-card .plist{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0}
+.pl-chip{display:inline-flex;align-items:center;gap:6px;padding:4px 10px;background:#f5f8fe;border:1px solid var(--line);border-radius:8px;font-size:12.5px;cursor:pointer;color:var(--ink);font-weight:600}
+.pl-chip:hover{border-color:var(--brand);color:var(--brand)}
+.pl-chip .lv{font-size:10px;padding:1px 6px}
+.lvbar{display:flex;height:14px;border-radius:999px;overflow:hidden;margin:8px 0}
+.lvbar>div{transition:.3s}
 .footer{max-width:1200px;margin:0 auto;padding:18px 20px;color:var(--muted);font-size:12.5px;border-top:1px solid var(--line)}
 .mt{margin-top:18px}
 .mb{margin-bottom:12px}
@@ -110,6 +122,9 @@ code.kbd{background:#eef2f7;padding:1px 6px;border-radius:5px;font-family:Consol
 .empty{text-align:center;color:var(--muted);padding:36px 0;font-size:14px}
 .spinner{display:inline-block;width:15px;height:15px;border:2px solid #cbd5e1;border-top-color:var(--brand);border-radius:50%;animation:sp 0.7s linear infinite;vertical-align:-2px}
 @keyframes sp{to{transform:rotate(360deg)}}
+select.tpl{border:1px solid var(--line);border-radius:8px;padding:6px 10px;font-size:12.5px;background:#fff;color:var(--ink);cursor:pointer}
+.hist{display:flex;gap:14px;font-size:12.5px;color:var(--muted);margin-top:10px;flex-wrap:wrap}
+.hist b{color:var(--ink)}
 </style>
 </head>
 <body>
@@ -120,9 +135,10 @@ code.kbd{background:#eef2f7;padding:1px 6px;border-radius:5px;font-family:Consol
     <nav class="nav" id="nav">
       <button data-view="dashboard">首页</button>
       <button data-view="practice">题库</button>
+      <button data-view="playlists">题单</button>
       <button data-view="mock">模拟赛</button>
       <button data-view="knowledge">知识图谱</button>
-      <button data-view="records">我的记录</button>
+      <button data-view="records">我的</button>
     </nav>
     <div class="navright"><span class="countdown" id="cd"></span></div>
   </div>
@@ -140,7 +156,7 @@ code.kbd{background:#eef2f7;padding:1px 6px;border-radius:5px;font-family:Consol
 
 <footer class="footer">
   CSP-S 2026 第二轮备考工具 · 机试 4 题 × 100 分 = 400 分 · 官方时间 2026-10-31 14:30–18:30（以 CCF 通知为准）<br>
-  实时评测由 Wandbox 公共编译服务提供（GitHub Pages 无法直接编译 C++，故调用公共 API）。数据保存在本机浏览器 localStorage。
+  实时评测由 Wandbox 公共编译服务提供（GitHub Pages 无法直接编译 C++，故调用公共 API）。难度配色参考洛谷。数据保存在本机浏览器 localStorage。
 </footer>
 
 <script>
@@ -148,6 +164,79 @@ code.kbd{background:#eef2f7;padding:1px 6px;border-radius:5px;font-family:Consol
 /*================ 题库数据 ================*/
 window.CSP_PROBLEMS=[{"id":"p01","no":1,"title":"数字统计","tier":"T1","diff":1,"knowledge":["排序","哈希 / 计数统计"],"tag":"基础算法 · 模拟","points":100,"statement":"给定 n 个整数，统计每个不同数值出现的次数，并按数值从小到大输出。","inputFormat":"第一行一个整数 n（1 ≤ n ≤ 1e5）。第二行 n 个整数 aᵢ（0 ≤ aᵢ ≤ 1e9）。","outputFormat":"若干行，每行两个整数，格式为“数值 次数”，按数值升序排列。","constraints":"时间 1s，内存 128MB。","solution":"用 map<long long,int> 计数，或读入后排序再统计。时间复杂度 O(n log n)，空间 O(n)。注意数值可达 1e9 需用 long long。","sample":{"input":"5\n1 2 1 3 2\n","output":"1 2\n2 2\n3 1"},"judge":[{"input":"5\n1 2 1 3 2\n","output":"1 2\n2 2\n3 1","score":20},{"input":"1\n1000000000\n","output":"1000000000 1","score":20},{"input":"8\n9 9 9 9 9 9 9 9\n","output":"9 8","score":20},{"input":"6\n5 4 3 2 1 5\n","output":"1 1\n2 1\n3 1\n4 1\n5 2","score":20},{"input":"7\n100 7 100 7 100 7 2\n","output":"2 1\n7 3\n100 3","score":20}]},{"id":"p02","no":2,"title":"区间和","tier":"T1","diff":1,"knowledge":["前缀和"],"tag":"基础算法 · 前缀和","points":100,"statement":"给定 n 个数 a₁..aₙ，进行 q 次询问，每次给出区间 [l, r]，求该区间所有数之和。","inputFormat":"第一行两个整数 n, q（1 ≤ n, q ≤ 2e5）。第二行 n 个整数 aᵢ（|aᵢ| ≤ 1e9）。接下来 q 行，每行两个整数 l, r（1 ≤ l ≤ r ≤ n）。","outputFormat":"对每个询问输出一行，为该区间的和。","constraints":"时间 1s，内存 256MB。","solution":"预处理前缀和 pre[i]=pre[i-1]+a[i]，查询 O(1) 输出 pre[r]-pre[l-1]。注意结果用 long long。","sample":{"input":"5 3\n1 2 3 4 5\n1 5\n2 3\n3 3\n","output":"15\n5\n3"},"judge":[{"input":"5 3\n1 2 3 4 5\n1 5\n2 3\n3 3\n","output":"15\n5\n3","score":33},{"input":"4 2\n10 20 30 40\n2 4\n1 1\n","output":"90\n10","score":33},{"input":"3 1\n1000000000 1000000000 1000000000\n1 3\n","output":"3000000000","score":34}]},{"id":"p03","no":3,"title":"切绳子","tier":"T2","diff":2,"knowledge":["二分答案"],"tag":"二分 · 贪心","points":100,"statement":"有 n 根木棍，长度分别为 Lᵢ。现在要把它们切成 k 段等长的木棍（每段长度必须为正整数），求能切出的最大段长。","inputFormat":"第一行两个整数 n, k（1 ≤ n ≤ 1e5，1 ≤ k ≤ 1e9）。第二行 n 个整数 Lᵢ（1 ≤ Lᵢ ≤ 1e9）。","outputFormat":"一个整数，表示能切出的最大整数段长。","constraints":"时间 1s，内存 256MB。","solution":"答案满足单调性：段长 x 可行当且仅当 Σ(Lᵢ/x) ≥ k。对 x 在 [1, max(Lᵢ)] 上二分即可。复杂度 O(n log maxL)。","sample":{"input":"3 5\n6 7 9\n","output":"3"},"judge":[{"input":"3 5\n6 7 9\n","output":"3","score":20},{"input":"2 4\n10 10\n","output":"5","score":20},{"input":"1 1\n7\n","output":"7","score":20},{"input":"4 10\n1 2 3 4\n","output":"0","score":20},{"input":"5 3\n1000000000 1 1 1 1\n","output":"333333333","score":20}]},{"id":"p04","no":4,"title":"会议安排","tier":"T2","diff":2,"knowledge":["贪心"],"tag":"贪心 · 区间调度","points":100,"statement":"一天内有 n 场会议，第 i 场会议占用区间 [sᵢ, eᵢ]。要选择尽量多两两不相交的会议（会议可首尾相接，即后一场开始时间 ≥ 前一场结束时间），求最多能选几场。","inputFormat":"第一行一个整数 n（1 ≤ n ≤ 1e5）。接下来 n 行，每行两个整数 sᵢ, eᵢ（0 ≤ sᵢ < eᵢ ≤ 1e9）。","outputFormat":"一个整数，表示最多能安排的会议场数。","constraints":"时间 1s，内存 128MB。","solution":"按结束时间从小到大排序，贪心选取结束最早且不与上一场冲突的会议。复杂度 O(n log n)。","sample":{"input":"4\n1 3\n2 5\n3 6\n5 7\n","output":"2"},"judge":[{"input":"4\n1 3\n2 5\n3 6\n5 7\n","output":"2","score":33},{"input":"3\n1 2\n2 3\n3 4\n","output":"3","score":33},{"input":"5\n1 100\n2 99\n3 98\n100 101\n50 50\n","output":"2","score":34}]},{"id":"p05","no":5,"title":"最大矩形","tier":"T3","diff":3,"knowledge":["单调栈"],"tag":"数据结构 · 单调栈","points":100,"statement":"在平面上有 n 个并排排列的柱形，高度分别为 hᵢ，宽均为 1。求这些柱形能围成的最大矩形面积。","inputFormat":"第一行一个整数 n（1 ≤ n ≤ 1e5）。第二行 n 个整数 hᵢ（0 ≤ hᵢ ≤ 1e9）。","outputFormat":"一个整数，表示最大矩形面积。","constraints":"时间 1s，内存 128MB。","solution":"维护一个关于高度的单调递增栈，枚举每个高度作为矩形高，利用栈确定左右边界。复杂度 O(n)。","sample":{"input":"6\n2 1 5 6 2 3\n","output":"10"},"judge":[{"input":"6\n2 1 5 6 2 3\n","output":"10","score":20},{"input":"4\n1 1 1 1\n","output":"4","score":20},{"input":"1\n5\n","output":"5","score":20},{"input":"7\n6 2 5 4 5 1 6\n","output":"12","score":20},{"input":"5\n2 4 4 4 2\n","output":"12","score":20}]},{"id":"p06","no":6,"title":"最小生成树","tier":"T3","diff":3,"knowledge":["并查集","最小生成树"],"tag":"图论 · 生成树","points":100,"statement":"给定一个 n 个点、m 条边的带权无向连通图，求其最小生成树的边权和；若图不连通，输出 orz。","inputFormat":"第一行两个整数 n, m（1 ≤ n ≤ 1e5，0 ≤ m ≤ 2e5）。接下来 m 行，每行三个整数 u, v, w（1 ≤ u,v ≤ n，0 ≤ w ≤ 1e9）。","outputFormat":"一个整数表示最小生成树边权和；若不连通输出 orz。","constraints":"时间 1s，内存 256MB。","solution":"Kruskal：按边权排序，用并查集维护连通性，依次加入不形成环的边，直到加入 n-1 条边。复杂度 O(m log m)。","sample":{"input":"4 5\n1 2 1\n1 3 3\n2 3 1\n2 4 6\n3 4 5\n","output":"7"},"judge":[{"input":"4 5\n1 2 1\n1 3 3\n2 3 1\n2 4 6\n3 4 5\n","output":"7","score":25},{"input":"3 1\n1 2 5\n","output":"orz","score":25},{"input":"3 3\n1 2 2\n2 3 2\n1 3 2\n","output":"4","score":25},{"input":"5 4\n1 2 10\n2 3 10\n3 4 10\n4 5 10\n","output":"40","score":25}]},{"id":"p07","no":7,"title":"高精度加法","tier":"T3","diff":3,"knowledge":["高精度"],"tag":"基础算法 · 高精度","points":100,"statement":"给出两个非负大整数 A、B（均以十进制字符串给出），求它们的和。","inputFormat":"两行，每行一个由数字组成的非负大整数，长度均不超过 1e5，且不含前导零（0 除外）。","outputFormat":"一行，为 A + B 的结果。","constraints":"时间 1s，内存 128MB。","solution":"模拟竖式加法：从低位向高位逐位相加并处理进位，用字符串存储。复杂度 O(max(lenA,lenB))。","sample":{"input":"123\n456\n","output":"579"},"judge":[{"input":"123\n456\n","output":"579","score":20},{"input":"999\n1\n","output":"1000","score":20},{"input":"999999999999999999999999999999\n1\n","output":"1000000000000000000000000000000","score":20},{"input":"0\n0\n","output":"0","score":20},{"input":"123456789012345678901234567890\n987654321098765432109876543210\n","output":"1111111110111111111011111111100","score":20}]},{"id":"p08","no":8,"title":"最长上升子序列","tier":"T4","diff":3,"knowledge":["动态规划","LIS"],"tag":"DP · 序列","points":100,"statement":"给定一个长度为 n 的整数序列 a，求其最长严格上升子序列（LIS）的长度。","inputFormat":"第一行一个整数 n（1 ≤ n ≤ 2e5）。第二行 n 个整数 aᵢ（|aᵢ| ≤ 1e9）。","outputFormat":"一个整数，表示最长严格上升子序列的长度。","constraints":"时间 1s，内存 256MB。","solution":"维护数组 d，d[i] 表示长度为 i+1 的上升子序列的最小末尾。对每个 aᵢ 用 lower_bound 定位并更新。复杂度 O(n log n)。","sample":{"input":"6\n1 3 2 4 3 5\n","output":"4"},"judge":[{"input":"6\n1 3 2 4 3 5\n","output":"4","score":25},{"input":"5\n5 4 3 2 1\n","output":"1","score":25},{"input":"4\n1 2 3 4\n","output":"4","score":25},{"input":"8\n10 9 2 5 3 7 101 18\n","output":"4","score":25}]},{"id":"p09","no":9,"title":"0-1 背包","tier":"T4","diff":3,"knowledge":["动态规划","背包"],"tag":"DP · 背包","points":100,"statement":"有 n 件物品，第 i 件物品重量为 wᵢ、价值为 vᵢ。背包容量为 C，每件物品最多取一次，求能装入的最大总价值。","inputFormat":"第一行两个整数 n, C（1 ≤ n ≤ 1000，1 ≤ C ≤ 1e5）。接下来 n 行，每行两个整数 wᵢ, vᵢ（1 ≤ wᵢ ≤ C，1 ≤ vᵢ ≤ 1e9）。","outputFormat":"一个整数，表示最大总价值。","constraints":"时间 1s，内存 256MB。","solution":"01 背包滚动数组优化：dp[c]=max(dp[c], dp[c-w]+v)，容量倒序枚举。复杂度 O(n·C)。","sample":{"input":"3 10\n5 6\n4 4\n6 8\n","output":"12"},"judge":[{"input":"3 10\n5 6\n4 4\n6 8\n","output":"12","score":25},{"input":"2 5\n3 10\n3 10\n","output":"10","score":25},{"input":"4 7\n2 3\n3 4\n4 5\n5 6\n","output":"9","score":25},{"input":"1 100\n50 9999\n","output":"9999","score":25}]},{"id":"p10","no":10,"title":"单源最短路","tier":"T4","diff":4,"knowledge":["最短路","Dijkstra"],"tag":"图论 · 最短路","points":100,"statement":"给定一个 n 个点、m 条边的带权有向图（可能有重边，边权非负），求从 1 号点出发到每个点的最短路径长度。若某点不可达，输出 2147483647。","inputFormat":"第一行两个整数 n, m（1 ≤ n ≤ 1e5，0 ≤ m ≤ 2e5）。接下来 m 行，每行三个整数 u, v, w（1 ≤ u,v ≤ n，0 ≤ w ≤ 1e9）。","outputFormat":"一行 n 个整数，为 1 号点到各点的最短路长度，空格分隔。","constraints":"时间 1s，内存 256MB。","solution":"Dijkstra + 优先队列优化。dist 用 long long，不可达保留 INF=2147483647。复杂度 O(m log n)。","sample":{"input":"4 4\n1 2 2\n1 3 1\n2 4 5\n3 4 1\n","output":"0 2 1 2"},"judge":[{"input":"4 4\n1 2 2\n1 3 1\n2 4 5\n3 4 1\n","output":"0 2 1 2","score":25},{"input":"3 1\n1 2 3\n","output":"0 3 2147483647","score":25},{"input":"3 2\n1 2 4\n2 3 5\n","output":"0 4 9","score":25},{"input":"5 4\n1 2 1\n2 3 1\n3 4 1\n4 5 1\n","output":"0 1 2 3 4","score":25}]},{"id":"p11","no":11,"title":"树的直径","tier":"T4","diff":3,"knowledge":["树上问题","BFS"],"tag":"图论 · 树","points":100,"statement":"给定一棵 n 个节点的树，求树的直径，即任意两点间最长路径经过的边数。","inputFormat":"第一行一个整数 n（1 ≤ n ≤ 1e5）。接下来 n-1 行，每行两个整数 u, v，表示一条无向边。","outputFormat":"一个整数，表示树的直径长度（边数）。","constraints":"时间 1s，内存 256MB。","solution":"任取一点做 BFS/DFS 找到最远点 s，再从 s 做一次 BFS/DFS 得到最远距离即直径。复杂度 O(n)。","sample":{"input":"4\n1 2\n2 3\n3 4\n","output":"3"},"judge":[{"input":"4\n1 2\n2 3\n3 4\n","output":"3","score":25},{"input":"5\n1 2\n1 3\n1 4\n1 5\n","output":"2","score":25},{"input":"5\n1 2\n2 3\n2 4\n4 5\n","output":"3","score":25},{"input":"3\n1 2\n2 3\n","output":"2","score":25}]},{"id":"p12","no":12,"title":"DAG 最长路","tier":"T4","diff":4,"knowledge":["拓扑排序","动态规划"],"tag":"图论 · DAG / DP","points":100,"statement":"给定一个 n 个点、m 条边的有向无环图，边权为非负整数。求从 1 号点到 n 号点的最长路径长度；若 1 到 n 不可达，输出 -1。","inputFormat":"第一行两个整数 n, m（1 ≤ n ≤ 1e5，0 ≤ m ≤ 2e5）。接下来 m 行，每行三个整数 u, v, w（1 ≤ u,v ≤ n，0 ≤ w ≤ 1e9）。","outputFormat":"一个整数，表示 1 到 n 的最长路长度；不可达输出 -1。","constraints":"时间 1s，内存 256MB。","solution":"对 DAG 做拓扑排序，按拓扑序做 DP：dp[v]=max(dp[v], dp[u]+w)。初始化 dp[1]=0，其余为 -∞。复杂度 O(n+m)。","sample":{"input":"3 3\n1 2 5\n2 3 3\n1 3 4\n","output":"8"},"judge":[{"input":"3 3\n1 2 5\n2 3 3\n1 3 4\n","output":"8","score":25},{"input":"5 5\n1 2 1\n1 3 2\n2 4 3\n3 4 1\n4 5 2\n","output":"6","score":25},{"input":"3 1\n2 3 1\n","output":"-1","score":25},{"input":"4 4\n1 2 2\n2 4 3\n1 3 5\n3 4 1\n","output":"6","score":25}]},{"id":"p13","no":13,"title":"斐波那契（矩阵快速幂）","tier":"T4","diff":4,"knowledge":["数论","矩阵快速幂"],"tag":"数论 · 矩阵","points":100,"statement":"斐波那契数列 F(1)=F(2)=1，F(n)=F(n-1)+F(n-2)。给定 n，求 F(n) mod 1e9+7。","inputFormat":"一行一个整数 n（1 ≤ n ≤ 1e18）。","outputFormat":"一个整数，表示 F(n) 对 1e9+7 取模的结果。","constraints":"时间 1s，内存 128MB。","solution":"构造转移矩阵 [[1,1],[1,0]]，用矩阵快速幂求出 F(n)。复杂度 O(log n)。","sample":{"input":"10\n","output":"55"},"judge":[{"input":"10\n","output":"55","score":20},{"input":"1\n","output":"1","score":20},{"input":"2\n","output":"1","score":20},{"input":"100\n","output":"687995182","score":20},{"input":"1000000000000000000\n","output":"209783453","score":20}]},{"id":"p14","no":14,"title":"字符串匹配","tier":"T4","diff":3,"knowledge":["字符串","KMP"],"tag":"字符串 · KMP","points":100,"statement":"给定主串 s 与模式串 t，求 t 在 s 中出现的次数（允许重叠）。","inputFormat":"两行，第一行为主串 s，第二行为模式串 t。两串仅含小写字母，长度均不超过 1e6。","outputFormat":"一个整数，表示 t 在 s 中出现的次数。","constraints":"时间 1s，内存 128MB。","solution":"使用 KMP 算法，匹配到完整模式串后回退到 pi 值继续匹配，统计重叠出现次数。复杂度 O(|s|+|t|)。","sample":{"input":"aaaa\naa\n","output":"3"},"judge":[{"input":"aaaa\naa\n","output":"3","score":20},{"input":"abc\nd\n","output":"0","score":20},{"input":"ababab\naba\n","output":"2","score":20},{"input":"a\na\n","output":"1","score":20},{"input":"abcabcabc\nabc\n","output":"3","score":20}]},{"id":"p15","no":15,"title":"迷宫最短路","tier":"T2","diff":2,"knowledge":["搜索","BFS"],"tag":"搜索 · 广度优先","points":100,"statement":"给定一个 n 行 m 列的网格，0 表示可通行，1 表示墙。每一步可以上下左右移动一格，求从 (1,1) 到 (n,m) 的最少步数；若不可达输出 -1。","inputFormat":"第一行两个整数 n, m（1 ≤ n, m ≤ 1000）。接下来 n 行，每行一个长度为 m 的 0/1 字符串。起点与终点保证为 0。","outputFormat":"一个整数，表示最少步数；不可达输出 -1。","constraints":"时间 1s，内存 256MB。","solution":"BFS 求最短路，dist 数组记录步数。复杂度 O(n·m)。","sample":{"input":"2 2\n00\n00\n","output":"2"},"judge":[{"input":"2 2\n00\n00\n","output":"2","score":20},{"input":"3 3\n000\n010\n000\n","output":"4","score":20},{"input":"3 3\n010\n010\n010\n","output":"-1","score":20},{"input":"1 1\n0\n","output":"0","score":20},{"input":"4 4\n0000\n0110\n0000\n0110\n","output":"6","score":20}]},{"id":"p16","no":16,"title":"单点修改区间求和","tier":"T4","diff":3,"knowledge":["树状数组 / 线段树"],"tag":"数据结构 · BIT","points":100,"statement":"给定长度为 n 的数列，支持两种操作：1. 单点修改：将第 i 个数改为 x；2. 区间查询：求 [l, r] 的和。","inputFormat":"第一行两个整数 n, q（1 ≤ n, q ≤ 2e5）。第二行 n 个整数 aᵢ（|aᵢ| ≤ 1e9）。接下来 q 行，每行先给出操作类型：若为 1，则跟两个整数 i, x（单点修改）；若为 2，则跟两个整数 l, r（区间求和，1 ≤ l ≤ r ≤ n）。","outputFormat":"对每个类型 2 的操作，输出一行区间和。","constraints":"时间 1s，内存 256MB。","solution":"树状数组支持单点加与前缀和查询，修改用增量。复杂度 O((n+q) log n)。","sample":{"input":"5 3\n1 2 3 4 5\n2 1 5\n1 3 10\n2 1 5\n","output":"15\n22"},"judge":[{"input":"5 3\n1 2 3 4 5\n2 1 5\n1 3 10\n2 1 5\n","output":"15\n22","score":33},{"input":"3 2\n5 5 5\n2 2 3\n1 1 0\n2 1 3\n","output":"10","score":33},{"input":"4 2\n1 2 3 4\n2 1 4\n1 2 5\n2 1 4\n","output":"10","score":34}]}];
 const PROBLEMS=window.CSP_PROBLEMS||[];
+
+/* 洛谷风格难度 */
+const LEVELS={
+ 1:{name:"普及-",color:"#00a600"},
+ 2:{name:"普及/提高-",color:"#03bdbd"},
+ 3:{name:"普及+/提高",color:"#0066cc"},
+ 4:{name:"提高+/省选-",color:"#9900dd"}
+};
+const lvBadge=p=>{const L=LEVELS[p.diff]||LEVELS[1];return `<span class="lv" style="background:${L.color}" title="洛谷难度配色">${L.name}</span>`;};
+
+/* 专题题单（洛谷 Playlist） */
+const PLAYLISTS=[
+ {name:"🌟 入门稳分 · T1 必拿",desc:"送分题，考场前 10 分钟必须 AC，练的是不犯低级错误",probs:["p01","p02"]},
+ {name:"🧠 思维训练 · 贪心与二分",desc:"观察性质 + 二分答案 + 区间调度 + BFS 搜索",probs:["p03","p04","p15"]},
+ {name:"🏗 数据结构专项",desc:"单调栈、并查集/Kruskal、树状数组——T3 主力",probs:["p05","p06","p16"]},
+ {name:"🎯 动态规划专项",desc:"LIS O(nlogn)、0-1 背包",probs:["p08","p09"]},
+ {name:"🕸 图论专项",desc:"MST、Dijkstra、树的直径、DAG 拓扑 DP",probs:["p06","p10","p11","p12"]},
+ {name:"🔢 数论与字符串",desc:"高精度、矩阵快速幂、KMP",probs:["p07","p13","p14"]}
+];
+
+/* 常用代码模板（一键插入） */
+const TEMPLATES={
+ "快速 IO":`ios::sync_with_stdio(false);
+cin.tie(nullptr);`,
+ "并查集 DSU":`struct DSU{
+  vector<int> p;
+  DSU(int n):p(n+1){iota(p.begin(),p.end(),0);}
+  int f(int x){return p[x]==x?x:p[x]=f(p[x]);}
+  bool un(int a,int b){a=f(a);b=f(b);if(a==b)return false;p[a]=b;return true;}
+};`,
+ "Dijkstra":`vector<ll> dist(n+1,INF); dist[1]=0;
+priority_queue<pair<ll,int>,vector<pair<ll,int>>,greater<>> pq; pq.push({0,1});
+while(!pq.empty()){
+  auto [d,u]=pq.top(); pq.pop();
+  if(d>dist[u]) continue;
+  for(auto [v,w]:g[u]) if(dist[v]>d+w){ dist[v]=d+w; pq.push({dist[v],v}); }
+}`,
+ "树状数组 BIT":`vector<ll> bit(n+1,0);
+auto add=[&](int i,ll v){for(;i<=n;i+=i&-i) bit[i]+=v;};
+auto sum=[&](int i){ll s=0;for(;i>0;i-=i&-i)s+=bit[i];return s;};`,
+ "二分答案框架":`long long lo=0, hi=MAX, ans=0;
+while(lo<=hi){
+  long long mid=(lo+hi)/2;
+  if(check(mid)){ ans=mid; lo=mid+1; }
+  else hi=mid-1;
+}`,
+ "KMP":`vector<int> pi(m);
+for(int i=1;i<nt;i++){
+  int j=pi[i-1];
+  while(j>0 && t[i]!=t[j]) j=pi[j-1];
+  if(t[i]==t[j]) j++;
+  pi[i]=j;
+}`,
+ "矩阵快速幂":`struct Mat{ ll a[2][2]{}; };
+Mat mul(Mat x,Mat y){
+  Mat r;
+  for(int i=0;i<2;i++)for(int j=0;j<2;j++)for(int k=0;k<2;k++)
+    r.a[i][j]=(r.a[i][j]+x.a[i][k]*y.a[k][j])%MOD;
+  return r;
+}`,
+ "高精度加法":`string bigAdd(string a,string b){
+  reverse(a.begin(),a.end()); reverse(b.begin(),b.end());
+  string r; int c=0;
+  for(size_t i=0;i<max(a.size(),b.size());i++){
+    int x=i<a.size()?a[i]-'0':0;
+    int y=i<b.size()?b[i]-'0':0;
+    int s=x+y+c; r+='0'+s%10; c=s/10;
+  }
+  if(c) r+='1';
+  reverse(r.begin(),r.end());
+  return r;
+}`
+};
 
 /*================ 考点全覆盖（CSP-S 提高组第二轮·NOI大纲） ================*/
 const KNOWLEDGE=[
@@ -163,7 +252,6 @@ const KNOWLEDGE=[
  {cat:"STL 与 C++",items:["STL 容器","输入输出优化","代码风格与调试","复杂度分析"]}
 ];
 
-/* 两轮对比 */
 const ROUND_COMPARE=[
  ["认证形式","集中笔试","现场集中上机认证（机试）"],
  ["题目数量","约 20 题（选择 / 判断）","4 道编程题，每题 100 分，总分 400 分"],
@@ -244,6 +332,11 @@ function problemStatus(id){
   const last=subs[subs.length-1];
   return last&&last.verdictBest==="WA"?"wa":"part";
 }
+function bestScore(id){
+  const subs=getSubs().filter(s=>s.problem===id&&s.mode!=="mock");
+  if(!subs.length)return 0; return Math.max(...subs.map(s=>s.score));
+}
+function submitCount(id){return getSubs().filter(s=>s.problem===id&&s.mode!=="mock").length;}
 function stats(){
   const subs=getSubs(); const solved=new Set(); const full=new Set(); let totalScore=0,totalMax=0,wa=0;
   for(const s of subs){ totalScore+=s.score; totalMax+=100; if(s.score>=100)full.add(s.problem); if(s.score>0)solved.add(s.problem); if(s.verdictBest==="WA")wa++; }
@@ -254,11 +347,16 @@ function stats(){
           knowMarked:marked,knowMastered:mastered,knowTotal,solvedSet:solved};
 }
 function normDate(d){return d<10?"0"+d:d;}
-function countdownTo(){ return new Date(2026,9,31,14,30,0).getTime(); } // 2026-10-31 14:30
+function countdownTo(){ return new Date(2026,9,31,14,30,0).getTime(); }
+function levelDist(){
+  const dist={1:[0,0],2:[0,0],3:[0,0],4:[0,0]};
+  for(const p of PROBLEMS){ dist[p.diff][1]++; if(problemStatus(p.id)==="done") dist[p.diff][0]++; }
+  return dist;
+}
 
 /*================ 渲染 ================*/
 const app=document.getElementById("app");
-const esc=s=>String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'\"':"&quot;"}[c]));
+const esc=s=>String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 
 function header(title,sub){return `<h2>${title}</h2><div class="sub">${sub}</div>`;}
 function diffStars(d){return `<span class="diff-star">${"★".repeat(d)}${"☆".repeat(5-d)}</span>`;}
@@ -266,6 +364,7 @@ function diffStars(d){return `<span class="diff-star">${"★".repeat(d)}${"☆".
 const VIEWS={
 dashboard(){renderDashboard();},
 practice(){renderPracticeList();},
+playlists(){renderPlaylists();},
 problem(id){renderProblem(id);},
 mock(){renderMockList();},
 mockExam(mid){renderMock(mid);},
@@ -278,14 +377,26 @@ function renderDashboard(){
   const s=stats();
   const cd=countdownTo()-Date.now();
   const days=Math.max(0,Math.ceil(cd/(86400000)));
+  const dist=levelDist();
+  const distBar=Object.keys(LEVELS).map(k=>{
+    const L=LEVELS[k];const [ac,tot]=dist[k];
+    return `<div style="width:${tot/PROBLEMS.length*100}%;background:${L.color};opacity:${tot?0.35+0.65*(ac/tot):0.15}" title="${L.name} ${ac}/${tot}"></div>`;
+  }).join("");
   app.innerHTML=`
   ${header("CSP-S 2026 第二轮 · 高效备考","机试：现场上机编程 · 4 题 × 100 分 = 400 分 · 官方时间 2026-10-31 14:30–18:30")}
-  <div class="alert warn mb"><div>📌</div><div><b>判题说明：</b>本站在浏览器中调用 <b>Wandbox</b> 公共编译服务实时运行你的 C++ 代码并按测试数据评分（GitHub Pages 无法直接编译 C++）。评测结果以官方评测环境为准，本工具用于高效备考练习。</div></div>
+  <div class="alert warn mb"><div>📌</div><div><b>判题说明：</b>本站在浏览器中调用 <b>Wandbox</b> 公共编译服务实时运行你的 C++ 代码并按测试数据评分（GitHub Pages 无法直接编译 C++）。难度配色参考洛谷。评测结果以官方评测环境为准。</div></div>
   <div class="grid g4 mb">
     <div class="stat"><div class="k">距第二轮机试</div><div class="v">${days}<small> 天</small></div></div>
     <div class="stat"><div class="k">已 AC 题目</div><div class="v">${s.full}<small> / ${PROBLEMS.length}</small></div></div>
     <div class="stat"><div class="k">平均得分率</div><div class="v">${s.rate}<small>%</small></div></div>
     <div class="stat"><div class="k">已掌握考点</div><div class="v">${s.knowMastered}<small> / ${s.knowTotal}</small></div></div>
+  </div>
+  <div class="card mb">
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:6px"><h3 style="margin:0">难度分布（洛谷配色）</h3><span class="sub" style="margin:0">色块越深 = 你在该难度 AC 越多</span></div>
+    <div class="lvbar">${distBar}</div>
+    <div style="display:flex;gap:16px;flex-wrap:wrap;font-size:12px;color:var(--muted);margin-top:6px">
+      ${Object.keys(LEVELS).map(k=>{const L=LEVELS[k];const [ac,tot]=dist[k];return `<span><span class="lv" style="background:${L.color}">${L.name}</span> ${ac}/${tot}</span>`;}).join("")}
+    </div>
   </div>
   <div class="grid g2 mb">
     <div class="card">
@@ -309,9 +420,9 @@ function renderDashboard(){
     </div>
   </div>
   <div class="grid g3 mb">
-    <div class="card"><h3>📚 全考点题库</h3><div class="sub">${PROBLEMS.length} 道题，覆盖 T1–T4 各题型与九大知识板块。</div><a class="btn btn-ghost" data-go="practice">刷题</a></div>
+    <div class="card"><h3>📚 全考点题库</h3><div class="sub">${PROBLEMS.length} 道题，支持搜索 / 难度筛选 / 标签筛选。</div><a class="btn btn-ghost" data-go="practice">刷题</a></div>
+    <div class="card"><h3>📋 专题题单</h3><div class="sub">按知识点分组的刷题路径，像洛谷题单一样按专题突破。</div><a class="btn btn-ghost" data-go="playlists">看题单</a></div>
     <div class="card"><h3>⏱ 模拟赛</h3><div class="sub">3 套模拟卷，每套 4 题 400 分，限时 240 分钟。</div><a class="btn btn-ghost" data-go="mock">开赛</a></div>
-    <div class="card"><h3>📊 知识图谱</h3><div class="sub">40+ 考点自评掌握度，查漏补缺。</div><a class="btn btn-ghost" data-go="knowledge">进入</a></div>
   </div>
   <div class="card">
     <h3>备考建议（基于 CCF 高分选手经验）</h3>
@@ -320,32 +431,69 @@ function renderDashboard(){
       <li><b>稳拿 T1/T2：</b>前两题是定海神针，务必又快又稳，先吃透基础语法、排序、模拟、前缀和、二分、贪心。</li>
       <li><b>啃下 T3：</b>题面长、细节多，边读题边在草稿上记录对象、状态与操作顺序，用模板库简化实现。</li>
       <li><b>突破 T4：</b>系统掌握 DP（线性/区间/背包/树形/状压）与图论（最短路/生成树/拓扑/树上），并学会复杂度分析。</li>
-      <li><b>以题带点：</b>先刷真题，遇到盲区再回头学对应算法，切忌死磕超纲内容。</li>
+      <li><b>以题带点：</b>先按题单刷专题，遇到盲区再回头学对应算法，切忌死磕超纲内容。</li>
       <li><b>写对暴力：</b>不会正解时先写朴素算法拿部分分，O(n) 与 O(n²) 数据分档非常明显。</li>
     </ul>
   </div>`;
   afterRender();
 }
 
-/* ---------- 题库 ---------- */
+/* ---------- 题库（搜索 + 筛选） ---------- */
+let pfState={q:"",level:0,status:"all"};
 function renderPracticeList(){
-  const byTier={T1:[],T2:[],T3:[],T4:[]};
-  PROBLEMS.forEach(p=>byTier[p.tier].push(p));
   const tiers=["T1","T2","T3","T4"];
   const tierNote={T1:"基础：模拟 / 前缀和 / 简单数学",T2:"思维：贪心 / 二分 / 搜索",T3:"数据结构与工程模拟：栈 / 并查集 / BIT",T4:"高级：DP 优化 / 图论 / 数论 / 字符串"};
-  let html=header("题库 · 在线答题","点击题目进入作答，提交后实时评测并按测试数据给分。每题 100 分，可反复练习。");
+  let html=header("题库 · 在线答题","点击题目进入作答，提交后实时评测并按测试数据给分。支持按关键词、难度、通过状态筛选。");
+  html+=`<div class="searchbox"><span class="ic">🔍</span><input id="pfQ" placeholder="搜索题号 / 标题 / 考点…（如 背包、Dijkstra、p08）" value="${esc(pfState.q)}"></div>`;
+  html+=`<div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin-bottom:14px">
+    <span class="sub" style="margin:0">难度：</span>
+    <span class="chip ${pfState.level===0?'on':''}" data-lv="0">全部</span>
+    ${Object.keys(LEVELS).map(k=>`<span class="chip ${pfState.level==k?'on':''}" data-lv="${k}"><span class="lv" style="background:${LEVELS[k].color};font-size:11px">${LEVELS[k].name}</span></span>`).join("")}
+    <span class="sub" style="margin:0 0 0 12px">状态：</span>
+    ${[["all","全部"],["done","已 AC"],["part","部分分"],["none","未做"]].map(([v,l])=>`<span class="chip ${pfState.status===v?'on':''}" data-st="${v}">${l}</span>`).join("")}
+  </div>`;
+  const q=pfState.q.trim().toLowerCase();
+  const match=p=>{
+    if(pfState.level&&p.diff!=pfState.level)return false;
+    if(pfState.status!=="all"&&problemStatus(p.id)!==pfState.status)return false;
+    if(q){const hay=(p.id+" "+p.title+" "+p.tag+" "+p.knowledge.join(" ")+" "+p.tier).toLowerCase();if(!hay.includes(q))return false;}
+    return true;
+  };
   for(const t of tiers){
-    const list=byTier[t];
+    const list=PROBLEMS.filter(p=>p.tier===t&&match(p));
+    if(!list.length)continue;
     html+=`<div class="card mb"><div style="display:flex;align-items:center"><h3 style="margin:0">${t} ${tierNote[t]}</h3><span class="countdown" style="margin-left:auto">${list.length} 题</span></div>
     <div class="mt">${list.map(p=>{
       const st=problemStatus(p.id); const map={done:["✔ AC","st-done"],part:["部分分","st-part"],wa:["再试","st-wa"],none:["未做","st-none"]}[st];
       return `<div class="problem-row" data-go="problem/${p.id}">
         <span class="id">${p.id.toUpperCase()}</span>
-        <span class="nm">${p.title} ${diffStars(p.diff)}</span>
+        <span class="nm">${p.title}</span>
+        ${lvBadge(p)}
         <span class="tag t-know">${p.knowledge.slice(0,2).join(" / ")}</span>
         <span class="status ${map[1]}">${map[0]}</span></div>`;
     }).join("")}</div></div>`;
   }
+  app.innerHTML=html; afterRender();
+  const qi=document.getElementById("pfQ");
+  qi.oninput=e=>{pfState.q=e.target.value; renderPracticeList(); const nq=document.getElementById("pfQ"); nq.focus(); nq.setSelectionRange(nq.value.length,nq.value.length);};
+  document.querySelectorAll("[data-lv]").forEach(c=>c.onclick=()=>{pfState.level=Number(c.dataset.lv);renderPracticeList();});
+  document.querySelectorAll("[data-st]").forEach(c=>c.onclick=()=>{pfState.status=c.dataset.st;renderPracticeList();});
+}
+
+/* ---------- 专题题单 ---------- */
+function renderPlaylists(){
+  let html=header("题单 · 专题训练","按知识点分组的刷题路径（参考洛谷题单）。从 T1 必拿题开始，按专题逐个突破。");
+  html+=`<div class="grid g3">`;
+  for(const pl of PLAYLISTS){
+    const list=pl.probs.map(id=>PROBLEMS.find(p=>p.id===id));
+    const ac=list.filter(p=>problemStatus(p.id)==="done").length;
+    html+=`<div class="card pl-card"><h3>${pl.name}</h3><div class="sub">${pl.desc}</div>
+      <div class="sub" style="margin:0">进度 <b>${ac}/${list.length}</b> 已 AC</div>
+      <div class="bar" style="margin:6px 0 4px"><i style="width:${list.length?ac/list.length*100:0}%"></i></div>
+      <div class="plist">${list.map(p=>`<span class="pl-chip" data-go="problem/${p.id}">${lvBadge(p)} ${p.title}${problemStatus(p.id)==="done"?" ✔":""}</span>`).join("")}</div>
+    </div>`;
+  }
+  html+=`</div>`;
   app.innerHTML=html; afterRender();
 }
 
@@ -356,7 +504,7 @@ function initEditor(){
   if(window.CodeMirror){
     editor=CodeMirror(document.getElementById("ed"),{value:DEFAULT_CODE,mode:"text/x-c++src",lineNumbers:true,lineWrapping:false,theme:"default",indentUnit:4,tabSize:4,styleActiveLine:true,extraKeys:{"Tab":(cm)=>{cm.replaceSelection("    ")}}});
   }else{
-    const ta=document.getElementById("ed"); ta.removeAttribute("hidden"); editor={getValue:()=>ta.value,setValue:v=>{ta.value=v},isTA:true};
+    const ta=document.getElementById("ed"); ta.removeAttribute("hidden"); editor={getValue:()=>ta.value,setValue:v=>{ta.value=v},replaceSelection:v=>{ta.value+=v;},focus:()=>ta.focus(),isTA:true};
   }
 }
 function renderProblem(id,pre){
@@ -364,13 +512,15 @@ function renderProblem(id,pre){
   currentProblem=p;
   const inMock=!!(pre&&pre.mock);
   const btn=inMock?"提交到模拟赛":"提交评测";
+  const bs=bestScore(id), sc=submitCount(id);
   app.innerHTML=`
   <button class="btn btn-ghost mb" data-go="${inMock?`mockExam/${pre.mock}`:"practice"}">← ${inMock?"返回模拟赛":"返回题库"}</button>
   <div class="problem-wrap">
     <div class="panel">
-      <div class="panel-hd"><span class="tag t-tier">${p.tier}</span> <span>${p.id.toUpperCase()} · ${p.title}</span> <span style="margin-left:auto;color:var(--muted);font-weight:600">${p.points} 分</span></div>
+      <div class="panel-hd">${lvBadge(p)} <span class="tag t-tier">${p.tier}</span> <span>${p.id.toUpperCase()} · ${p.title}</span> <span style="margin-left:auto;color:var(--muted);font-weight:600">${p.points} 分</span></div>
       <div style="padding:18px">
-        <div class="sub mb"><span class="tag t-know">${p.knowledge.join(" / ")}</span><span class="tag t-tag">${p.tag}</span> ${diffStars(p.diff)} <span style="float:right">${p.constraints}</span></div>
+        <div class="hist"><span>我的最佳：<b class="${bs>=100?"v-AC":bs>0?"v-RE":"v-WA"}">${bs} / 100</b></span><span>累计提交：<b>${sc}</b> 次</span></div>
+        <div class="sub mt" style="margin-bottom:14px"><span class="tag t-know">${p.knowledge.join(" / ")}</span><span class="tag t-tag">${p.tag}</span> ${diffStars(p.diff)} <span style="float:right">${p.constraints}</span></div>
         <h3>题目描述</h3><p class="mb">${p.statement}</p>
         <h3>输入格式</h3><p class="mb">${p.inputFormat}</p>
         <h3>输出格式</h3><p class="mb">${p.outputFormat}</p>
@@ -385,8 +535,9 @@ function renderProblem(id,pre){
       <div class="panel">
         <div class="editor-tools">
           <b style="font-size:13px">main.cpp</b><span class="tag t-tag">C++17 · gcc</span>
+          <select class="tpl" id="tplSel"><option value="">+ 插入代码模板…</option>${Object.keys(TEMPLATES).map(k=>`<option value="${esc(k)}">${esc(k)}</option>`).join("")}</select>
           <span class="btns">
-            <button class="btn btn-ghost" id="resetCode">重置</button>
+            <button class="btn btn-ghost btn-sm" id="resetCode">重置</button>
             <button class="btn btn-primary" id="submitBtn">${btn}</button>
           </span>
         </div>
@@ -405,6 +556,13 @@ function renderProblem(id,pre){
   if(saved) editor.setValue(saved);
   document.getElementById("submitBtn").onclick=()=>submit(id,pre);
   document.getElementById("resetCode").onclick=()=>{editor.setValue(DEFAULT_CODE);LS.set("csps_code_"+id,DEFAULT_CODE);};
+  document.getElementById("tplSel").onchange=e=>{
+    const k=e.target.value; if(!k)return;
+    const tpl="\n"+TEMPLATES[k]+"\n";
+    if(editor.replaceSelection) editor.replaceSelection(tpl); else editor.setValue(editor.getValue()+tpl);
+    editor.focus&&editor.focus();
+    e.target.value="";
+  };
   document.getElementById("showSol").onclick=e=>{document.getElementById("solbox").classList.toggle("hidden");e.currentTarget.textContent=document.getElementById("solbox").classList.contains("hidden")?"查看思路解析":"收起解析";};
   afterRender();
 }
@@ -422,7 +580,7 @@ async function submit(id,pre){
     rows.push(`<div class="result-item" data-i="${i}"><span>测试点 ${i+1} <span class="ti">${t.score} 分</span></span><span class="spinner"></span></div>`);
     resBody.innerHTML=rows.join("");
     const r=await judgeTest(code,t);
-    if(ce){/* already CE */ }
+    if(ce){}
     else if(r.verdict==="CE"){ce=true;score=0;}
     else if(r.verdict==="AC")score+=t.score;
     let detail="";
@@ -494,7 +652,7 @@ function tickMock(){
     const left=Math.max(0,deadline-Date.now());
     const h=Math.floor(left/3600000),m=Math.floor(left%3600000/60000),s=Math.floor(left%60000/1000);
     el.textContent=`${h}:${normDate(m)}:${normDate(s)}`;
-    if(left<=0){clearInterval(iv); const subs=getSubs().filter(s=>s.mode==="mock");
+    if(left<=0){clearInterval(iv);
       let total=0; for(const sp of (mockCtx?mockCtx.problems:[])) total+=bestMockScore(mockCtx.mid,sp);
       LS.set("csps_mockscore_"+mockCtx.mid,total);
       if(mockCtx){el.textContent="已结束"; const names=mockCtx.problems.map(id=>PROBLEMS.find(p=>p.id===id).title);
@@ -515,12 +673,12 @@ function renderKnowledge(){
   for(const c of KNOWLEDGE){for(const it of c.items){total++; if(know[it]){marked++; if(know[it]==="1")mastered++;}}}
   const pct=Math.round(mastered/total*100);
   const byCat=cat=>{const items=KNOWLEDGE.find(c=>c.cat===cat).items;let ms=0;for(const it of items)if(know[it]==="1")ms++;return {ms,total:items.length};};
-  let html=header("知识图谱 · 考点全覆盖","CSP-S 提高组第二轮机试考点自评。点击标签切换“掌握 / 待巩固”，红色进度条为你的掌握进度。");
+  let html=header("知识图谱 · 考点全覆盖","CSP-S 提高组第二轮机试考点自评。点击标签切换“掌握 / 待巩固”。");
   html+=`<div class="card mb" style="display:flex;align-items:center;gap:24px;flex-wrap:wrap">
     <div class="ring" style="--p:${pct};--c:${pct>=70?"var(--green)":"var(--brand)"}"><b>${pct}%</b></div>
     <div><div class="sub" style="margin:0">整体掌握度 · 已掌握 ${mastered} / ${total} 考点</div>
     <div class="bar" style="width:260px;margin-top:8px"><i style="width:${pct}%"></i></div>
-    <div class="sub mt" style="margin:0">点击下方任意考点可在“掌握”与“待巩固”间切换；结合<b>题库</b>中对应题目的 AC 情况查漏补缺。</div></div></div>`;
+    <div class="sub mt" style="margin:0">点击下方任意考点可在“掌握”与“待巩固”间切换；结合<b>题单</b>中对应题目的 AC 情况查漏补缺。</div></div></div>`;
   for(const c of KNOWLEDGE){
     const b=byCat(c.cat); const cp=Math.round(b.ms/b.total*100);
     html+=`<div class="card mb know-block"><div class="cat"><span>${c.cat}</span><span class="tag t-tag">${b.ms}/${b.total} 掌握</span><span class="pct">${cp}%</span>
@@ -536,11 +694,22 @@ function renderKnowledge(){
 /* ---------- 记录 ---------- */
 function renderRecords(){
   const subs=getSubs().slice().reverse(); const wrong=getWrong();
+  const dist=levelDist();
   let html=header("我的记录 · 提交历史与错题本","所有数据仅保存在本机浏览器，不会上传。");
+  html+=`<div class="card mb">
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:6px"><h3 style="margin:0">我的难度掌握分布</h3></div>
+    <div class="lvbar">${Object.keys(LEVELS).map(k=>{const L=LEVELS[k];const [ac,tot]=dist[k];return `<div style="width:${tot/PROBLEMS.length*100}%;background:${L.color};opacity:${tot?0.35+0.65*(ac/tot):0.15}" title="${L.name} ${ac}/${tot}"></div>`;}).join("")}</div>
+    <div style="display:flex;gap:16px;flex-wrap:wrap;font-size:12.5px;color:var(--muted);margin-top:6px">
+      ${Object.keys(LEVELS).map(k=>{const L=LEVELS[k];const [ac,tot]=dist[k];return `<span><span class="lv" style="background:${L.color}">${L.name}</span> AC <b>${ac}</b>/${tot}</span>`;}).join("")}
+    </div></div>`;
   html+=`<div class="grid g2 mb">
     <div class="card"><h3>📕 错题本（部分分 / 未通过）</h3>
       ${wrong.length?wrong.map(w=>`<div class="problem-row" data-go="problem/${w.problem}"><span class="nm">${w.title}</span><span class="status st-wa">${w.score} 分</span><span style="color:var(--brand);font-size:13px">去重做 →</span></div>`).join(""):`<div class="empty">暂无错题，继续加油 🎯</div>`}
     </div>
+    <div class="card"><h3>✅ 已 AC 题目</h3>
+      ${PROBLEMS.filter(p=>problemStatus(p.id)==="done").length?PROBLEMS.filter(p=>problemStatus(p.id)==="done").map(p=>`<div class="problem-row" data-go="problem/${p.id}"><span class="nm">${p.title}</span>${lvBadge(p)}<span class="status st-done">✔ AC</span></div>`).join(""):`<div class="empty">还没有 AC 的题目，去刷一道吧。</div>`}
+    </div></div>`;
+  html+=`<div class="grid g2 mb">
     <div class="card"><h3>🧮 统计</h3><div class="sub">累计提交 ${subs.length} 次</div>
       <div class="grid g2" style="margin-top:8px">
         <div class="stat"><div class="k">满分题目</div><div class="v">${stats().full}<small> / ${PROBLEMS.length}</small></div></div>
