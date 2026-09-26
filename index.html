@@ -8,10 +8,10 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.css">
 <style>
 :root{
-  --bg:#f4f6fb; --card:#ffffff; --ink:#1f2d3d; --muted:#6b7a90; --line:#e3e9f2;
-  --brand:#2563eb; --brand2:#0ea5e9; --green:#16a34a; --greenbg:#e6f6ec; --red:#dc2626; --redbg:#fdecec;
+  --bg:#f5f6f7; --card:#ffffff; --ink:#1f2d3d; --muted:#6b7a90; --line:#e8ecf0;
+  --brand:#009a66; --brand2:#00b8a9; --green:#009a66; --greenbg:#e6f6ec; --red:#e74c3c; --redbg:#fdecec;
   --amber:#d97706; --amberbg:#fdf3e3; --gray:#64748b; --graybg:#eef2f7;
-  --editor:#1e1e2e; --radius:14px; --shadow:0 6px 24px rgba(15,30,60,.08);
+  --editor:#1e1e2e; --radius:10px; --shadow:0 2px 12px rgba(15,30,60,.06);
 }
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:-apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;background:var(--bg);color:var(--ink);line-height:1.6}
@@ -23,7 +23,7 @@ pre{font-family:"JetBrains Mono",ui-monospace,Consolas,Menlo,monospace}
 .logo .badge{background:linear-gradient(135deg,var(--brand),var(--brand2));color:#fff;padding:4px 9px;border-radius:9px;font-size:12px;letter-spacing:.5px}
 .nav{display:flex;gap:4px;margin-left:8px;flex-wrap:wrap}
 .nav button{background:none;border:none;padding:9px 13px;border-radius:9px;cursor:pointer;font-size:14px;color:var(--muted);font-weight:600;transition:.15s}
-.nav button:hover{background:#eef3fb;color:var(--brand)}
+.nav button:hover{background:#eef8f3;color:var(--brand)}
 .nav button.active{background:var(--brand);color:#fff}
 .navright{margin-left:auto;font-size:13px;color:var(--muted);display:flex;align-items:center;gap:10px}
 .countdown{display:inline-block;background:var(--graybg);padding:5px 11px;border-radius:999px;font-variant-numeric:tabular-nums}
@@ -44,7 +44,7 @@ h3{font-size:16px}
 .bar{height:8px;background:var(--graybg);border-radius:99px;overflow:hidden;margin-top:6px}
 .bar>i{display:block;height:100%;background:linear-gradient(90deg,var(--brand),var(--brand2));border-radius:99px;transition:width .4s}
 .tag{display:inline-block;padding:2px 9px;border-radius:999px;font-size:12px;font-weight:600;margin:2px 3px 2px 0}
-.t-tier{background:#eef3ff;color:#2563eb}
+.t-tier{background:#eef8f3;color:var(--brand)}
 .t-know{background:var(--greenbg);color:var(--green)}
 .t-tag{background:var(--graybg);color:var(--gray)}
 /* 洛谷风格难度色 */
@@ -60,13 +60,13 @@ tr:hover td{background:#f7fafd}
 .v-WA{color:var(--red);font-weight:700}
 .v-RE,.v-CE{color:var(--amber);font-weight:700}
 .v-TLE{color:var(--gray);font-weight:700}
-.btn{border:none;cursor:pointer;border-radius:10px;padding:11px 20px;font-size:14px;font-weight:700;transition:.15s}
+.btn{border:none;cursor:pointer;border-radius:8px;padding:11px 20px;font-size:14px;font-weight:700;transition:.15s}
 .btn-primary{background:var(--brand);color:#fff}
-.btn-primary:hover{background:#1d4ed8}
+.btn-primary:hover{background:#008356}
 .btn-primary:disabled{opacity:.5;cursor:not-allowed}
 .btn-ghost{background:#fff;color:var(--brand);border:1px solid var(--brand)}
-.btn-ghost:hover{background:#eef3ff}
-.btn-sm{padding:6px 12px;font-size:12.5px;border-radius:8px}
+.btn-ghost:hover{background:#eef8f3}
+.btn-sm{padding:6px 12px;font-size:12.5px;border-radius:6px}
 /* problem layout */
 .problem-wrap{display:grid;grid-template-columns:minmax(300px,1fr) minmax(420px,1.15fr);gap:18px}
 @media(max-width:980px){.problem-wrap{grid-template-columns:1fr}}
@@ -78,15 +78,15 @@ tr:hover td{background:#f7fafd}
 .result-item{display:flex;justify-content:space-between;align-items:center;padding:9px 14px;border-bottom:1px solid var(--line);font-size:14px}
 .result-item .ti{color:var(--muted);font-size:12px}
 .diff-star{color:#f59e0b;letter-spacing:1px}
-.sample-box{background:#0f172a;color:#e2e8f0;border-radius:9px;padding:12px 14px;font-size:13px;overflow:auto;margin:6px 0}
+.sample-box{background:#0f172a;color:#e2e8f0;border-radius:8px;padding:12px 14px;font-size:13px;overflow:auto;margin:6px 0}
 .sample-box .lbl{color:#94a3b8;font-size:11px;text-transform:uppercase;margin-bottom:4px}
 code.kbd{background:#eef2f7;padding:1px 6px;border-radius:5px;font-family:Consolas,monospace;font-size:12.5px}
-.solbox{background:var(--amberbg);border:1px solid #f6e2c0;border-radius:10px;padding:14px 16px;margin-top:12px;font-size:14px}
+.solbox{background:var(--amberbg);border:1px solid #f6e2c0;border-radius:8px;padding:14px 16px;margin-top:12px;font-size:14px}
 .know-block{margin-bottom:18px}
 .know-block .cat{font-weight:800;margin-bottom:8px;display:flex;align-items:center;gap:10px}
 .know-block .cat .pct{margin-left:auto;font-size:12px;color:var(--muted);font-weight:600}
 .problem-row{display:flex;align-items:center;gap:14px;padding:13px 16px;border-bottom:1px solid var(--line);cursor:pointer;transition:.12s}
-.problem-row:hover{background:#f5f8fe}
+.problem-row:hover{background:#f5faf7}
 .problem-row .id{font-family:Consolas,monospace;color:var(--muted);font-size:13px;width:46px}
 .problem-row .nm{font-weight:700;flex:1}
 .problem-row .status{font-size:12px;font-weight:700;padding:3px 9px;border-radius:999px}
@@ -109,7 +109,7 @@ code.kbd{background:#eef2f7;padding:1px 6px;border-radius:5px;font-family:Consol
 /* 题单卡片 */
 .pl-card{display:flex;flex-direction:column;height:100%}
 .pl-card .plist{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0}
-.pl-chip{display:inline-flex;align-items:center;gap:6px;padding:4px 10px;background:#f5f8fe;border:1px solid var(--line);border-radius:8px;font-size:12.5px;cursor:pointer;color:var(--ink);font-weight:600}
+.pl-chip{display:inline-flex;align-items:center;gap:6px;padding:4px 10px;background:#f5faf7;border:1px solid var(--line);border-radius:8px;font-size:12.5px;cursor:pointer;color:var(--ink);font-weight:600}
 .pl-chip:hover{border-color:var(--brand);color:var(--brand)}
 .pl-chip .lv{font-size:10px;padding:1px 6px}
 /* 难度分布条 */
@@ -118,7 +118,7 @@ code.kbd{background:#eef2f7;padding:1px 6px;border-radius:5px;font-family:Consol
 .footer{max-width:1200px;margin:0 auto;padding:18px 20px;color:var(--muted);font-size:12.5px;border-top:1px solid var(--line)}
 .mt{margin-top:18px}
 .mb{margin-bottom:12px}
-.alert{display:flex;gap:12px;align-items:flex-start;padding:14px 16px;border-radius:12px;font-size:13.5px}
+.alert{display:flex;gap:12px;align-items:flex-start;padding:14px 16px;border-radius:10px;font-size:13.5px}
 .alert.warn{background:var(--amberbg);border:1px solid #f6e2c0;color:#7c4a12}
 .compare th{width:50%}
 .ring{--p:0;--c:var(--brand);width:74px;height:74px;border-radius:50%;background:conic-gradient(var(--c) calc(var(--p)*1%),#e6ecf5 0);display:grid;place-items:center}
@@ -132,7 +132,7 @@ select.tpl{border:1px solid var(--line);border-radius:8px;padding:6px 10px;font-
 .hist b{color:var(--ink)}
 /* 知识点卡片 */
 .kcard-row{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
-.kcard{flex:1;min-width:150px;border:1.5px solid var(--line);border-radius:12px;padding:12px 14px;background:#fbfcfe;cursor:pointer;transition:.15s;position:relative}
+.kcard{flex:1;min-width:150px;border:1.5px solid var(--line);border-radius:10px;padding:12px 14px;background:#fbfcfe;cursor:pointer;transition:.15s;position:relative}
 .kcard:hover{border-color:var(--brand)}
 .kcard .kc-name{font-weight:800;font-size:14px;margin-bottom:4px}
 .kcard .kc-state{font-size:11.5px;font-weight:700;padding:2px 8px;border-radius:999px;display:inline-block}
@@ -141,7 +141,7 @@ select.tpl{border:1px solid var(--line);border-radius:8px;padding:6px 10px;font-
 .ks-ok{background:var(--greenbg);color:var(--green)}
 .kcard.flagged{border-color:var(--red);background:#fff7f7}
 .kcard.mastered{border-color:var(--green);background:#f4fbf6}
-@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(220,38,38,.25)}50%{box-shadow:0 0 0 6px rgba(220,38,38,0)}}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(231,76,60,.25)}50%{box-shadow:0 0 0 6px rgba(231,76,60,0)}}
 /* 算法可视化（同页内嵌） */
 .viz-stage{padding:20px;overflow:auto;background:#fafbfe;flex:1;min-height:200px}
 .viz-desc{padding:12px 20px;background:#fff;border-top:1px solid var(--line);font-size:14px;min-height:48px}
@@ -167,6 +167,15 @@ select.tpl{border:1px solid var(--line);border-radius:8px;padding:6px 10px;font-
 .minecmp.ok{background:var(--greenbg);border:1px solid #bfe6cc;color:#14532d}
 .minecmp.bad{background:var(--redbg);border:1px solid #f3c0c0;color:#7f1d1d}
 #ivStage{background:#fafbfe}
+/* 洛谷风格 */
+.problem-wrap h3{padding-left:10px;border-left:3px solid var(--brand);margin:14px 0 6px;font-size:15px}
+.luogu-id{font-family:Consolas,monospace;background:var(--brand);color:#fff;padding:2px 8px;border-radius:4px;font-size:12px;font-weight:700;margin-right:6px}
+.problem-row .id{background:var(--graybg);border-radius:5px;padding:2px 6px;color:var(--brand);font-weight:700}
+.lk-check{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.lk-check .ck{font-family:Consolas,monospace;font-size:12.5px;padding:5px 10px;border-radius:6px;border:1px solid var(--line);background:#fff}
+.lk-check .ck.ok{background:var(--greenbg);border-color:#bfe6cc;color:#14532d}
+.lk-check .ck.bad{background:var(--redbg);border-color:#f3c0c0;color:#7f1d1d;animation:pulse 1.6s infinite;cursor:pointer}
+#ivStage.flash-bad{border-color:var(--red)!important;box-shadow:0 0 0 3px rgba(231,76,60,.25)}
 </style>
 </head>
 <body>
@@ -399,17 +408,28 @@ VIZ.p15=()=>{
   }).join("")).join("")+"</div><p style='font-size:12px;color:var(--muted)'>蓝色=已到达，绿=访问过，终点橙色。</p>"}));
 };
 
-/* 跑「我的算法并对比」所用的小输入与正确输出（与上方演示一致） */
+/* 跑「我的算法并对比」所用的小输入与正确输出（与上方演示一致）
+   checks: 逐帧对照点，at=对应可视化帧序号(0-based)，expect=该步正确答案，label=说明 */
 const VIZ_TRACE={
- p02:{input:"5 3\n1 2 3 4 5\n1 5\n2 3\n3 3\n",expected:"15\n5\n3"},
- p03:{input:"3 5\n6 7 9\n",expected:"3"},
- p04:{input:"4\n1 3\n2 5\n3 6\n5 7\n",expected:"2"},
- p05:{input:"6\n2 1 5 6 2 3\n",expected:"10"},
- p07:{input:"123\n456\n",expected:"579"},
- p08:{input:"6\n1 3 2 4 3 5\n",expected:"4"},
- p10:{input:"4 4\n1 2 2\n1 3 1\n2 4 5\n3 4 1\n",expected:"0 2 1 2"},
- p14:{input:"ababab\naba\n",expected:"2"},
- p15:{input:"3 3\n000\n010\n000\n",expected:"4"}
+ p02:{input:"5 3\n1 2 3 4 5\n1 5\n2 3\n3 3\n",expected:"15\n5\n3",tokenMode:"line",checks:[
+   {at:2,expect:"15",label:"查询 [1,5]"},{at:3,expect:"5",label:"查询 [2,3]"},{at:4,expect:"3",label:"查询 [3,3]"}]},
+ p03:{input:"3 5\n6 7 9\n",expected:"3",tokenMode:"token",checks:[
+   {at:3,expect:"3",label:"最大段长"}]},
+ p04:{input:"4\n1 3\n2 5\n3 6\n5 7\n",expected:"2",tokenMode:"token",checks:[
+   {at:3,expect:"2",label:"最多场数"}]},
+ p05:{input:"6\n2 1 5 6 2 3\n",expected:"10",tokenMode:"token",checks:[
+   {at:6,expect:"10",label:"最大面积"}]},
+ p07:{input:"123\n456\n",expected:"579",tokenMode:"token",checks:[
+   {at:3,expect:"579",label:"竖式结果"}]},
+ p08:{input:"6\n1 3 2 4 3 5\n",expected:"4",tokenMode:"token",checks:[
+   {at:6,expect:"4",label:"LIS 长度"}]},
+ p10:{input:"4 4\n1 2 2\n1 3 1\n2 4 5\n3 4 1\n",expected:"0 2 1 2",tokenMode:"token",checks:[
+   {at:1,expect:"0",label:"dist[1]"},{at:2,expect:"2",label:"dist[2]"},{at:2,expect:"1",label:"dist[3]"},{at:4,expect:"2",label:"dist[4]"}]},
+ p14:{input:"ababab\naba\n",expected:"2",tokenMode:"token",checks:[
+   {at:4,expect:"2",label:"出现次数"}]},
+ p15:{input:"3 3\n000\n010\n000\n",expected:"4",tokenMode:"token",checks:[
+   {at:4,expect:"4",label:"最短路程"}]
+ }
 };
 
 /*================ 考点全覆盖（CSP-S 提高组第二轮·NOI大纲） ================*/
@@ -643,7 +663,7 @@ function renderPracticeList(){
     <div class="mt">${list.map(p=>{
       const st=problemStatus(p.id); const map={done:["✔ AC","st-done"],part:["部分分","st-part"],wa:["再试","st-wa"],none:["未做","st-none"]}[st];
       return `<div class="problem-row" data-go="problem/${p.id}">
-        <span class="id">${p.id.toUpperCase()}</span>
+        <span class="id">P${p.no}</span>
         <span class="nm">${p.title}</span>
         ${lvBadge(p)}
         <span class="tag t-know">${p.knowledge.slice(0,2).join(" / ")}</span>
@@ -719,7 +739,7 @@ function renderInlineViz(pid){
     <div class="viz-desc" id="ivDesc" style="border:none;background:transparent;padding:10px 0;min-height:0"></div>
     <div class="minebox">
       <button class="btn btn-primary btn-sm" id="runMine">▶ 跑我的算法并对比</button>
-      <div class="sub" style="margin:6px 0 0">用你上方编辑器里的 C++ 代码在本题小输入上真实编译运行（Wandbox），和正确算法输出逐行对比。</div>
+      <div class="sub" style="margin:6px 0 0">用你上方编辑器里的 C++ 代码在本题小输入上真实编译运行（Wandbox），和正确算法输出逐行/逐帧对比。</div>
       <div id="mineResult"></div>
     </div>
   </div>`;
@@ -756,6 +776,16 @@ async function runMineCompare(pid){
   }
   const got=normOut(r.out), want=normOut(tr.expected);
   const ok=got===want;
+  // 逐帧对照：把你的输出按行/按 token 拆开，和每个检查点逐一比对
+  const pieces = tr.tokenMode==="line" ? got.split("\n").filter(x=>x.trim()!=="") : got.split(/\s+/).filter(x=>x!=="");
+  const checks=(tr.checks||[]).map((c,i)=>{
+    const mine = pieces[i]??"(缺)";
+    const pass = mine===c.expect;
+    return {...c, mine, pass};
+  });
+  const firstBad = checks.findIndex(c=>!c.pass);
+  // 渲染逐格对照 chips
+  const chips = checks.map((c,i)=>`<span class="ck ${c.pass?'ok':'bad'}" ${c.pass?'':`onclick="vizJumpTo(${c.at})"`} title="${c.pass?'':'点我跳到正确算法这一步'}">${esc(c.label)}：${esc(c.mine)} ${c.pass?'✔':'✗ 应='+esc(c.expect)}</span>`).join("");
   out.innerHTML=`<div class="minecmp ${ok?'ok':'bad'}">
     <div><b>${ok?'✅ 你的算法结果与正确算法一致':'❌ 你的算法结果与正确算法不一致'}</b>${r.ms?' <span style="font-weight:400;font-size:12px">('+r.ms+'ms)</span>':''}</div>
     <div style="font-family:Consolas,monospace;font-size:13px;margin-top:6px;line-height:1.9">
@@ -763,8 +793,16 @@ async function runMineCompare(pid){
       你的输出：<code class="kbd">${esc(got.slice(0,200))||'(空)'}</code><br>
       正确输出：<code class="kbd">${esc(want.slice(0,200))}</code>
     </div>
-    ${ok?'<div class="sub" style="margin-top:6px;color:#14532d">很好，这个小输入上你的算法是对的；再去「提交评测」跑全部测试点。</div>':'<div class="sub" style="margin-top:6px;color:#7f1d1d">用上方「上一步 / 下一步」对照正确算法，看你错在哪一步（边界？初始化？更新顺序？）。</div>'}
+    <div class="lk-check">${chips}</div>
+    ${ok?'<div class="sub" style="margin-top:8px;color:#14532d">每一步都对了；再去「提交评测」跑全部测试点。</div>':'<div class="sub" style="margin-top:8px;color:#7f1d1d">点上面红色的格子，会自动跳到正确算法对应的那一步，对照看你哪里算错了（边界？初始化？更新顺序？）。</div>'}
   </div>`;
+  // 自动跳到第一个出错的帧并红框高亮
+  if(firstBad>=0){ vizJumpTo(checks[firstBad].at, true); }
+}
+function vizJumpTo(frameIdx, flash){
+  vizIdx=Math.max(0,Math.min(vizFrames.length-1,frameIdx)); drawIv();
+  const st=document.getElementById("ivStage");
+  if(st){ st.classList.add("flash-bad"); setTimeout(()=>st.classList.remove("flash-bad"),2000); }
 }
 
 let editor=null, currentProblem=null, currentPre=null, submitting=false, mockCtx=null;
@@ -787,7 +825,7 @@ function renderProblem(id,pre){
   <button class="btn btn-ghost mb" data-go="${inMock?`mockExam/${pre.mock}`:"practice"}">← ${inMock?"返回模拟赛":"返回题库"}</button>
   <div class="problem-wrap">
     <div class="panel">
-      <div class="panel-hd">${lvBadge(p)} <span class="tag t-tier">${p.tier}</span> <span>${p.id.toUpperCase()} · ${p.title}</span> <span style="margin-left:auto;color:var(--muted);font-weight:600">${p.points} 分</span></div>
+      <div class="panel-hd"><span class="luogu-id">P${p.no}</span>${lvBadge(p)} <span class="tag t-tier">${p.tier}</span> <span style="font-weight:800">${p.title}</span> <span style="margin-left:auto;color:var(--muted);font-weight:600">${p.points} 分</span></div>
       <div style="padding:18px">
         <div class="hist"><span>我的最佳：<b class="${bs>=100?"v-AC":bs>0?"v-RE":"v-WA"}">${bs} / 100</b></span><span>累计提交：<b>${sc}</b> 次</span></div>
         <div class="sub mt" style="margin-bottom:14px"><span class="tag t-know">${p.knowledge.join(" / ")}</span><span class="tag t-tag">${p.tag}</span> ${diffStars(p.diff)} <span style="float:right">${p.constraints}</span></div>
