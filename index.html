@@ -2,340 +2,266 @@
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>CSP-S 2026 第二轮 · 在线刷题与实时评测</title>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/codemirror@5/lib/codemirror.min.css">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/codemirror@5/theme/default.min.css">
-<script src="https://cdn.jsdelivr.net/npm/codemirror@5/lib/codemirror.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/codemirror@5/mode/clike/clike.min.js"></script>
+<meta name="description" content="CSP-S 提高组第二轮（机试）备考平台：在线答题 + 实时评测 + 考点全覆盖 + 模拟赛 + 题单。单文件零依赖。">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.css">
 <style>
-:root{--brand:#00a65a;--brand2:#008d4c;--ink:#1f2937;--muted:#6b7280;--line:#e5e7eb;--bg:#f5f7fa;--card:#fff;--gray:#94a3b8;--graybg:#f1f5f9;--red:#dc2626;--green:#16a34a;--orange:#f59e0b;--blue:#2563eb;--purple:#9333ea;--editor:#1e293b;}
-*{box-sizing:border-box}
-body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;background:var(--bg);color:var(--ink);font-size:14px;line-height:1.6}
-a{color:var(--brand);text-decoration:none;cursor:pointer}
-a:hover{text-decoration:underline}
-#topbar{background:#fff;border-bottom:1px solid var(--line);position:sticky;top:0;z-index:100;box-shadow:0 1px 3px rgba(0,0,0,.04)}
-#topbar .inner{max-width:1200px;margin:0 auto;padding:0 20px;display:flex;align-items:center;height:56px;gap:24px}
-#logo{font-size:18px;font-weight:800;color:var(--brand);display:flex;align-items:center;gap:8px;white-space:nowrap}
-#logo .dot{width:28px;height:28px;border-radius:7px;background:linear-gradient(135deg,var(--brand),var(--brand2));color:#fff;display:grid;place-items:center;font-size:14px}
-#nav{display:flex;gap:4px;flex:1}
-#nav button{background:none;border:none;padding:8px 14px;font-size:14px;color:var(--muted);cursor:pointer;border-radius:6px;font-weight:600}
-#nav button:hover{color:var(--ink);background:var(--graybg)}
-#nav button.active{color:var(--brand);background:rgba(0,166,90,.08)}
-#cd{font-size:12.5px;color:var(--muted);white-space:nowrap;font-weight:600}
-#cd b{color:var(--brand)}
-#mockbar{background:linear-gradient(90deg,#fff7ed,#fef3c7);border-bottom:1px solid #fde68a;padding:6px 20px;display:flex;align-items:center;gap:14px;font-size:13px}
-#mockbar.hidden{display:none}
-#mockbar .pb{background:#fff;border:1px solid #f59e0b;color:#92400e;padding:3px 10px;border-radius:5px;cursor:pointer;font-weight:700;font-size:12px}
-#mockbar .pb:hover{background:#fef3c7}
-#mocktime{font-weight:800;color:#92400e;font-family:ui-monospace,monospace;font-size:15px}
-#app{max-width:1200px;margin:0 auto;padding:20px}
-h1{font-size:26px;margin:0 0 6px}
-h2{font-size:22px;margin:0 0 4px}
-h3{font-size:16px;margin:14px 0 8px}
-.sub{color:var(--muted);font-size:13px;margin:0 0 14px}
-.mb{margin-bottom:14px}
-.mt{margin-top:14px}
-.card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:18px;margin-bottom:14px;box-shadow:0 1px 2px rgba(0,0,0,.03)}
-.grid{display:grid;gap:14px}
-.g2{grid-template-columns:1fr 1fr}
-.g3{grid-template-columns:repeat(3,1fr)}
-.g4{grid-template-columns:repeat(4,1fr)}
-.stat{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:16px;text-align:center;box-shadow:0 1px 2px rgba(0,0,0,.03)}
-.stat .k{color:var(--muted);font-size:12.5px;margin-bottom:4px}
-.stat .v{font-size:28px;font-weight:800;color:var(--brand)}
-.stat .v small{font-size:14px;color:var(--muted);font-weight:500}
-.alert{border-radius:8px;padding:12px 14px;display:flex;gap:10px;align-items:flex-start;font-size:13.5px}
-.alert.warn{background:#fffbeb;border:1px solid #fde68a;color:#92400e}
-.alert.info{background:#eff6ff;border:1px solid #bfdbfe;color:#1e40af}
-.btn{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border-radius:7px;border:1px solid transparent;cursor:pointer;font-size:13.5px;font-weight:600;text-decoration:none;transition:.15s}
-.btn:hover{text-decoration:none;transform:translateY(-1px)}
-.btn-primary{background:var(--brand);color:#fff}
-.btn-primary:hover{background:var(--brand2)}
-.btn-primary:disabled{background:#a7c4b4;cursor:not-allowed;transform:none}
-.btn-ghost{background:#fff;color:var(--ink);border-color:var(--line)}
-.btn-ghost:hover{border-color:var(--brand);color:var(--brand)}
-.btn-sm{padding:5px 11px;font-size:12.5px}
-.tag{display:inline-block;padding:2px 8px;border-radius:5px;font-size:11.5px;font-weight:600;margin:1px 2px}
-.t-tag{background:var(--graybg);color:var(--gray)}
-.t-know{background:rgba(0,166,90,.1);color:var(--brand)}
-.t-diff1{background:#e8f5e9;color:#2e7d32}
-.t-diff2{background:#e0f7fa;color:#00838f}
-.t-diff3{background:#e3f2fd;color:#1565c0}
-.t-diff4{background:#f3e5f5;color:#7b1fa2}
-table{width:100%;border-collapse:collapse;font-size:13.5px}
-th,td{padding:8px 10px;text-align:left;border-bottom:1px solid var(--line)}
-th{background:var(--graybg);font-weight:700;color:var(--muted);font-size:12.5px}
-.compare td:nth-child(2){color:var(--muted)}
-.compare td:nth-child(3){font-weight:600}
-.searchbox{display:flex;align-items:center;background:#fff;border:1px solid var(--line);border-radius:8px;padding:0 12px;margin-bottom:12px}
-.searchbox .ic{color:var(--muted)}
-.searchbox input{flex:1;border:none;outline:none;padding:10px 8px;font-size:14px;background:transparent}
-.chip{display:inline-block;padding:4px 11px;border-radius:99px;background:#fff;border:1px solid var(--line);font-size:12.5px;cursor:pointer;color:var(--muted);margin:2px;user-select:none}
+:root{
+  --bg:#f4f5f7; --card:#ffffff; --ink:#1f2d3d; --muted:#7b8a9a; --line:#ebedf0;
+  --brand:#00a65a; --brand2:#00b8a9; --green:#00a65a; --greenbg:#e7f6ee; --red:#e74c3c; --redbg:#fdecec;
+  --amber:#e6a23c; --amberbg:#fdf6ec; --gray:#64748b; --graybg:#f0f2f5;
+  --editor:#1e1e2e; --radius:6px; --shadow:0 1px 4px rgba(20,40,80,.05);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;background:var(--bg);color:var(--ink);line-height:1.6}
+a{color:var(--brand);text-decoration:none}
+pre{font-family:"JetBrains Mono",ui-monospace,Consolas,Menlo,monospace}
+.topbar{position:sticky;top:0;z-index:50;background:#ffffff;border-bottom:1px solid var(--line);box-shadow:none}
+.topbar .in{max-width:1200px;margin:0 auto;padding:0 20px;display:flex;align-items:stretch;gap:18px;height:56px}
+.logo{display:flex;align-items:center;gap:10px;font-weight:800;font-size:17px;color:var(--ink);white-space:nowrap}
+.logo .badge{background:var(--brand);color:#fff;padding:4px 10px;border-radius:5px;font-size:12px;letter:.5px}
+.nav{display:flex;gap:0;margin-left:8px;flex-wrap:wrap}
+.nav button{background:none;border:none;padding:0 14px;cursor:pointer;font-size:14.5px;color:#4a5568;font-weight:500;transition:.15s;border-bottom:2px solid transparent;margin-bottom:-1px}
+.nav button:hover{color:var(--brand)}
+.nav button.active{color:var(--brand);border-bottom-color:var(--brand);font-weight:700}
+.navright{margin-left:auto;align-self:center;font-size:13px;color:var(--muted);display:flex;align-items:center;gap:10px}
+.countdown{display:inline-block;background:var(--greenbg);color:var(--brand);padding:4px 12px;border-radius:999px;font-variant-numeric:tabular-nums;font-weight:600;font-size:12.5px}
+.wrap{max-width:1200px;margin:0 auto;padding:22px 20px 60px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:18px}
+.hidden{display:none !important}
+.grid{display:grid;gap:18px}
+.g2{grid-template-columns:1fr 1fr}.g3{grid-template-columns:repeat(3,1fr)}.g4{grid-template-columns:repeat(4,1fr)}
+@media(max-width:900px){.g2,.g3,.g4{grid-template-columns:1fr 1fr}.nav{display:none}}
+@media(max-width:640px){.g2,.g3,.g4{grid-template-columns:1fr}}
+h2{font-size:20px;margin-bottom:4px}
+h3{font-size:16px}
+.sub{color:var(--muted);font-size:13px;margin-bottom:14px}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:16px 18px;box-shadow:var(--shadow)}
+.stat .k{font-size:12px;color:var(--muted)}
+.stat .v{font-size:26px;font-weight:800;margin-top:2px}
+.stat .v small{font-size:13px;font-weight:600;color:var(--muted)}
+.bar{height:8px;background:var(--graybg);border-radius:99px;overflow:hidden;margin-top:6px}
+.bar>i{display:block;height:100%;background:linear-gradient(90deg,var(--brand),var(--brand2));border-radius:99px;transition:width .4s}
+.tag{display:inline-block;padding:2px 9px;border-radius:4px;font-size:12px;font-weight:600;margin:2px 3px 2px 0}
+.t-tier{background:var(--graybg);color:#5a6b7b}
+.t-know{background:var(--greenbg);color:var(--green)}
+.t-tag{background:#f4f5f7;color:#8a99a8}
+/* 洛谷风格难度色 */
+.lv{display:inline-block;padding:2px 8px;border-radius:3px;font-size:12px;font-weight:700;color:#fff;letter-spacing:.3px}
+.chip{display:inline-block;padding:4px 12px;border-radius:999px;border:1px solid var(--line);background:#fff;cursor:pointer;font-size:13px;font-weight:500;color:var(--muted);margin:3px;transition:.15s}
 .chip:hover{border-color:var(--brand);color:var(--brand)}
-.chip.on{background:var(--brand);color:#fff;border-color:var(--brand)}
-.lv{display:inline-block;padding:2px 8px;border-radius:4px;color:#fff;font-size:11.5px;font-weight:700}
-.lvbar{display:flex;height:14px;border-radius:7px;overflow:hidden;background:var(--graybg)}
-.problem-row{display:flex;align-items:center;gap:12px;padding:11px 16px;border-bottom:1px solid var(--line);cursor:pointer;transition:.12s;position:relative}
-.problem-row:last-child{border-bottom:none}
-.problem-row:hover{background:rgba(0,166,90,.04)}
-.problem-row::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--dc,var(--line))}
-.problem-row .id{font-weight:800;color:var(--brand);font-family:ui-monospace,monospace;font-size:13px;width:42px}
-.problem-row .nm{flex:1;font-weight:600;font-size:14px}
-.status{font-size:12px;font-weight:700;padding:2px 8px;border-radius:4px}
-.st-done{background:#dcfce7;color:#15803d}
-.st-part{background:#fef3c7;color:#a16207}
-.st-wa{background:#fee2e2;color:#b91c1c}
-.st-none{background:var(--graybg);color:var(--gray)}
-.phead{font-size:12px;color:var(--muted)}
-/* 题目页 */
-.problem-wrap{display:grid;gap:16px}
-.panel{background:#fff;border:1px solid var(--line);border-radius:10px;overflow:hidden}
-.panel-hd{padding:10px 16px;border-bottom:1px solid var(--line);font-weight:700;font-size:13.5px;background:var(--graybg);display:flex;align-items:center}
-.sample-box{background:var(--graybg);border:1px solid var(--line);border-radius:7px;padding:10px 14px;margin:6px 0;font-family:ui-monospace,Consolas,monospace;font-size:13px;white-space:pre-wrap;position:relative}
-.sample-box .lbl{position:absolute;top:-8px;left:10px;background:var(--brand);color:#fff;font-size:10.5px;padding:1px 7px;border-radius:4px;font-weight:700;font-family:sans-serif}
-.kbd{background:var(--graybg);border:1px solid var(--line);border-radius:4px;padding:1px 6px;font-family:ui-monospace,monospace;font-size:12px}
-.editor-tools{display:flex;align-items:center;gap:8px;padding:8px 12px;border-bottom:1px solid var(--line);background:var(--graybg)}
-.editor-tools .btns{margin-left:auto;display:flex;gap:6px}
-.tpl{border:1px solid var(--line);border-radius:5px;padding:4px 8px;font-size:12.5px;background:#fff}
-.CodeMirror{height:380px;font-size:13px}
-.result-item{display:flex;justify-content:space-between;align-items:center;padding:8px 14px;border-bottom:1px solid var(--line);font-size:13px}
-.result-item:last-child{border-bottom:none}
-.result-item .ti{color:var(--muted);font-size:11.5px}
+.chip.on{background:var(--brand);border-color:var(--brand);color:#fff}
+table{width:100%;border-collapse:collapse;font-size:14px}
+th,td{text-align:left;padding:10px 12px;border-bottom:1px solid var(--line)}
+th{color:var(--muted);font-weight:600;background:#fafbfc;font-size:13px}
+tr:hover td{background:#f4faf7}
 .v-AC{color:var(--green);font-weight:700}
 .v-WA{color:var(--red);font-weight:700}
-.v-CE{color:var(--orange);font-weight:700}
-.v-RE{color:var(--purple);font-weight:700}
-.v-TLE{color:var(--blue);font-weight:700}
-.v-ERR{color:var(--gray);font-weight:700}
-.spinner{display:inline-block;width:14px;height:14px;border:2px solid var(--line);border-top-color:var(--brand);border-radius:50%;animation:spin .7s linear infinite}
-@keyframes spin{to{transform:rotate(360deg)}}
-.detail-pre{background:#1e293b;color:#fca5a5;padding:10px;border-radius:6px;font-size:12px;overflow-x:auto;white-space:pre-wrap;margin:4px 0}
-.bar{height:8px;background:var(--graybg);border-radius:4px;overflow:hidden}
-.bar i{display:block;height:100%;background:linear-gradient(90deg,var(--brand),var(--brand2));border-radius:4px;transition:width .4s}
-.ring{width:80px;height:80px;border-radius:50%;background:conic-gradient(var(--c) calc(var(--p)*1%),var(--graybg) 0);display:grid;place-items:center;position:relative}
-.ring::before{content:"";position:absolute;inset:8px;background:#fff;border-radius:50%}
-.ring b{position:relative;font-size:18px}
-.know-block .cat{display:flex;align-items:center;gap:8px;margin-bottom:8px;font-weight:700}
-.know-block .pct{margin-left:auto;color:var(--muted);font-size:12.5px}
-.pl-card{display:flex;flex-direction:column}
-.plist{display:flex;flex-wrap:wrap;gap:5px;margin-top:8px}
-.pl-chip{background:var(--graybg);padding:4px 9px;border-radius:5px;font-size:12px;cursor:pointer;border:1px solid transparent}
+.v-RE,.v-CE{color:var(--amber);font-weight:700}
+.v-TLE{color:var(--gray);font-weight:700}
+.btn{border:none;cursor:pointer;border-radius:5px;padding:9px 18px;font-size:14px;font-weight:600;transition:.15s}
+.btn-primary{background:var(--brand);color:#fff}
+.btn-primary:hover{background:#00884c}
+.btn-primary:disabled{opacity:.5;cursor:not-allowed}
+.btn-ghost{background:#fff;color:var(--brand);border:1px solid var(--brand)}
+.btn-ghost:hover{background:var(--greenbg)}
+.btn-sm{padding:5px 11px;font-size:12.5px;border-radius:4px}
+/* problem layout */
+.problem-wrap{display:grid;grid-template-columns:minmax(300px,1fr) minmax(420px,1.15fr);gap:18px}
+@media(max-width:980px){.problem-wrap{grid-template-columns:1fr}}
+.panel{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden}
+.panel-hd{display:flex;align-items:center;gap:10px;padding:11px 16px;border-bottom:1px solid var(--line);background:#fafbfc;font-weight:700;font-size:14px}
+.editor-tools{padding:10px 14px;background:#ffffff;border-bottom:1px solid var(--line);display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.editor-tools .btns{margin-left:auto;display:flex;gap:8px}
+.CodeMirror{height:430px;font-size:13.5px;line-height:1.5}
+.result-item{display:flex;justify-content:space-between;align-items:center;padding:9px 14px;border-bottom:1px solid var(--line);font-size:14px}
+.result-item .ti{color:var(--muted);font-size:12px}
+.diff-star{color:#f59e0b;letter-spacing:1px}
+.sample-box{background:#f6f8fa;color:#24292e;border-radius:4px;padding:10px 14px;font-size:13px;overflow:auto;margin:6px 0;border:1px solid var(--line);font-family:Consolas,monospace}
+.sample-box .lbl{color:var(--muted);font-size:11px;text-transform:uppercase;margin-bottom:4px;font-family:inherit}
+code.kbd{background:#eef2f7;padding:1px 6px;border-radius:5px;font-family:Consolas,monospace;font-size:12.5px}
+.solbox{background:var(--amberbg);border:1px solid #f6e2c0;border-radius:10px;padding:14px 16px;margin-top:12px;font-size:14px}
+.know-block{margin-bottom:18px}
+.know-block .cat{font-weight:800;margin-bottom:8px;display:flex;align-items:center;gap:10px}
+.know-block .cat .pct{margin-left:auto;font-size:12px;color:var(--muted);font-weight:600}
+.problem-row{display:flex;align-items:center;gap:12px;padding:11px 14px 11px 16px;border-bottom:1px solid var(--line);cursor:pointer;transition:.12s;position:relative}
+.problem-row:last-child{border-bottom:none}
+.problem-row:hover{background:#f0f9f4}
+.problem-row::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--dc,#cbd5e0)}
+.problem-row .id{font-family:Consolas,monospace;color:var(--muted);font-size:13px;width:42px;font-weight:600}
+.problem-row .nm{font-weight:600;flex:1;color:#24292e;font-size:14.5px}
+.problem-row:hover .nm{color:var(--brand)}
+.problem-row .status{font-size:12px;font-weight:600;padding:2px 9px;border-radius:4px}
+.st-done{background:var(--greenbg);color:var(--green)}
+.st-part{background:var(--amberbg);color:var(--amber)}
+.st-none{background:var(--graybg);color:#9aa7b5}
+.st-wa{background:var(--redbg);color:var(--red)}
+.mockbar{position:sticky;top:58px;z-index:40;background:#0f172a;color:#e2e8f0;padding:10px 0}
+.mockbar .in{max-width:1200px;margin:0 auto;padding:0 20px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.mockbar .t{font-weight:700}
+.mockbar .probs{display:flex;gap:6px;flex-wrap:wrap}
+.mockbar .pb{background:rgba(255,255,255,.12);color:#fff;padding:4px 10px;border-radius:8px;font-size:12px;cursor:pointer}
+.mockbar .pb.active{background:var(--brand)}
+.mockbar .pb.done{background:var(--green)}
+.mockbar .time{margin-left:auto;font-variant-numeric:tabular-nums;font-size:16px;font-weight:800;color:#7dd3fc}
+/* 搜索框 */
+.searchbox{display:flex;gap:10px;align-items:center;background:#fff;border:1px solid var(--line);border-radius:10px;padding:9px 14px;margin-bottom:12px}
+.searchbox input{flex:1;border:none;outline:none;font-size:14px;background:transparent}
+.searchbox .ic{color:var(--muted)}
+/* 题单卡片 */
+.pl-card{display:flex;flex-direction:column;height:100%}
+.pl-card .plist{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0}
+.pl-chip{display:inline-flex;align-items:center;gap:6px;padding:4px 10px;background:#f5f8fe;border:1px solid var(--line);border-radius:8px;font-size:12.5px;cursor:pointer;color:var(--ink);font-weight:600}
 .pl-chip:hover{border-color:var(--brand);color:var(--brand)}
-.empty{text-align:center;color:var(--muted);padding:24px;font-size:13.5px}
-.hidden{display:none!important}
+.pl-chip .lv{font-size:10px;padding:1px 6px}
+/* 难度分布条 */
+.lvbar{display:flex;height:14px;border-radius:999px;overflow:hidden;margin:8px 0}
+.lvbar>div{transition:.3s}
+.footer{max-width:1200px;margin:0 auto;padding:18px 20px;color:var(--muted);font-size:12.5px;border-top:1px solid var(--line)}
+.mt{margin-top:18px}
+.mb{margin-bottom:12px}
+.alert{display:flex;gap:12px;align-items:flex-start;padding:14px 16px;border-radius:12px;font-size:13.5px}
+.alert.warn{background:var(--amberbg);border:1px solid #f6e2c0;color:#7c4a12}
+.compare th{width:50%}
+.ring{--p:0;--c:var(--brand);width:74px;height:74px;border-radius:50%;background:conic-gradient(var(--c) calc(var(--p)*1%),#e6ecf5 0);display:grid;place-items:center}
+.ring b{width:56px;height:56px;background:#fff;border-radius:50%;display:grid;place-items:center;font-size:16px}
+.detail-pre{white-space:pre-wrap;word-break:break-word}
+.empty{text-align:center;color:var(--muted);padding:36px 0;font-size:14px}
+.spinner{display:inline-block;width:15px;height:15px;border:2px solid #cbd5e1;border-top-color:var(--brand);border-radius:50%;animation:sp 0.7s linear infinite;vertical-align:-2px}
+@keyframes sp{to{transform:rotate(360deg)}}
+select.tpl{border:1px solid var(--line);border-radius:8px;padding:6px 10px;font-size:12.5px;background:#fff;color:var(--ink);cursor:pointer}
+.hist{display:flex;gap:14px;font-size:12.5px;color:var(--muted);margin-top:10px;flex-wrap:wrap}
+.hist b{color:var(--ink)}
 /* 知识点卡片 */
-.kcard-row{display:flex;gap:10px;flex-wrap:wrap}
-.kcard{background:var(--graybg);border:2px solid var(--line);border-radius:8px;padding:10px 14px;cursor:pointer;transition:.15s;min-width:120px;position:relative}
+.kcard-row{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
+.kcard{flex:1;min-width:150px;border:1.5px solid var(--line);border-radius:12px;padding:12px 14px;background:#fbfcfe;cursor:pointer;transition:.15s;position:relative}
 .kcard:hover{border-color:var(--brand)}
-.kcard.mastered{background:#dcfce7;border-color:#22c55e}
-.kcard.flagged{background:#fee2e2;border-color:#ef4444;animation:pulse 2s infinite}
-@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(239,68,68,.3)}50%{box-shadow:0 0 0 6px rgba(239,68,68,0)}}
-.kc-name{font-weight:700;font-size:13px}
-.kc-state{font-size:11px;display:block;margin-top:3px}
-.ks-ok{color:#15803d}
-.ks-review{color:#b91c1c;font-weight:700}
-.ks-none{color:var(--gray)}
-/* 可视化 */
-.viz-ctl{display:flex;align-items:center;gap:8px;padding:10px;background:var(--graybg);border-radius:8px 8px 0 0;border-bottom:1px solid var(--line)}
-.viz-ctl .prog{margin-left:auto;font-size:12.5px;color:var(--muted);font-weight:600}
-.viz-stage{padding:16px;background:#fff;min-height:180px;font-family:ui-monospace,Consolas,monospace;font-size:13px}
-.viz-desc{padding:10px 16px;background:#f0fdf4;border-top:1px solid #bbf7d0;font-size:13px;color:#166534;border-radius:0 0 8px 8px}
-.viz-array{display:inline-flex;gap:0;margin:4px 0}
-.viz-cell{width:36px;height:36px;border:1px solid var(--line);display:grid;place-items:center;font-weight:700;background:#fff;position:relative}
-.viz-cell.hl{background:#fef08a;border-color:#f59e0b;color:#92400e}
-.viz-cell.bad{background:#fecaca;border-color:#ef4444;color:#991b1b}
-.viz-cell.good{background:#bbf7d0;border-color:#22c55e;color:#15803d}
-.viz-cell .idx{position:absolute;bottom:-16px;font-size:10px;color:var(--gray);font-weight:400}
-.minebox{margin-top:12px;padding:12px;background:#f8fafc;border:1px solid var(--line);border-radius:8px}
-.minecmp{padding:12px;border-radius:8px;margin-top:8px;font-size:13px}
-.minecmp.ok{background:#f0fdf4;border:1px solid #bbf7d0}
-.minecmp.bad{background:#fef2f2;border:1px solid #fecaca}
-.lk-check{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
-.ck{padding:4px 10px;border-radius:5px;font-size:12px;font-weight:600;cursor:default;font-family:ui-monospace,monospace}
-.ck.ok{background:#dcfce7;color:#15803d}
-.ck.bad{background:#fee2e2;color:#b91c1c;cursor:pointer;border:1px dashed #ef4444}
-.ck.bad:hover{background:#fecaca}
-.flash-bad{animation:flashbad 1s ease-in-out 2}
-@keyframes flashbad{0%,100%{box-shadow:none}50%{box-shadow:0 0 0 4px rgba(239,68,68,.4);border-color:#ef4444}}
+.kcard .kc-name{font-weight:800;font-size:14px;margin-bottom:4px}
+.kcard .kc-state{font-size:11.5px;font-weight:700;padding:2px 8px;border-radius:999px;display:inline-block}
+.ks-none{background:var(--graybg);color:var(--gray)}
+.ks-review{background:var(--redbg);color:var(--red);animation:pulse 1.6s infinite}
+.ks-ok{background:var(--greenbg);color:var(--green)}
+.kcard.flagged{border-color:var(--red);background:#fff7f7}
+.kcard.mastered{border-color:var(--green);background:#f4fbf6}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(220,38,38,.25)}50%{box-shadow:0 0 0 6px rgba(220,38,38,0)}}
+/* 算法可视化 */
+.viz-mask{position:fixed;inset:0;background:rgba(15,30,60,.55);z-index:100;display:flex;align-items:center;justify-content:center;padding:20px}
+.viz-box{background:#fff;border-radius:16px;max-width:880px;width:100%;max-height:90vh;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.3)}
+.viz-hd{padding:14px 20px;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:10px;font-weight:800}
+.viz-hd .x{margin-left:auto;cursor:pointer;color:var(--muted);font-size:20px;line-height:1}
+.viz-stage{padding:20px;overflow:auto;background:#fafbfe;flex:1;min-height:280px}
+.viz-desc{padding:12px 20px;background:#fff;border-top:1px solid var(--line);font-size:14px;min-height:48px}
+.viz-ctl{padding:10px 20px;border-top:1px solid var(--line);display:flex;gap:8px;align-items:flex-wrap;background:#fff}
+.viz-ctl .prog{margin-left:auto;font-size:12.5px;color:var(--muted);font-variant-numeric:tabular-nums}
+.viz-boxrow{display:flex;gap:6px;flex-wrap:wrap;align-items:flex-end;margin:10px 0}
+.vcell{min-width:38px;height:38px;border-radius:6px;background:#eef2f7;display:grid;place-items:center;font-weight:700;font-size:13px;font-family:Consolas,monospace;border:1px solid #dde5ef}
+.vcell.hi{background:var(--brand);color:#fff;border-color:var(--brand)}
+.vcell.ok{background:var(--green);color:#fff;border-color:var(--green)}
+.vcell.bad{background:var(--red);color:#fff;border-color:var(--red)}
+.vcell.lo{background:#fff3d6;color:#92600a;border-color:#f0d488}
+.vlbl{font-size:11px;color:var(--muted);text-align:center;margin-top:3px;font-family:Consolas,monospace}
+.vbar{display:inline-block;background:var(--brand);color:#fff;border-radius:4px 4px 0 0;display:grid;place-items:end;font-size:11px;font-weight:700;padding-bottom:3px;align-self:flex-end;transition:.3s}
+.vgrid{display:grid;gap:4px;margin:8px 0}
+.vcell.wall{background:#334155;color:#94a3b8}
+.vcell.start{background:#0ea5e9;color:#fff}
+.vcell.end{background:#f59e0b;color:#fff}
+.vcell.visited{background:#bbf7d0;color:#166534}
+.vcell.frontier{background:#93c5fd;color:#1e3a8a}
+/* 跑我的算法对比 */
+.minebox{margin-top:12px;border-top:1px dashed var(--line);padding-top:12px}
+.minecmp{border-radius:10px;padding:12px 14px;margin-top:10px;font-size:13.5px;line-height:1.7}
+.minecmp.ok{background:var(--greenbg);border:1px solid #bfe6cc;color:#14532d}
+.minecmp.bad{background:var(--redbg);border:1px solid #f3c0c0;color:#7f1d1d}
+#ivStage{background:#fafbfe}
 /* 洛谷风格 */
-.lgbreadcrumb{padding:8px 0}
-.luogu-id{font-family:ui-monospace,monospace;font-weight:700;color:var(--brand)}
-.lgtabs{display:flex;gap:0;border-bottom:2px solid var(--line)}
-.lgtab{padding:10px 18px;cursor:pointer;font-size:13.5px;font-weight:600;color:var(--muted);border-bottom:2px solid transparent;margin-bottom:-2px;transition:.15s}
-.lgtab:hover{color:var(--ink)}
-.lgtab.on{color:var(--brand);border-bottom-color:var(--brand)}
-.lginfo{display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--line);font-size:13px}
+.lgtab{padding:10px 18px;cursor:pointer;font-size:14px;color:var(--muted);font-weight:500;margin-bottom:-2px;border-bottom:2px solid transparent}
+.lgtab.on{color:var(--brand);border-bottom-color:var(--brand);font-weight:700}
+.lginfo{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:9px 16px;border-bottom:1px solid #f2f4f7;font-size:13px}
 .lginfo:last-child{border-bottom:none}
-.lginfo span:first-child{color:var(--muted)}
-.tut-code{background:var(--editor);color:#e2e8f0;padding:14px;border-radius:8px;font-family:ui-monospace,Consolas,monospace;font-size:12.5px;overflow-x:auto;white-space:pre;line-height:1.6;margin:8px 0}
+.lginfo>span:first-child{color:var(--muted);flex-shrink:0}
+.problem-wrap h3{padding-left:10px;border-left:3px solid var(--brand);margin:14px 0 6px;font-size:15px;color:#24292e}
+.luogu-id{font-family:Consolas,monospace;color:var(--brand);font-size:14px;font-weight:700;margin-right:2px}
+.lk-check{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.lk-check .ck{font-family:Consolas,monospace;font-size:12.5px;padding:5px 10px;border-radius:6px;border:1px solid var(--line);background:#fff}
+.lk-check .ck.ok{background:var(--greenbg);border-color:#bfe6cc;color:#14532d}
+.lk-check .ck.bad{background:var(--redbg);border-color:#f3c0c0;color:#7f1d1d;animation:pulse 1.6s infinite;cursor:pointer}
+#ivStage.flash-bad{border-color:var(--red)!important;box-shadow:0 0 0 3px rgba(231,76,60,.25)}
+/* 洛谷式标签页 */
+.tabs{display:flex;gap:0;border-bottom:2px solid var(--line);margin-bottom:14px}
+.tabs .tab{padding:10px 18px;cursor:pointer;font-size:14px;font-weight:600;color:var(--muted);border-bottom:2px solid transparent;margin-bottom:-2px;transition:.15s}
+.tabs .tab:hover{color:var(--brand)}
+.tabs .tab.active{color:var(--brand);border-bottom-color:var(--brand)}
+.tabs .tab .cnt{background:var(--graybg);color:var(--gray);font-size:11px;padding:1px 7px;border-radius:99px;margin-left:5px;font-weight:700}
+.tabs .tab.active .cnt{background:var(--greenbg);color:var(--brand)}
+/* 题解代码块 */
+.tut-code{background:#1e1e2e;color:#e2e8f0;border-radius:6px;padding:14px 16px;overflow:auto;font-size:13px;line-height:1.55;font-family:Consolas,monospace;margin:8px 0}
+.tut-code .cm{color:#6c7086}
+/* 讨论区 */
 .disc-item{padding:12px 0;border-bottom:1px solid var(--line)}
 .disc-item:last-child{border-bottom:none}
-.disc-head{display:flex;align-items:center;gap:8px;margin-bottom:6px}
-.disc-avatar{width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,var(--brand),var(--brand2));color:#fff;display:grid;place-items:center;font-size:12px;font-weight:700}
-.disc-user{font-weight:700;font-size:13px}
+.disc-head{display:flex;align-items:center;gap:8px;margin-bottom:4px}
+.disc-avatar{width:30px;height:30px;border-radius:50%;background:linear-gradient(135deg,var(--brand),var(--brand2));color:#fff;display:grid;place-items:center;font-size:13px;font-weight:700}
+.disc-user{font-weight:700;font-size:13.5px}
 .disc-time{color:var(--muted);font-size:11.5px;margin-left:auto}
-.disc-content{font-size:13.5px;line-height:1.7;padding-left:36px;white-space:pre-wrap}
-.disc-input{width:100%;min-height:70px;border:1px solid var(--line);border-radius:8px;padding:10px;font-size:13.5px;font-family:inherit;resize:vertical}
-.disc-input:focus{outline:none;border-color:var(--brand)}
-.prob-stats{display:flex;gap:16px;padding:10px 0;font-size:13px}
-.fav-btn{cursor:pointer;user-select:none;font-size:18px;color:var(--gray);transition:.15s}
-.fav-btn:hover{color:var(--orange)}
-.fav-btn.on{color:var(--orange)}
-.sub-row{display:flex;align-items:center;gap:10px;padding:9px 14px;border-bottom:1px solid var(--line);cursor:pointer;font-size:13px;transition:.12s}
-.sub-row:last-child{border-bottom:none}
-.sub-row:hover{background:rgba(0,166,90,.04)}
-.sub-row .sid{font-family:ui-monospace,monospace;color:var(--muted);font-size:12px;width:70px}
-.sub-row .st{width:60px;font-size:12px;font-weight:700;text-align:center;padding:2px 0;border-radius:4px}
+.disc-content{font-size:14px;padding-left:38px;white-space:pre-wrap;word-break:break-word}
+.disc-reply{margin-left:38px;margin-top:8px;padding:8px 12px;background:#f8f9fa;border-radius:6px;font-size:13px}
+.disc-input{width:100%;border:1px solid var(--line);border-radius:6px;padding:10px 12px;font-size:14px;resize:vertical;min-height:70px;font-family:inherit;outline:none;transition:.15s}
+.disc-input:focus{border-color:var(--brand)}
+/* 题目统计栏 */
+.prob-stats{display:flex;gap:20px;flex-wrap:wrap;padding:10px 0;margin-bottom:6px;font-size:13px;color:var(--muted)}
+.prob-stats b{color:var(--ink);font-size:15px}
+.fav-btn{cursor:pointer;font-size:18px;transition:.15s;user-select:none}
+.fav-btn.on{color:#f59e0b}
+/* 提交记录行 */
+.sub-row{display:flex;align-items:center;gap:12px;padding:9px 12px;border-bottom:1px solid var(--line);cursor:pointer;font-size:13px}
+.sub-row:hover{background:#f4faf7}
+.sub-row .sid{font-family:Consolas,monospace;color:var(--muted);font-size:12px;width:70px}
+.sub-row .st{font-weight:700;font-size:12px;padding:2px 8px;border-radius:4px}
+/* 排行榜 */
 .lb-row{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--line);font-size:13.5px}
-.lb-row:last-child{border-bottom:none}
-.lb-rank{width:28px;height:28px;border-radius:50%;background:var(--graybg);display:grid;place-items:center;font-weight:800;font-size:13px;color:var(--muted)}
-.lb-rank.r1{background:linear-gradient(135deg,#fbbf24,#f59e0b);color:#fff}
-.lb-rank.r2{background:linear-gradient(135deg,#94a3b8,#64748b);color:#fff}
-.lb-rank.r3{background:linear-gradient(135deg,#fb923c,#ea580c);color:#fff}
+.lb-rank{width:28px;font-weight:800;font-family:Consolas,monospace;text-align:center}
+.lb-rank.r1{color:#f59e0b}.lb-rank.r2{color:#94a3b8}.lb-rank.r3{color:#cd7f32}
 .lb-name{flex:1;font-weight:600}
-.lb-score{font-weight:800;color:var(--brand);font-family:ui-monospace,monospace}
-.rand-btn{background:#fff;border:1px solid var(--line);border-radius:6px;padding:5px 12px;font-size:12.5px;cursor:pointer;font-weight:600;color:var(--ink)}
+.lb-score{font-weight:700;color:var(--brand)}
+/* 随机题按钮 */
+.rand-btn{background:#fff;border:1px solid var(--line);border-radius:6px;padding:7px 14px;cursor:pointer;font-size:13px;font-weight:600;color:var(--muted);transition:.15s}
 .rand-btn:hover{border-color:var(--brand);color:var(--brand)}
-.solbox{background:#f0fdf4;border:1px solid #bbf7d0;border-radius:8px;padding:12px 16px;margin:8px 0;font-size:13.5px;line-height:1.8}
-@media(max-width:900px){.g2,.g3,.g4{grid-template-columns:1fr}.problem-wrap{grid-template-columns:1fr!important}#nav{overflow-x:auto}#topbar .inner{gap:10px;padding:0 12px}}
 </style>
 </head>
 <body>
-<div id="topbar">
-  <div class="inner">
-    <div id="logo"><span class="dot">CSP</span> 第二轮备考</div>
-    <div id="nav">
-      <button data-view="dashboard" class="active">首页</button>
+
+<header class="topbar">
+  <div class="in">
+    <div class="logo"><span class="badge">CSP-S</span>第二轮 · 在线刷题评测</div>
+    <nav class="nav" id="nav">
+      <button data-view="dashboard">首页</button>
       <button data-view="practice">题库</button>
       <button data-view="playlists">题单</button>
       <button data-view="mock">模拟赛</button>
       <button data-view="knowledge">知识图谱</button>
-      <button data-view="records">我的记录</button>
-    </div>
-    <div id="cd"></div>
+      <button data-view="records">我的</button>
+    </nav>
+    <div class="navright"><span class="countdown" id="cd"></span></div>
+  </div>
+</header>
+
+<div class="mockbar hidden" id="mockbar">
+  <div class="in">
+    <span class="t">⚡ 模拟赛进行中</span>
+    <span class="probs" id="mockprobs"></span>
+    <span class="time" id="mocktime">--:--</span>
   </div>
 </div>
-<div id="mockbar" class="hidden">
-  <b>⏱ 模拟赛进行中</b>
-  <span id="mockprobs"></span>
-  <span style="margin-left:auto">剩余 <span id="mocktime">4:00:00</span></span>
-</div>
-<div id="app"></div>
 
-<script>
-/*================ 题库数据（CSP-S 提高组第二轮考点全覆盖） ================*/
-window.CSP_PROBLEMS=[
-{id:"p01",no:1,tier:"T1",title:"数字统计",tag:"模拟 / 枚举",diff:1,points:100,constraints:"1s / 256MB",
- knowledge:["枚举与模拟","STL 容器"],
- statement:"给定两个正整数 L 和 R（1≤L≤R≤10^6），统计区间 [L,R] 中所有整数的十进制表示里，数字 2 出现的总次数。",
- inputFormat:"一行两个整数 L R。",outputFormat:"一个整数，表示数字 2 出现的总次数。",
- sample:{input:"2 22",output:"6"},
- solution:"从 L 到 R 枚举每个数，逐位取模 10 判断是否为 2 并计数。复杂度 O((R-L+1)×位数)，R≤10^6 完全没问题。也可以用数位 DP 做更大范围。",
- judge:[{input:"2 22\n",output:"6",score:30},{input:"1 100\n",output:"20",score:30},{input:"123 4567\n",output:"1441",score:40}]},
-{id:"p02",no:2,tier:"T1",title:"区间和查询",tag:"前缀和",diff:1,points:100,constraints:"1s / 256MB",
- knowledge:["前缀和 / 差分","枚举与模拟"],
- statement:"给定长度为 n 的数组 a 和 q 次询问，每次询问给出 l,r，求 a[l]+a[l+1]+…+a[r] 的和。",
- inputFormat:"第一行 n q；第二行 n 个整数；接下来 q 行每行 l r。",outputFormat:"每行一个整数表示答案。",
- sample:{input:"5 3\n1 2 3 4 5\n1 3\n2 5\n1 5",output:"6\n14\n15"},
- solution:"预处理前缀和 s[i]=a[1]+…+a[i]，每次询问 O(1) 输出 s[r]-s[l-1]。注意下标从 1 开始。",
- judge:[{input:"5 3\n1 2 3 4 5\n1 3\n2 5\n1 5\n",output:"6\n14\n15",score:50},{input:"6 2\n10 -5 3 7 -2 4\n1 6\n2 4\n",output:"17\n5",score:50}]},
-{id:"p03",no:3,tier:"T2",title:"切绳子",tag:"二分答案",diff:2,points:100,constraints:"1s / 256MB",
- knowledge:["二分答案","贪心"],
- statement:"有 n 根绳子，长度分别为 a[i]。现在要切出 k 段长度相同的绳子，问每段最长能有多长（保留两位小数）。",
- inputFormat:"第一行 n k；第二行 n 个正整数。",outputFormat:"一个浮点数，保留两位小数。",
- sample:{input:"4 11\n8 10 12 15",output:"3.00"},
- solution:"二分答案长度 x，判断 sum(a[i]/x)≥k 是否成立。为避免浮点误差，可以把长度乘 100 转成整数二分。",
- judge:[{input:"4 11\n8 10 12 15\n",output:"3.00",score:40},{input:"3 5\n5 5 5\n",output:"3.00",score:30},{input:"1 1\n100\n",output:"100.00",score:30}]},
-{id:"p04",no:4,tier:"T2",title:"会议安排",tag:"贪心",diff:2,points:100,constraints:"1s / 256MB",
- knowledge:["贪心","排序"],
- statement:"有 n 个会议，每个会议有开始时间 s[i] 和结束时间 e[i]。一个会议室同一时间只能开一个会，问最多能安排多少个不冲突的会议。",
- inputFormat:"第一行 n；接下来 n 行每行 s e。",outputFormat:"一个整数，表示最多会议数。",
- sample:{input:"4\n1 3\n2 4\n3 5\n4 6",output:"3"},
- solution:"经典区间调度：按结束时间从小到大排序，每次选结束最早且不冲突的会议。贪心正确性：结束越早，留给后面的时间越多。",
- judge:[{input:"4\n1 3\n2 4\n3 5\n4 6\n",output:"3",score:40},{input:"3\n1 10\n2 3\n4 5\n",output:"2",score:30},{input:"5\n1 2\n2 3\n3 4\n4 5\n1 5\n",output:"4",score:30}]},
-{id:"p05",no:5,tier:"T3",title:"最大矩形",tag:"单调栈",diff:3,points:100,constraints:"1s / 256MB",
- knowledge:["栈 / 队列 / 堆","枚举与模拟"],
- statement:"给定一个直方图（n 个柱子的高度 h[i]），求直方图中面积最大的矩形的面积。",
- inputFormat:"第一行 n；第二行 n 个整数。",outputFormat:"一个整数，表示最大面积。",
- sample:{input:"6\n2 1 5 6 2 3",output:"10"},
- solution:"单调栈经典题。维护一个高度递增的栈，遇到比栈顶小的柱子时弹出栈顶并计算以该高度为高的矩形宽度。每个元素进出栈一次，O(n)。",
- judge:[{input:"6\n2 1 5 6 2 3\n",output:"10",score:40},{input:"5\n1 1 1 1 1\n",output:"5",score:30},{input:"8\n4 2 0 3 2 5 1 4\n",output:"8",score:30}]},
-{id:"p06",no:6,tier:"T3",title:"最小生成树",tag:"图论 / MST",diff:3,points:100,constraints:"1s / 256MB",
- knowledge:["最小生成树","并查集"],
- statement:"给定 n 个点 m 条边的无向连通图，每条边有边权 w。求最小生成树的总边权。",
- inputFormat:"第一行 n m；接下来 m 行每行 u v w。",outputFormat:"一个整数，表示最小生成树总权值。",
- sample:{input:"4 5\n1 2 2\n1 3 3\n2 3 1\n2 4 4\n3 4 5",output:"7"},
- solution:"Kruskal 算法：将边按权值排序，用并查集维护连通性，依次加入不形成环的边。复杂度 O(m log m)。",
- judge:[{input:"4 5\n1 2 2\n1 3 3\n2 3 1\n2 4 4\n3 4 5\n",output:"7",score:40},{input:"3 3\n1 2 10\n2 3 20\n1 3 30\n",output:"30",score:30},{input:"5 7\n1 2 4\n1 3 2\n2 3 1\n2 4 5\n3 4 8\n3 5 10\n4 5 2\n",output:"9",score:30}]},
-{id:"p07",no:7,tier:"T1",title:"高精度加法",tag:"高精度",diff:1,points:100,constraints:"1s / 256MB",
- knowledge:["高精度","STL 容器"],
- statement:"给定两个不超过 1000 位的非负整数，求它们的和。",
- inputFormat:"两行，每行一个大整数。",outputFormat:"一行，表示两数之和。",
- sample:{input:"123\n456",output:"579"},
- solution:"用数组或字符串模拟竖式加法，从低位到低位逐位相加并处理进位。注意前导零和结果为 0 的情况。",
- judge:[{input:"123\n456\n",output:"579",score:30},{input:"999\n1\n",output:"1000",score:30},{input:"12345678901234567890\n98765432109876543210\n",output:"111111111011111111100",score:40}]},
-{id:"p08",no:8,tier:"T2",title:"最长上升子序列",tag:"DP / 二分",diff:2,points:100,constraints:"1s / 256MB",
- knowledge:["线性 DP","二分答案"],
- statement:"给定长度为 n 的序列 a，求最长严格上升子序列的长度。",
- inputFormat:"第一行 n；第二行 n 个整数。",outputFormat:"一个整数。",
- sample:{input:"6\n1 3 2 4 3 5",output:"4"},
- solution:"O(n log n) 做法：维护 tails 数组，tails[i] 表示长度为 i+1 的上升子序列的最小末尾。对每个元素用 lower_bound 找位置替换。",
- judge:[{input:"6\n1 3 2 4 3 5\n",output:"4",score:40},{input:"5\n5 4 3 2 1\n",output:"1",score:30},{input:"8\n1 2 3 4 5 6 7 8\n",output:"8",score:30}]},
-{id:"p09",no:9,tier:"T3",title:"01 背包",tag:"动态规划",diff:3,points:100,constraints:"1s / 256MB",
- knowledge:["背包 DP","动态规划"],
- statement:"有 n 件物品，每件有重量 w[i] 和价值 v[i]。背包容量为 W，每件物品最多选一次，求最大价值。",
- inputFormat:"第一行 n W；接下来 n 行每行 w v。",outputFormat:"一个整数。",
- sample:{input:"4 10\n2 6\n2 3\n6 5\n5 4",output:"11"},
- solution:"01 背包标准 DP：dp[j] 表示容量 j 的最大价值，倒序枚举容量保证每件物品只选一次。dp[j]=max(dp[j],dp[j-w]+v)。",
- judge:[{input:"4 10\n2 6\n2 3\n6 5\n5 4\n",output:"11",score:40},{input:"3 5\n2 3\n3 4\n4 5\n",output:"7",score:30},{input:"1 10\n5 100\n",output:"100",score:30}]},
-{id:"p10",no:10,tier:"T4",title:"单源最短路",tag:"Dijkstra",diff:3,points:100,constraints:"1s / 256MB",
- knowledge:["最短路 Dijkstra / SPFA / Floyd","栈 / 队列 / 堆"],
- statement:"给定 n 个点 m 条边的有向图（边权非负），求从点 1 到所有点的最短距离。",
- inputFormat:"第一行 n m；接下来 m 行每行 u v w。",outputFormat:"n 个整数，空格分隔，表示点 1 到各点的最短距离（不可达输出 -1）。",
- sample:{input:"4 4\n1 2 2\n1 3 1\n2 4 5\n3 4 1",output:"0 2 1 2"},
- solution:"Dijkstra + 优先队列：dist 数组初始化为无穷，dist[1]=0，每次取未访问的最近点松弛邻边。复杂度 O((n+m)log n)。",
- judge:[{input:"4 4\n1 2 2\n1 3 1\n2 4 5\n3 4 1\n",output:"0 2 1 2",score:40},{input:"3 2\n1 2 5\n2 3 3\n",output:"0 5 8",score:30},{input:"5 6\n1 2 1\n1 3 4\n2 3 2\n2 4 5\n3 4 1\n4 5 3\n",output:"0 1 3 4 7",score:30}]},
-{id:"p11",no:11,tier:"T4",title:"树的直径",tag:"树形 / DFS",diff:3,points:100,constraints:"1s / 256MB",
- knowledge:["树上 LCA / 直径 / 重心 / 换根","DFS 深度优先"],
- statement:"给定一棵 n 个节点的树，每条边有边权，求树的直径（任意两点间最长路径的长度）。",
- inputFormat:"第一行 n；接下来 n-1 行每行 u v w。",outputFormat:"一个整数。",
- sample:{input:"5\n1 2 3\n2 3 4\n2 4 2\n4 5 5",output:"12"},
- solution:"两次 DFS：第一次从任意点找到最远点 A，第二次从 A 找到最远点 B，A-B 即为直径。也可以树形 DP：每个节点维护最长和次长路。",
- judge:[{input:"5\n1 2 3\n2 3 4\n2 4 2\n4 5 5\n",output:"12",score:40},{input:"4\n1 2 1\n2 3 1\n3 4 1\n",output:"3",score:30},{input:"6\n1 2 5\n1 3 3\n2 4 2\n2 5 4\n3 6 6\n",output:"15",score:30}]},
-{id:"p12",no:12,tier:"T4",title:"DAG 最长路",tag:"拓扑排序 / DP",diff:3,points:100,constraints:"1s / 256MB",
- knowledge:["拓扑排序","线性 DP"],
- statement:"给定一个 n 个点 m 条边的有向无环图（DAG），边权为正，求从点 1 到点 n 的最长路径长度。",
- inputFormat:"第一行 n m；接下来 m 行每行 u v w。",outputFormat:"一个整数。",
- sample:{input:"4 4\n1 2 3\n1 3 2\n2 4 4\n3 4 5",output:"7"},
- solution:"拓扑排序后按拓扑序 DP：dist[v]=max(dist[v],dist[u]+w)。DAG 上最长路不能用 Dijkstra（边权为正但求最长），拓扑序 DP 是正解。",
- judge:[{input:"4 4\n1 2 3\n1 3 2\n2 4 4\n3 4 5\n",output:"7",score:40},{input:"3 2\n1 2 10\n2 3 20\n",output:"30",score:30},{input:"5 6\n1 2 1\n1 3 3\n2 4 2\n3 4 1\n2 5 4\n4 5 1\n",output:"5",score:30}]},
-{id:"p13",no:13,tier:"T4",title:"矩阵快速幂",tag:"数论 / 快速幂",diff:4,points:100,constraints:"1s / 256MB",
- knowledge:["矩阵快速幂","快速幂"],
- statement:"求斐波那契数列第 n 项（F(1)=1,F(2)=1,F(n)=F(n-1)+F(n-2)），n 可以很大（n≤10^18），答案对 10^9+7 取模。",
- inputFormat:"一个整数 n。",outputFormat:"F(n) mod 10^9+7。",
- sample:{input:"10",output:"55"},
- solution:"矩阵快速幂：[[1,1],[1,0]]^(n-1) × [F(2),F(1)]^T = [F(n),F(n-1)]^T。矩阵乘法 O(log n) 次，每次 O(2^3)。",
- judge:[{input:"10\n",output:"55",score:30},{input:"1\n",output:"1",score:20},{input:"100\n",output:"782204094",score:50}]},
-{id:"p14",no:14,tier:"T4",title:"字符串匹配",tag:"KMP",diff:4,points:100,constraints:"1s / 256MB",
- knowledge:["KMP","字符串哈希"],
- statement:"给定文本串 S 和模式串 T，求 T 在 S 中出现的次数（可以重叠）。",
- inputFormat:"两行，第一行 S，第二行 T。",outputFormat:"一个整数。",
- sample:{input:"ababab\naba",output:"2"},
- solution:"KMP 算法：先求模式串的 next 数组（最长公共前后缀），然后在匹配失败时利用 next 回退，避免暴力回溯。复杂度 O(|S|+|T|)。",
- judge:[{input:"ababab\naba\n",output:"2",score:40},{input:"aaaa\naa\n",output:"3",score:30},{input:"abcdefg\nxyz\n",output:"0",score:30}]},
-{id:"p15",no:15,tier:"T2",title:"迷宫最短路",tag:"BFS",diff:2,points:100,constraints:"1s / 256MB",
- knowledge:["BFS 广度优先","枚举与模拟"],
- statement:"给定 n×m 的迷宫，0 表示可走，1 表示墙。从左上角 (1,1) 到右下角 (n,m)，求最少步数（上下左右移动）。",
- inputFormat:"第一行 n m；接下来 n 行每行 m 个字符（0/1）。",outputFormat:"一个整数（保证有解）。",
- sample:{input:"3 3\n000\n010\n000",output:"4"},
- solution:"BFS 从起点开始，队列维护待扩展的格子，dist 数组记录距离。第一次到达终点即为最短路（边权均为 1）。",
- judge:[{input:"3 3\n000\n010\n000\n",output:"4",score:40},{input:"2 2\n00\n00\n",output:"2",score:30},{input:"5 5\n00000\n01110\n01010\n01010\n00010\n",output:"8",score:30}]},
-{id:"p16",no:16,tier:"T3",title:"树状数组",tag:"数据结构 / BIT",diff:3,points:100,constraints:"1s / 256MB",
- knowledge:["树状数组 / 线段树","前缀和 / 差分"],
- statement:"给定长度为 n 的数组，支持两种操作：① 给位置 i 加上 x；② 查询前缀和 [1,i]。共 q 次操作。",
- inputFormat:"第一行 n q；第二行 n 个初始值；接下来 q 行，每行形如 1 i x（修改）或 2 i（查询）。",outputFormat:"对每个查询输出一行。",
- sample:{input:"5 3\n1 2 3 4 5\n2 3\n1 2 10\n2 3",output:"6\n16"},
- solution:"树状数组（BIT）：lowbit 维护，add(i,x) 和 query(i) 均 O(log n)。query(3)=1+2+3=6，修改后 a[2]=12，query(3)=1+12+3=16。",
- judge:[{input:"5 3\n1 2 3 4 5\n2 3\n1 2 10\n2 3\n",output:"6\n16",score:50},{input:"3 4\n0 0 0\n1 1 5\n2 1\n1 3 3\n2 3\n",output:"5\n8",score:50}]}
-];
+<main class="wrap" id="app"></main>
+
+<footer class="footer">
+  CSP-S 2026 第二轮备考工具 · 机试 4 题 × 100 分 = 400 分 · 官方时间 2026-10-31 14:30–18:30（以 CCF 通知为准）<br>
+  实时评测由 Wandbox 公共编译服务提供（GitHub Pages 无法直接编译 C++，故调用公共 API）。难度配色参考洛谷。数据保存在本机浏览器 localStorage。
+</footer>
+
+<script src="data.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
