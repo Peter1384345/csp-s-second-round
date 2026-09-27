@@ -14,6 +14,35 @@ const saveDiscuss=(id,d)=>LS.set("csps_discuss_"+id,d);
 const addDiscuss=(id,content,user)=>{const d=getDiscuss(id);d.push({id:uid(),user:user||"匿名用户",time:Date.now(),content});saveDiscuss(id,d);return d;};
 const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,6);
 
+/*================ 登录 ================*/
+const getUser=()=>LS.get("csps_user",null);
+const setUser=u=>LS.set("csps_user",u);
+function logout(){localStorage.removeItem("csps_user");renderLoginArea();nav((location.hash||"#/dashboard").replace(/^#\//,""));}
+function renderLoginArea(){
+  const el=document.getElementById("loginArea"); if(!el)return;
+  const u=getUser();
+  if(u){el.innerHTML=`<div class="user-chip" onclick="if(confirm('退出登录 '+esc(u)+'？'))logout()"><div class="avatar">${esc(u[0].toUpperCase())}</div><span style="color:#333;font-weight:600">${esc(u)}</span></div>`;}
+  else{el.innerHTML=`<button class="login-btn" id="openLogin">登录</button>`;
+    document.getElementById("openLogin").onclick=()=>{document.getElementById("loginModal").classList.remove("hidden");document.getElementById("loginUser").focus();};}
+}
+function wireLogin(){
+  const m=document.getElementById("loginModal");
+  document.getElementById("loginCancel").onclick=()=>m.classList.add("hidden");
+  m.onclick=e=>{if(e.target===m)m.classList.add("hidden");};
+  document.getElementById("loginOk").onclick=doLogin;
+  document.getElementById("loginPass").onkeydown=e=>{if(e.key==="Enter")doLogin();};
+  document.getElementById("loginUser").onkeydown=e=>{if(e.key==="Enter")document.getElementById("loginPass").focus();};
+}
+function doLogin(){
+  const u=document.getElementById("loginUser").value.trim();
+  if(!u){alert("请输入用户名");return;}
+  setUser(u);
+  document.getElementById("loginModal").classList.add("hidden");
+  document.getElementById("loginUser").value="";document.getElementById("loginPass").value="";
+  renderLoginArea();
+  nav((location.hash||"#/dashboard").replace(/^#\//,""));
+}
+
 /*================ 判题（Wandbox） ================*/
 const WANDBOX="https://wandbox.org/api/compile.json";
 const COMPILER="gcc-13.2.0";
@@ -110,96 +139,55 @@ records(){renderRecords();}
 };
 
 /* ---------- 首页 ---------- */
-function leaderboardHTML(s){
-  const userScore=s.full*100+s.partial*30;
-  const bench=[
-    {name:"算法小能手",ac:16,score:1600},
-    {name:"省队预备役",ac:14,score:1420},
-    {name:"DP大师",ac:12,score:1250},
-    {name:"图论爱好者",ac:10,score:1080},
-    {name:"暴力出奇迹",ac:7,score:760},
-    {name:"刚入门的萌新",ac:3,score:320},
-  ];
-  const me={name:"我（当前账号）",ac:s.full,score:userScore,isMe:true};
-  const all=[...bench,me].sort((a,b)=>b.score-a.score||b.ac-a.ac);
-  const myRank=all.findIndex(x=>x.isMe)+1;
-  return `<div class="card mb">
-    <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
-      <h3 style="margin:0">🏆 备考排行榜</h3>
-      <span class="sub" style="margin:0">你的排名：第 <b style="color:var(--brand)">${myRank}</b> / ${all.length} · AC ${s.full} 题</span>
+function welcomeCardHTML(s){
+  const u=getUser();
+  if(!u){
+    return `<div class="card mb welcome-card">
+      <div class="big-avatar">C</div>
+      <div class="uname">欢迎来到 CSP-S 备考平台</div>
+      <div class="udesc">登录后记录你的刷题进度、提交记录和知识点掌握情况</div>
+      <button class="btn btn-primary" onclick="document.getElementById('loginModal').classList.remove('hidden');document.getElementById('loginUser').focus()">立即登录</button>
+    </div>`;
+  }
+  const days=Math.max(0,Math.ceil((countdownTo()-Date.now())/86400000));
+  return `<div class="card mb welcome-card">
+    <div class="big-avatar">${esc(u[0].toUpperCase())}</div>
+    <div class="uname">${esc(u)}</div>
+    <div class="udesc">已 AC ${s.full} / ${PROBLEMS.length} 题 · 得分率 ${s.rate}% · 距考试 ${days} 天</div>
+    <div style="display:flex;gap:8px;justify-content:center">
+      <button class="btn btn-primary" data-go="practice">开始刷题</button>
+      <button class="btn btn-ghost" data-go="records">我的记录</button>
     </div>
-    ${all.map((x,i)=>`<div class="lb-row">
-      <span class="lb-rank ${i===0?'r1':i===1?'r2':i===2?'r3':''}">${i+1}</span>
-      <span style="width:28px;height:28px;border-radius:50%;background:${x.isMe?'linear-gradient(135deg,var(--brand),var(--brand2))':'#e2e8f0'};color:${x.isMe?'#fff':'#64748b'};display:grid;place-items:center;font-size:12px;font-weight:700">${x.name[0]}</span>
-      <span class="lb-name" style="${x.isMe?'color:var(--brand);font-weight:800':''}">${x.name}${x.isMe?' 👈':''}</span>
-      <span style="color:var(--muted);font-size:12px">AC ${x.ac}</span>
-      <span class="lb-score">${x.score}</span>
-    </div>`).join("")}
-    <div class="sub" style="margin-top:8px;font-size:12px">积分 = AC题数×100 + 部分分题数×30。基准选手为模拟数据，激励你持续刷题。</div>
   </div>`;
 }
 function renderDashboard(){
   const s=stats();
-  const cd=countdownTo()-Date.now();
-  const days=Math.max(0,Math.ceil(cd/(86400000)));
+  const days=Math.max(0,Math.ceil((countdownTo()-Date.now())/86400000));
   const dist=levelDist();
   const distBar=Object.keys(LEVELS).map(k=>{
-    const L=LEVELS[k];const [ac,tot]=dist[k];const w=tot?ac/tot*100:0;
-    return `<div style="width:${tot/PROBLEMS.length*100}%;background:${L.color};opacity:${tot?0.35+0.65*(ac/tot):0.15}" title="${L.name} ${ac}/${tot}"></div>`;
+    const L=LEVELS[k];const [ac,tot]=dist[k];
+    return `<div style="width:${tot/PROBLEMS.length*100}%;background:${L.color};opacity:${tot?0.3+0.7*(ac/tot):0.12}" title="${L.name} ${ac}/${tot}"></div>`;
   }).join("");
   app.innerHTML=`
-  ${header("CSP-S 2026 第二轮 · 高效备考","机试：现场上机编程 · 4 题 × 100 分 = 400 分 · 官方时间 2026-10-31 14:30–18:30")}
-  <div class="alert warn mb"><div>📌</div><div><b>判题说明：</b>本站在浏览器中调用 <b>Wandbox</b> 公共编译服务实时运行你的 C++ 代码并按测试数据评分（GitHub Pages 无法直接编译 C++）。难度配色参考洛谷。评测结果以官方评测环境为准。</div></div>
+  ${header("CSP-S 2026 第二轮备考","机试：4 题 × 100 分 = 400 分 · 2026-10-31 14:30–18:30")}
+  ${welcomeCardHTML(s)}
   <div class="grid g4 mb">
-    <div class="stat"><div class="k">距第二轮机试</div><div class="v">${days}<small> 天</small></div></div>
-    <div class="stat"><div class="k">已 AC 题目</div><div class="v">${s.full}<small> / ${PROBLEMS.length}</small></div></div>
-    <div class="stat"><div class="k">平均得分率</div><div class="v">${s.rate}<small>%</small></div></div>
-    <div class="stat"><div class="k">已掌握考点</div><div class="v">${s.knowMastered}<small> / ${s.knowTotal}</small></div></div>
+    <div class="stat"><div class="k">距考试</div><div class="v">${days}<small> 天</small></div></div>
+    <div class="stat"><div class="k">已 AC</div><div class="v">${s.full}<small>/${PROBLEMS.length}</small></div></div>
+    <div class="stat"><div class="k">得分率</div><div class="v">${s.rate}<small>%</small></div></div>
+    <div class="stat"><div class="k">掌握考点</div><div class="v">${s.knowMastered}<small>/${s.knowTotal}</small></div></div>
   </div>
   <div class="card mb">
-    <div style="display:flex;align-items:center;gap:12px;margin-bottom:6px"><h3 style="margin:0">难度分布（洛谷配色）</h3><span class="sub" style="margin:0">色块越深 = 你在该难度 AC 越多</span></div>
+    <h3 style="font-size:14px;margin-bottom:6px">难度分布</h3>
     <div class="lvbar">${distBar}</div>
-    <div style="display:flex;gap:16px;flex-wrap:wrap;font-size:12px;color:var(--muted);margin-top:6px">
+    <div style="display:flex;gap:14px;flex-wrap:wrap;font-size:12px;color:var(--muted);margin-top:6px">
       ${Object.keys(LEVELS).map(k=>{const L=LEVELS[k];const [ac,tot]=dist[k];return `<span><span class="lv" style="background:${L.color}">${L.name}</span> ${ac}/${tot}</span>`;}).join("")}
     </div>
   </div>
-  ${leaderboardHTML(s)}
-  <div class="grid g2 mb">
-    <div class="card">
-      <h3>本轮怎么考</h3>
-      <div class="sub">第二轮为上机编程，按测试数据给分，重点考察算法设计与代码实现能力。</div>
-      <table><thead><tr><th>题型 / 位置</th><th>考察方向</th></tr></thead><tbody>
-      <tr><td><b>T1</b> 基础模拟</td><td>读题、边界、实现稳定：模拟 / 前缀和 / 简单数学</td></tr>
-      <tr><td><b>T2</b> 思维题</td><td>贪心、二分答案、搜索 BFS，常需观察性质</td></tr>
-      <tr><td><b>T3</b> 工程模拟 / 数据结构</td><td>题面长、细节多、代码量大，常用单调栈 / 并查集 / BIT / 线段树</td></tr>
-      <tr><td><b>T4</b> 高级算法</td><td>DP 优化、图论（最短路 / 树上 / 拓扑）、数论、字符串</td></tr>
-      </tbody></table>
-      <a class="btn btn-ghost mt" data-go="practice">进入题库开始刷题</a>
-    </div>
-    <div class="card">
-      <h3>两轮对比</h3>
-      <div class="sub">从第一轮到第二轮的备考思路切换。</div>
-      <table class="compare"><thead><tr><th>维度</th><th>第一轮（笔试）</th><th>第二轮（机试）</th></tr></thead><tbody>
-      ${ROUND_COMPARE.map(r=>`<tr><td><b>${r[0]}</b></td><td>${r[1]}</td><td>${r[2]}</td></tr>`).join("")}
-      </tbody></table>
-      <a class="btn btn-ghost mt" data-go="knowledge">查看考点全覆盖图谱</a>
-    </div>
-  </div>
-  <div class="grid g3 mb">
-    <div class="card"><h3>📚 全考点题库</h3><div class="sub">${PROBLEMS.length} 道题，支持搜索 / 难度筛选 / 标签筛选。</div><a class="btn btn-ghost" data-go="practice">刷题</a></div>
-    <div class="card"><h3>📋 专题题单</h3><div class="sub">按知识点分组的刷题路径，像洛谷题单一样按专题突破。</div><a class="btn btn-ghost" data-go="playlists">看题单</a></div>
-    <div class="card"><h3>⏱ 模拟赛</h3><div class="sub">3 套模拟卷，每套 4 题 400 分，限时 240 分钟。</div><a class="btn btn-ghost" data-go="mock">开赛</a></div>
-  </div>
-  <div class="card">
-    <h3>备考建议（基于 CCF 高分选手经验）</h3>
-    <div class="sub">来自 CSP 高分选手的共性与考场策略</div>
-    <ul style="padding-left:20px;font-size:14px">
-      <li><b>稳拿 T1/T2：</b>前两题是定海神针，务必又快又稳，先吃透基础语法、排序、模拟、前缀和、二分、贪心。</li>
-      <li><b>啃下 T3：</b>题面长、细节多，边读题边在草稿上记录对象、状态与操作顺序，用模板库简化实现。</li>
-      <li><b>突破 T4：</b>系统掌握 DP（线性/区间/背包/树形/状压）与图论（最短路/生成树/拓扑/树上），并学会复杂度分析。</li>
-      <li><b>以题带点：</b>先按题单刷专题，遇到盲区再回头学对应算法，切忌死磕超纲内容。</li>
-      <li><b>写对暴力：</b>不会正解时先写朴素算法拿部分分，O(n) 与 O(n²) 数据分档非常明显。</li>
-    </ul>
+  <div class="grid g3">
+    <div class="card"><h3 style="font-size:14px">题库</h3><div class="sub">${PROBLEMS.length} 道题，搜索 / 难度筛选</div><a class="btn btn-primary" data-go="practice">开始刷题</a></div>
+    <div class="card"><h3 style="font-size:14px">题单</h3><div class="sub">按知识点分组专题突破</div><a class="btn btn-ghost" data-go="playlists">查看题单</a></div>
+    <div class="card"><h3 style="font-size:14px">模拟赛</h3><div class="sub">3 套卷，400 分，限时 240 分钟</div><a class="btn btn-ghost" data-go="mock">开始比赛</a></div>
   </div>`;
   afterRender();
 }
@@ -795,6 +783,8 @@ function afterRender(){
 
 /*================ 启动 ================*/
 function boot(){
+  renderLoginArea();
+  wireLogin();
   const cd=document.getElementById("cd");
   const tick=()=>{const left=countdownTo()-Date.now();if(left<=0){cd.textContent="考试已开始 🎯";return;}
     const d=Math.floor(left/86400000),h=Math.floor(left%86400000/3600000),m=Math.floor(left%3600000/60000);
