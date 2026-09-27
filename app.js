@@ -122,7 +122,8 @@ function levelDist(){
 const app=document.getElementById("app");
 const esc=s=>String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 function header(title,sub){return `<h2>${title}</h2><div class="sub">${sub}</div>`;}
-function diffStars(d){return `<span class="diff-star">${"★".repeat(d)}${"☆".repeat(5-d)}</span>`;}
+function lvBadge(p){return `<span class="diff diff-${p.diff}">${LEVELS[p.diff].name}</span>`;}
+
 const VIEWS={
 dashboard(){renderDashboard();},
 practice(){renderPracticeList();},
@@ -134,86 +135,102 @@ knowledge(){renderKnowledge();},
 records(){renderRecords();}
 };
 
-/* ---------- 首页 ---------- */
-function heroHTML(s){
-  const u=getUser();
-  const days=Math.max(0,Math.ceil((countdownTo()-Date.now())/86400000));
-  const name=u||"同学";
-  return `<div class="hero">
-    <h2>${esc(name)}，距离 CSP-S 第二轮还有 ${days} 天</h2>
-    <p>已 AC ${s.full} / ${PROBLEMS.length} 题 · 得分率 ${s.rate}% · 掌握 ${s.knowMastered}/${s.knowTotal} 个考点</p>
-    <div class="hero-btns">
-      <button class="btn-hero" data-go="practice">开始刷题</button>
-      <button class="btn-hero2" data-go="mock">模拟赛</button>
-      ${u?'':'<button class="btn-hero2" onclick="document.getElementById(\'loginModal\').classList.remove(\'hidden\');document.getElementById(\'loginUser\').focus()">登录</button>'}
-    </div>
-  </div>`;
-}
+/* ---------- 首页（洛谷左右分栏） ---------- */
 function renderDashboard(){
   const s=stats();
+  const u=getUser();
   const days=Math.max(0,Math.ceil((countdownTo()-Date.now())/86400000));
   const dist=levelDist();
   const distBar=Object.keys(LEVELS).map(k=>{
     const L=LEVELS[k];const [ac,tot]=dist[k];
     return `<div style="width:${tot/PROBLEMS.length*100}%;background:${L.color};opacity:${tot?0.3+0.7*(ac/tot):0.12}" title="${L.name} ${ac}/${tot}"></div>`;
   }).join("");
-  const recent=PROBLEMS.slice(0,8);
-  let rows="";
-  for(const p of recent){
-    const st=problemStatus(p.id);
-    const stMap={done:'<span class="st-done">AC</span>',part:'<span class="st-part">部分</span>',wa:'<span class="st-wa">再试</span>',none:'<span class="st-none">--</span>'};
-    rows+=`<tr data-go="problem/${p.id}">
-      <td class="pid">P${String(p.no).padStart(3,"0")}</td>
-      <td class="ptitle">${p.title}</td>
-      <td>${lvBadge(p)}</td>
-      <td style="font-size:12px;color:var(--muted)">${p.knowledge.slice(0,2).join(" / ")}</td>
-      <td style="text-align:right">${stMap[st]}</td>
-    </tr>`;
-  }
+  const plHTML=PLAYLISTS.slice(0,4).map(pl=>{
+    const list=pl.probs.map(id=>PROBLEMS.find(p=>p.id===id));
+    const ac=list.filter(p=>problemStatus(p.id)==="done").length;
+    return `<div class="playlist-mini" data-go="playlists">
+      <div class="pm-icon">📋</div>
+      <div class="pm-name">${pl.name}</div>
+      <div class="pm-meta"><b>${ac}</b>/${list.length} AC</div>
+    </div>`;
+  }).join("");
+  const unsolved=PROBLEMS.filter(p=>problemStatus(p.id)!=="done").sort((a,b)=>a.diff-b.diff).slice(0,6);
+  const probHTML=unsolved.length?unsolved.map(p=>`
+    <div class="home-prob-row" data-go="problem/${p.id}">
+      <span class="hpr-id">P${String(p.no).padStart(3,"0")}</span>
+      <span class="hpr-name">${p.title}</span>
+      <span class="hpr-diff">${lvBadge(p)}</span>
+    </div>`).join(""):'<div class="empty">全部题目已 AC，太强了！</div>';
+  const userCardHTML=u?`
+    <div class="user-card">
+      <div class="big-avatar">${esc(u[0].toUpperCase())}</div>
+      <div class="uname">${esc(u)}</div>
+      <div class="udesc">CSP-S 备考选手</div>
+      <div class="uc-stats">
+        <div class="uc-stat"><div class="n">${s.full}</div><div class="l">已 AC</div></div>
+        <div class="uc-stat"><div class="n">${s.rate}%</div><div class="l">得分率</div></div>
+        <div class="uc-stat"><div class="n">${days}</div><div class="l">距考试</div></div>
+      </div>
+      <div style="margin-top:12px;display:flex;gap:6px;justify-content:center">
+        <button class="btn btn-primary btn-sm" data-go="practice">开始刷题</button>
+        <button class="btn btn-ghost btn-sm" data-go="records">我的记录</button>
+      </div>
+    </div>`:`
+    <div class="user-card">
+      <div class="big-avatar" style="background:#ccc">?</div>
+      <div class="uname">未登录</div>
+      <div class="udesc">登录后同步刷题进度</div>
+      <button class="btn btn-primary btn-sm" onclick="document.getElementById('loginModal').classList.remove('hidden');document.getElementById('loginUser').focus()">立即登录</button>
+    </div>`;
   app.innerHTML=`
-  ${heroHTML(s)}
-  <div class="grid g4 mb">
-    <div class="stat"><div class="k">距考试</div><div class="v">${days}<small> 天</small></div></div>
-    <div class="stat"><div class="k">已 AC</div><div class="v">${s.full}<small>/${PROBLEMS.length}</small></div></div>
-    <div class="stat"><div class="k">得分率</div><div class="v">${s.rate}<small>%</small></div></div>
-    <div class="stat"><div class="k">掌握考点</div><div class="v">${s.knowMastered}<small>/${s.knowTotal}</small></div></div>
-  </div>
-  <div class="card mb" style="padding:0;overflow:hidden">
-    <div style="padding:12px 16px;border-bottom:1px solid var(--line);display:flex;align-items:center">
-      <h3 style="font-size:14px">题目推荐</h3>
-      <a data-go="practice" style="margin-left:auto;font-size:13px">查看全部 →</a>
+  <div class="main-layout">
+    <div>
+      <div class="card mb" style="background:linear-gradient(135deg,#00a65a,#00c870);color:#fff;border:none;padding:18px 20px">
+        <div style="font-size:18px;font-weight:700;margin-bottom:4px">CSP-S 2026 第二轮备考</div>
+        <div style="font-size:13px;opacity:.9">机试 4 题 × 100 分 = 400 分 · 2026-10-31 14:30–18:30 · 距考试还有 <b>${days}</b> 天</div>
+      </div>
+      <div class="card mb">
+        <div class="card-hd">📋 推荐题单 <span class="more"><a data-go="playlists">查看全部 →</a></span></div>
+        <div class="card-bd">${plHTML}</div>
+      </div>
+      <div class="card">
+        <div class="card-hd">🔥 推荐练习 <span class="more">按难度排序，挑你没 AC 的</span></div>
+        <div class="card-bd">${probHTML}</div>
+      </div>
     </div>
-    <table class="problem-table">
-      <thead><tr><th>编号</th><th>题目名称</th><th>难度</th><th>知识点</th><th style="text-align:right">状态</th></tr></thead>
-      <tbody>${rows}</tbody>
-    </table>
-  </div>
-  <div class="card mb">
-    <h3 style="font-size:14px;margin-bottom:6px">难度分布</h3>
-    <div class="lvbar">${distBar}</div>
-    <div style="display:flex;gap:14px;flex-wrap:wrap;font-size:12px;color:var(--muted);margin-top:6px">
-      ${Object.keys(LEVELS).map(k=>{const L=LEVELS[k];const [ac,tot]=dist[k];return `<span><span class="lv" style="background:${L.color}">${L.name}</span> ${ac}/${tot}</span>`;}).join("")}
+    <div>
+      <div class="card mb">${userCardHTML}</div>
+      <div class="card mb">
+        <div class="card-hd">📊 难度分布</div>
+        <div class="card-bd">
+          <div class="lvbar">${distBar}</div>
+          <div style="display:flex;gap:10px;flex-wrap:wrap;font-size:12px;color:var(--muted);margin-top:8px">
+            ${Object.keys(LEVELS).map(k=>{const L=LEVELS[k];const [ac,tot]=dist[k];return `<span><span class="diff diff-${k}">${L.name}</span> ${ac}/${tot}</span>`;}).join("")}
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hd">⚡ 快捷入口</div>
+        <div class="card-bd" style="display:flex;flex-direction:column;gap:6px">
+          <a class="btn btn-ghost btn-sm" data-go="practice" style="display:block;text-align:center">题库（${PROBLEMS.length} 题）</a>
+          <a class="btn btn-ghost btn-sm" data-go="mock" style="display:block;text-align:center">模拟赛（3 套）</a>
+          <a class="btn btn-ghost btn-sm" data-go="knowledge" style="display:block;text-align:center">知识图谱</a>
+        </div>
+      </div>
     </div>
-  </div>
-  <div class="grid g3">
-    <div class="card"><h3 style="font-size:14px">题单</h3><div class="sub">按知识点专题突破</div><a class="btn btn-ghost" data-go="playlists">查看题单</a></div>
-    <div class="card"><h3 style="font-size:14px">模拟赛</h3><div class="sub">3 套卷 · 400 分 · 240 分钟</div><a class="btn btn-ghost" data-go="mock">开始比赛</a></div>
-    <div class="card"><h3 style="font-size:14px">知识图谱</h3><div class="sub">考点全覆盖掌握度</div><a class="btn btn-ghost" data-go="knowledge">查看图谱</a></div>
   </div>`;
   afterRender();
 }
 
-/* ---------- 题库 ---------- */
+/* ---------- 题库（洛谷纯表格） ---------- */
 let pfState={q:"",level:0,status:"all",fav:false};
 function renderPracticeList(){
-  const tiers=["T1","T2","T3","T4"];
-  const tierNote={T1:"基础：模拟 / 前缀和 / 简单数学",T2:"思维：贪心 / 二分 / 搜索",T3:"数据结构与工程模拟：栈 / 并查集 / BIT",T4:"高级：DP 优化 / 图论 / 数论 / 字符串"};
-  let html=header("题库 · 在线答题","点击题目进入作答，提交后实时评测并按测试数据给分。");
-  html+=`<div class="searchbox"><input id="pfQ" placeholder="搜索题号 / 标题 / 考点…" value="${esc(pfState.q)}"></div>`;
-  html+=`<div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin-bottom:14px">
+  let html=`<h2 style="margin-bottom:10px">题库</h2>`;
+  html+=`<div class="searchbox"><span style="opacity:.5">🔍</span><input id="pfQ" placeholder="搜索题号 / 标题 / 考点…（如 背包、Dijkstra、p08）" value="${esc(pfState.q)}"></div>`;
+  html+=`<div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin-bottom:12px">
     <span class="sub" style="margin:0">难度：</span>
     <span class="chip ${pfState.level===0?'on':''}" data-lv="0">全部</span>
-    ${Object.keys(LEVELS).map(k=>`<span class="chip ${pfState.level==k?'on':''}" data-lv="${k}"><span class="lv" style="background:${LEVELS[k].color};font-size:11px">${LEVELS[k].name}</span></span>`).join("")}
+    ${Object.keys(LEVELS).map(k=>`<span class="chip ${pfState.level==k?'on':''}" data-lv="${k}"><span class="diff diff-${k}" style="font-size:11px">${LEVELS[k].name}</span></span>`).join("")}
     <span class="sub" style="margin:0 0 0 12px">状态：</span>
     ${[["all","全部"],["done","已 AC"],["part","部分分"],["none","未做"]].map(([v,l])=>`<span class="chip ${pfState.status===v?'on':''}" data-st="${v}">${l}</span>`).join("")}
     <span class="chip ${pfState.fav?'on':''}" id="favFilter" style="margin-left:12px">★ 收藏</span>
@@ -228,24 +245,22 @@ function renderPracticeList(){
     if(q){const hay=(p.id+" "+p.title+" "+p.tag+" "+p.knowledge.join(" ")+" "+p.tier).toLowerCase();if(!hay.includes(q))return false;}
     return true;
   };
-  for(const t of tiers){
-    const list=PROBLEMS.filter(p=>p.tier===t&&match(p));
-    if(!list.length)continue;
-    html+=`<div class="card mb" style="padding:0;overflow:hidden"><div style="padding:10px 16px;border-bottom:1px solid var(--line);background:var(--gray-bg);display:flex;align-items:center"><h3 style="margin:0;font-size:14px">${t} <span style="font-weight:400;color:var(--muted);font-size:12px">${tierNote[t]}</span></h3><span class="sub" style="margin:0 0 0 auto">${list.length} 题</span></div>
-    <table class="problem-table">
-      <thead><tr><th>编号</th><th>题目名称</th><th>知识点</th><th>难度</th><th style="text-align:right">状态</th></tr></thead>
-      <tbody>${list.map(p=>{
-        const st=problemStatus(p.id);
-        const stMap={done:'<span class="st-done">✔ AC</span>',part:'<span class="st-part">部分分</span>',wa:'<span class="st-wa">再试</span>',none:'<span class="st-none">未做</span>'};
-        return `<tr data-go="problem/${p.id}">
-          <td class="pid">P${String(p.no).padStart(3,"0")}</td>
-          <td class="ptitle">${p.title}</td>
-          <td style="font-size:12px;color:var(--muted)">${p.knowledge.slice(0,2).join(" / ")}</td>
-          <td>${lvBadge(p)}</td>
-          <td style="text-align:right">${stMap[st]}</td>
-        </tr>`;
-      }).join("")}</tbody></table></div>`;
-  }
+  const list=PROBLEMS.filter(match);
+  const stMap={done:["✔ AC","st-done"],part:["部分分","st-part"],wa:["再试","st-wa"],none:["未做","st-none"]};
+  html+=`<div class="card" style="padding:0;overflow:hidden"><table>
+    <thead><tr><th style="width:70px">题号</th><th>题目名称</th><th style="width:200px">算法标签</th><th style="width:90px">难度</th><th style="width:80px;text-align:right">状态</th></tr></thead>
+    <tbody>${list.map(p=>{
+      const st=problemStatus(p.id); const m=stMap[st];
+      return `<tr data-go="problem/${p.id}" style="cursor:pointer">
+        <td style="font-family:Consolas,monospace;color:var(--muted);font-size:12.5px">P${String(p.no).padStart(3,"0")}</td>
+        <td>${p.title}</td>
+        <td style="font-size:12.5px;color:#999">${p.knowledge.slice(0,2).map(k=>`<span class="tag t-know">${esc(k)}</span>`).join(" ")}</td>
+        <td>${lvBadge(p)}</td>
+        <td style="text-align:right"><span class="st ${m[1]}">${m[0]}</span></td>
+      </tr>`;
+    }).join("")}</tbody></table>
+    ${list.length?'':`<div class="empty">没有匹配的题目</div>`}
+  </div>`;
   app.innerHTML=html; afterRender();
   const qi=document.getElementById("pfQ");
   qi.oninput=e=>{pfState.q=e.target.value; renderPracticeList(); const nq=document.getElementById("pfQ"); nq.focus(); nq.setSelectionRange(nq.value.length,nq.value.length);};
@@ -260,7 +275,7 @@ function renderPracticeList(){
   };
 }
 
-/* ---------- 专题题单 ---------- */
+/* ---------- 题单 ---------- */
 function renderPlaylists(){
   let html=header("题单 · 专题训练","按知识点分组的刷题路径（参考洛谷题单）。");
   html+=`<div class="grid g3">`;
@@ -400,15 +415,15 @@ function renderProblem(id,pre){
   const mySubs=getSubs().filter(s=>s.problem===id).reverse();
   const acCount=mySubs.filter(s=>s.score>=100).length;
   const statementHTML=`
-    <h1 style="font-size:22px;font-weight:800;margin-bottom:4px">${p.title} ${lvBadge(p)}</h1>
-    <div style="font-size:13px;color:var(--muted);margin-bottom:16px">${p.constraints} · ${p.tier} · ${p.tag}</div>
-    <h3>题目描述</h3><p class="mb">${p.statement}</p>
-    <h3>输入格式</h3><p class="mb">${p.inputFormat}</p>
-    <h3>输出格式</h3><p class="mb">${p.outputFormat}</p>
-    <h3>样例 #1</h3>
+    <h1 style="font-size:20px;font-weight:700;margin-bottom:6px">${p.title} ${lvBadge(p)}</h1>
+    <div class="meta" style="font-size:12.5px;color:var(--muted);margin-bottom:14px;display:flex;gap:10px;flex-wrap:wrap;align-items:center">${p.constraints} · ${p.tier} · ${p.tag}</div>
+    <h3 style="font-size:14.5px;font-weight:700;margin:14px 0 6px;padding-left:8px;border-left:3px solid var(--brand)">题目描述</h3><p class="mb" style="font-size:14px;line-height:1.8;margin-bottom:8px">${p.statement}</p>
+    <h3 style="font-size:14.5px;font-weight:700;margin:14px 0 6px;padding-left:8px;border-left:3px solid var(--brand)">输入格式</h3><p class="mb" style="font-size:14px;line-height:1.8;margin-bottom:8px">${p.inputFormat}</p>
+    <h3 style="font-size:14.5px;font-weight:700;margin:14px 0 6px;padding-left:8px;border-left:3px solid var(--brand)">输出格式</h3><p class="mb" style="font-size:14px;line-height:1.8;margin-bottom:8px">${p.outputFormat}</p>
+    <h3 style="font-size:14.5px;font-weight:700;margin:14px 0 6px;padding-left:8px;border-left:3px solid var(--brand)">样例 #1</h3>
     <div class="sample-box"><div class="lbl">输入</div>${esc(p.sample.input)}</div>
     <div class="sample-box"><div class="lbl">输出</div>${esc(p.sample.output)}</div>
-    <h3>提示 / 说明</h3>
+    <h3 style="font-size:14.5px;font-weight:700;margin:14px 0 6px;padding-left:8px;border-left:3px solid var(--brand)">提示 / 说明</h3>
     <div style="display:flex;gap:10px;flex-wrap:wrap;margin:8px 0">
       <button class="btn btn-ghost btn-sm" id="showSol">查看思路解析</button>
     </div>
@@ -417,9 +432,9 @@ function renderProblem(id,pre){
     ${hasViz?renderInlineViz(p):""}`;
   const stdCode=STD_CODE[id]||"// 暂无";
   const tutorialHTML=`
-    <h3>思路分析</h3>
+    <h3 style="font-size:14.5px;font-weight:700;margin:14px 0 6px;padding-left:8px;border-left:3px solid var(--brand)">思路分析</h3>
     <div style="font-size:14px;line-height:1.8;margin-bottom:14px">${p.solution}</div>
-    <h3>标准程序（C++17）</h3>
+    <h3 style="font-size:14.5px;font-weight:700;margin:14px 0 6px;padding-left:8px;border-left:3px solid var(--brand)">标准程序（C++17）</h3>
     <div style="display:flex;align-items:center;gap:8px;margin:6px 0">
       <span class="tag t-tag">C++17</span>
       <button class="btn btn-ghost btn-sm" id="copyStd">复制代码</button>
@@ -433,7 +448,7 @@ function renderProblem(id,pre){
     <div style="margin-bottom:14px">
       <textarea class="disc-input" id="discInput" placeholder="发表你的想法…"></textarea>
       <div style="display:flex;gap:8px;margin-top:6px;align-items:center">
-        <input id="discUser" style="border:1px solid var(--line);border-radius:4px;padding:6px 10px;font-size:13px;width:140px" placeholder="昵称" value="备考选手">
+        <input id="discUser" style="border:1px solid var(--line);border-radius:3px;padding:6px 10px;font-size:13px;width:140px" placeholder="昵称" value="备考选手">
         <button class="btn btn-primary btn-sm" id="postDisc">发表讨论</button>
       </div>
     </div>
@@ -443,36 +458,36 @@ function renderProblem(id,pre){
   const subsHTML=`
     <h3>我的提交记录</h3>
     <div class="sub" style="margin-bottom:8px">共 ${mySubs.length} 次提交，${acCount} 次通过</div>
-    ${mySubs.length?`<div style="border:1px solid var(--line);border-radius:4px;overflow:hidden">
+    ${mySubs.length?`<div style="border:1px solid var(--line);border-radius:3px;overflow:hidden">
       ${mySubs.map(s=>{const dt=new Date(s.time);const cls=s.score>=100?"st-done":s.score>0?"st-part":"st-wa";const lbl=s.score>=100?"AC":s.score>0?"部分分":"未通过";return `<div class="sub-row" data-subid="${s.id}"><span class="sid">#${s.id.slice(-6)}</span><span class="st ${cls}">${lbl}</span><span style="flex:1;color:var(--muted);font-size:12px">${dt.getMonth()+1}-${dt.getDate()} ${normDate(dt.getHours())}:${normDate(dt.getMinutes())}</span><span style="font-weight:700">${s.score}/100</span><span style="color:var(--brand);font-size:12px">详情 →</span></div>`;}).join("")}
     </div><div id="subDetail" class="mt" style="display:none"></div>`:'<div class="empty">还没有提交记录</div>'}`;
   const tabContent={statement:statementHTML,tutorial:tutorialHTML,discuss:discussHTML,submissions:subsHTML};
   const tabs=[["statement","题面"],["tutorial","题解"],["discuss","讨论",discuss.length],["submissions","我的提交",mySubs.length]];
   app.innerHTML=`
-  <div class="lgbreadcrumb">
+  <div class="breadcrumb" style="font-size:13px;color:var(--muted);margin-bottom:10px">
     <a data-go="${inMock?`mockExam/${pre.mock}`:"practice"}" style="cursor:pointer">题库</a> /
-    <span class="luogu-id">P${String(p.no).padStart(3,"0")}</span> <b>${p.title}</b>
+    <span style="font-family:Consolas,monospace;color:var(--brand);font-weight:700">P${String(p.no).padStart(3,"0")}</span> <b>${p.title}</b>
     <span style="float:right"><a data-go="${inMock?`mockExam/${pre.mock}`:"practice"}" style="cursor:pointer">← 返回</a></span>
   </div>
-  <div class="problem-wrap" style="grid-template-columns:minmax(0,1fr) 340px">
+  <div class="problem-layout">
     <div class="panel">
-      <div class="lgtabs" style="display:flex;border-bottom:2px solid var(--line)">
-        ${tabs.map(([k,l,c])=>`<span class="lgtab ${probTab===k?'on':''}" data-ptab="${k}">${l}${c!==undefined?`<span style="font-size:11px;color:var(--muted);margin-left:4px">${c}</span>`:""}</span>`).join("")}
+      <div class="lgtabs">
+        ${tabs.map(([k,l,c])=>`<span class="lgtab ${probTab===k?'on':''}" data-ptab="${k}">${l}${c!==undefined?`<span class="cnt">${c}</span>`:""}</span>`).join("")}
         <span style="margin-left:auto;padding:10px 16px;cursor:pointer;font-size:18px" class="fav-btn ${isFav?'on':''}" id="favBtn">${isFav?'★':'☆'}</span>
       </div>
-      <div style="padding:20px 22px" id="tabBody">${tabContent[probTab]||statementHTML}</div>
+      <div style="padding:16px 18px" id="tabBody">${tabContent[probTab]||statementHTML}</div>
     </div>
     <div>
       <div class="panel mb">
         <div class="panel-hd">题目信息</div>
         <div style="padding:6px 0;font-size:13.5px">
-          <div class="lginfo"><span>难度</span><span>${lvBadge(p)}</span></div>
-          <div class="lginfo"><span>时间/空间</span><span>${p.constraints}</span></div>
-          <div class="lginfo"><span>分值</span><span><b>${p.points}</b> 分</span></div>
-          <div class="lginfo"><span>考点</span><span style="text-align:right;max-width:180px">${p.knowledge.map(k=>`<span class="tag t-know">${esc(k)}</span>`).join("")}</span></div>
-          <div class="lginfo"><span>我的最佳</span><span><b class="${bs>=100?"v-AC":bs>0?"v-RE":"v-WA"}">${bs}/100</b></span></div>
-          <div class="lginfo"><span>提交次数</span><span><b>${sc}</b></span></div>
-          <div class="lginfo"><span>得分率</span><span style="text-align:right"><div class="bar" style="width:100px;display:inline-block;vertical-align:middle"><i style="width:${passRate}%"></i></div> ${passRate}%</span></div>
+          <div class="info-row"><span>难度</span><span>${lvBadge(p)}</span></div>
+          <div class="info-row"><span>时间/空间</span><span>${p.constraints}</span></div>
+          <div class="info-row"><span>分值</span><span><b>${p.points}</b> 分</span></div>
+          <div class="info-row"><span>考点</span><span style="text-align:right;max-width:180px">${p.knowledge.map(k=>`<span class="tag t-know">${esc(k)}</span>`).join("")}</span></div>
+          <div class="info-row"><span>我的最佳</span><span><b class="${bs>=100?"v-AC":bs>0?"v-RE":"v-WA"}">${bs}/100</b></span></div>
+          <div class="info-row"><span>提交次数</span><span><b>${sc}</b></span></div>
+          <div class="info-row"><span>得分率</span><span style="text-align:right"><div class="bar" style="width:100px;display:inline-block;vertical-align:middle"><i style="width:${passRate}%"></i></div> ${passRate}%</span></div>
         </div>
       </div>
       <div class="panel">
@@ -605,12 +620,12 @@ function renderKnowledge(){
   const pct=Math.round(mastered/total*100);
   let html=header("知识图谱 · 考点全覆盖","点击标签切换掌握/待巩固。");
   html+=`<div class="card mb" style="display:flex;align-items:center;gap:24px">
-    <div class="ring" style="--p:${pct};--c:${pct>=70?"var(--green)":"var(--brand)"}"><b>${pct}%</b></div>
+    <div class="ring" style="--p:${pct};--c:${pct>=70?"var(--d3)":"var(--brand)"}"><b>${pct}%</b></div>
     <div><div class="sub" style="margin:0">已掌握 ${mastered}/${total} 考点</div><div class="bar" style="width:260px;margin-top:8px"><i style="width:${pct}%"></i></div></div></div>`;
   for(const c of KNOWLEDGE){
     let ms=0;for(const it of c.items)if(know[it]==="1")ms++;
     const cp=Math.round(ms/c.items.length*100);
-    html+=`<div class="card mb know-block"><div class="cat"><span>${c.cat}</span><span class="tag t-tag">${ms}/${c.items.length}</span><span class="pct">${cp}%</span><div class="bar" style="width:120px;margin-left:6px"><i style="width:${cp}%"></i></div></div><div>${c.items.map(it=>{const st=know[it];return `<span class="chip ${st==="1"?"on":""}" data-k="${esc(it)}" ${st==="2"?"style='border-color:var(--red);color:var(--red)'":""}>${esc(it)}${st==="2"?"(待)":""}</span>`;}).join("")}</div></div>`;
+    html+=`<div class="card mb know-block"><div class="cat" style="font-weight:700;margin-bottom:6px;display:flex;align-items:center;gap:8px;font-size:14px"><span>${c.cat}</span><span class="tag t-tag">${ms}/${c.items.length}</span><span class="pct" style="margin-left:auto;font-size:12px;color:var(--muted);font-weight:400">${cp}%</span><div class="bar" style="width:120px;margin-left:6px"><i style="width:${cp}%"></i></div></div><div>${c.items.map(it=>{const st=know[it];return `<span class="chip ${st==="1"?"on":""}" data-k="${esc(it)}" ${st==="2"?"style='border-color:var(--red);color:var(--red)'":""}>${esc(it)}${st==="2"?"(待)":""}</span>`;}).join("")}</div></div>`;
   }
   app.innerHTML=html;afterRender();
   document.querySelectorAll("[data-k]").forEach(el=>el.onclick=()=>{const k=el.dataset.k;const cur=getKnow()[k];const nxt=cur==="1"?"2":"1";const kk=getKnow();kk[k]=nxt;saveKnow(kk);renderKnowledge();});
@@ -622,8 +637,8 @@ function renderRecords(){
   let html=header("我的记录 · 提交历史与错题本","数据保存在本机浏览器。");
   html+=`<div class="card mb"><h3 style="font-size:14px;margin-bottom:6px">难度分布</h3><div class="lvbar">${Object.keys(LEVELS).map(k=>{const L=LEVELS[k];const[ac,tot]=dist[k];return `<div style="width:${tot/PROBLEMS.length*100}%;background:${L.color};opacity:${tot?0.35+0.65*(ac/tot):0.15}"></div>`;}).join("")}</div></div>`;
   html+=`<div class="grid g2 mb">
-    <div class="card"><h3>错题本</h3>${wrong.length?wrong.map(w=>`<div class="problem-row" data-go="problem/${w.problem}"><span class="nm">${w.title}</span><span class="status st-wa">${w.score}分</span><span style="color:var(--brand);font-size:13px">去重做→</span></div>`).join(""):'<div class="empty">暂无错题</div>'}</div>
-    <div class="card"><h3>已 AC</h3>${PROBLEMS.filter(p=>problemStatus(p.id)==="done").length?PROBLEMS.filter(p=>problemStatus(p.id)==="done").map(p=>`<div class="problem-row" data-go="problem/${p.id}"><span class="nm">${p.title}</span>${lvBadge(p)}<span class="status st-done">✔</span></div>`).join(""):'<div class="empty">还没有 AC</div>'}</div></div>`;
+    <div class="card"><h3>错题本</h3>${wrong.length?wrong.map(w=>`<div class="home-prob-row" data-go="problem/${w.problem}"><span class="hpr-id" style="width:auto">${w.title}</span><span class="st st-wa">${w.score}分</span><span style="color:var(--brand);font-size:13px">去重做→</span></div>`).join(""):'<div class="empty">暂无错题</div>'}</div>
+    <div class="card"><h3>已 AC</h3>${PROBLEMS.filter(p=>problemStatus(p.id)==="done").length?PROBLEMS.filter(p=>problemStatus(p.id)==="done").map(p=>`<div class="home-prob-row" data-go="problem/${p.id}"><span class="hpr-id" style="width:auto">${p.title}</span>${lvBadge(p)}<span class="st st-done">✔</span></div>`).join(""):'<div class="empty">还没有 AC</div>'}</div></div>`;
   html+=`<div class="card"><h3>提交记录</h3>${subs.length?`<table><thead><tr><th>时间</th><th>题目</th><th>类型</th><th>分数</th><th>结果</th></tr></thead><tbody>${subs.slice(0,120).map(s=>{const d=new Date(s.time);const cls={AC:"v-AC",WA:"v-WA",CE:"v-CE","部分":"v-WA"}[s.verdict]||"v-WA";return `<tr><td>${d.getMonth()+1}-${d.getDate()} ${normDate(d.getHours())}:${normDate(d.getMinutes())}</td><td>${esc(s.title)}</td><td>${s.mode==="mock"?"模拟赛":"练习"}</td><td><b>${s.score}</b></td><td class="${cls}">${s.verdict}</td></tr>`;}).join("")}</tbody></table>`:'<div class="empty">还没有提交记录</div>'}</div>`;
   app.innerHTML=html;afterRender();
 }
@@ -644,6 +659,11 @@ function afterRender(){
 }
 function boot(){
   renderLoginArea();wireLogin();
+  const ts=document.getElementById("topSearch");
+  if(ts){ts.onkeydown=e=>{if(e.key==="Enter"){const v=ts.value.trim();if(!v)return;
+    const m=v.match(/^[pP]?(\d+)$/); if(m){const pid="p"+String(m[1]).padStart(2,"0");const p=PROBLEMS.find(x=>x.id===pid);if(p){location.hash="#/problem/"+p.id;return;}}
+    pfState={q:v,level:0,status:"all",fav:false}; location.hash="#/practice";
+  }};}
   const cd=document.getElementById("cd");
   const tick=()=>{const left=countdownTo()-Date.now();if(left<=0){cd.textContent="考试已开始";return;}const d=Math.floor(left/86400000),h=Math.floor(left%86400000/3600000),m=Math.floor(left%3600000/60000);cd.textContent=`${d}天${h}时${m}分`;};
   tick();setInterval(tick,60000);
