@@ -2,1098 +2,340 @@
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <title>CSP-S 2026 第二轮 · 在线刷题与实时评测</title>
-<meta name="description" content="CSP-S 提高组第二轮（机试）备考平台：在线答题 + 实时评测 + 考点全覆盖 + 模拟赛 + 题单。单文件零依赖。">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/codemirror@5/lib/codemirror.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/codemirror@5/theme/default.min.css">
+<script src="https://cdn.jsdelivr.net/npm/codemirror@5/lib/codemirror.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/codemirror@5/mode/clike/clike.min.js"></script>
 <style>
-:root{
-  --bg:#f4f5f7; --card:#ffffff; --ink:#1f2d3d; --muted:#7b8a9a; --line:#ebedf0;
-  --brand:#00a65a; --brand2:#00b8a9; --green:#00a65a; --greenbg:#e7f6ee; --red:#e74c3c; --redbg:#fdecec;
-  --amber:#e6a23c; --amberbg:#fdf6ec; --gray:#64748b; --graybg:#f0f2f5;
-  --editor:#1e1e2e; --radius:6px; --shadow:0 1px 4px rgba(20,40,80,.05);
-}
-*{box-sizing:border-box;margin:0;padding:0}
-body{font-family:-apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;background:var(--bg);color:var(--ink);line-height:1.6}
-a{color:var(--brand);text-decoration:none}
-pre{font-family:"JetBrains Mono",ui-monospace,Consolas,Menlo,monospace}
-.topbar{position:sticky;top:0;z-index:50;background:#ffffff;border-bottom:1px solid var(--line);box-shadow:none}
-.topbar .in{max-width:1200px;margin:0 auto;padding:0 20px;display:flex;align-items:stretch;gap:18px;height:56px}
-.logo{display:flex;align-items:center;gap:10px;font-weight:800;font-size:17px;color:var(--ink);white-space:nowrap}
-.logo .badge{background:var(--brand);color:#fff;padding:4px 10px;border-radius:5px;font-size:12px;letter:.5px}
-.nav{display:flex;gap:0;margin-left:8px;flex-wrap:wrap}
-.nav button{background:none;border:none;padding:0 14px;cursor:pointer;font-size:14.5px;color:#4a5568;font-weight:500;transition:.15s;border-bottom:2px solid transparent;margin-bottom:-1px}
-.nav button:hover{color:var(--brand)}
-.nav button.active{color:var(--brand);border-bottom-color:var(--brand);font-weight:700}
-.navright{margin-left:auto;align-self:center;font-size:13px;color:var(--muted);display:flex;align-items:center;gap:10px}
-.countdown{display:inline-block;background:var(--greenbg);color:var(--brand);padding:4px 12px;border-radius:999px;font-variant-numeric:tabular-nums;font-weight:600;font-size:12.5px}
-.wrap{max-width:1200px;margin:0 auto;padding:22px 20px 60px}
-.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:18px}
-.hidden{display:none !important}
-.grid{display:grid;gap:18px}
-.g2{grid-template-columns:1fr 1fr}.g3{grid-template-columns:repeat(3,1fr)}.g4{grid-template-columns:repeat(4,1fr)}
-@media(max-width:900px){.g2,.g3,.g4{grid-template-columns:1fr 1fr}.nav{display:none}}
-@media(max-width:640px){.g2,.g3,.g4{grid-template-columns:1fr}}
-h2{font-size:20px;margin-bottom:4px}
-h3{font-size:16px}
-.sub{color:var(--muted);font-size:13px;margin-bottom:14px}
-.stat{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:16px 18px;box-shadow:var(--shadow)}
-.stat .k{font-size:12px;color:var(--muted)}
-.stat .v{font-size:26px;font-weight:800;margin-top:2px}
-.stat .v small{font-size:13px;font-weight:600;color:var(--muted)}
-.bar{height:8px;background:var(--graybg);border-radius:99px;overflow:hidden;margin-top:6px}
-.bar>i{display:block;height:100%;background:linear-gradient(90deg,var(--brand),var(--brand2));border-radius:99px;transition:width .4s}
-.tag{display:inline-block;padding:2px 9px;border-radius:4px;font-size:12px;font-weight:600;margin:2px 3px 2px 0}
-.t-tier{background:var(--graybg);color:#5a6b7b}
-.t-know{background:var(--greenbg);color:var(--green)}
-.t-tag{background:#f4f5f7;color:#8a99a8}
-/* 洛谷风格难度色 */
-.lv{display:inline-block;padding:2px 8px;border-radius:3px;font-size:12px;font-weight:700;color:#fff;letter-spacing:.3px}
-.chip{display:inline-block;padding:4px 12px;border-radius:999px;border:1px solid var(--line);background:#fff;cursor:pointer;font-size:13px;font-weight:500;color:var(--muted);margin:3px;transition:.15s}
+:root{--brand:#00a65a;--brand2:#008d4c;--ink:#1f2937;--muted:#6b7280;--line:#e5e7eb;--bg:#f5f7fa;--card:#fff;--gray:#94a3b8;--graybg:#f1f5f9;--red:#dc2626;--green:#16a34a;--orange:#f59e0b;--blue:#2563eb;--purple:#9333ea;--editor:#1e293b;}
+*{box-sizing:border-box}
+body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;background:var(--bg);color:var(--ink);font-size:14px;line-height:1.6}
+a{color:var(--brand);text-decoration:none;cursor:pointer}
+a:hover{text-decoration:underline}
+#topbar{background:#fff;border-bottom:1px solid var(--line);position:sticky;top:0;z-index:100;box-shadow:0 1px 3px rgba(0,0,0,.04)}
+#topbar .inner{max-width:1200px;margin:0 auto;padding:0 20px;display:flex;align-items:center;height:56px;gap:24px}
+#logo{font-size:18px;font-weight:800;color:var(--brand);display:flex;align-items:center;gap:8px;white-space:nowrap}
+#logo .dot{width:28px;height:28px;border-radius:7px;background:linear-gradient(135deg,var(--brand),var(--brand2));color:#fff;display:grid;place-items:center;font-size:14px}
+#nav{display:flex;gap:4px;flex:1}
+#nav button{background:none;border:none;padding:8px 14px;font-size:14px;color:var(--muted);cursor:pointer;border-radius:6px;font-weight:600}
+#nav button:hover{color:var(--ink);background:var(--graybg)}
+#nav button.active{color:var(--brand);background:rgba(0,166,90,.08)}
+#cd{font-size:12.5px;color:var(--muted);white-space:nowrap;font-weight:600}
+#cd b{color:var(--brand)}
+#mockbar{background:linear-gradient(90deg,#fff7ed,#fef3c7);border-bottom:1px solid #fde68a;padding:6px 20px;display:flex;align-items:center;gap:14px;font-size:13px}
+#mockbar.hidden{display:none}
+#mockbar .pb{background:#fff;border:1px solid #f59e0b;color:#92400e;padding:3px 10px;border-radius:5px;cursor:pointer;font-weight:700;font-size:12px}
+#mockbar .pb:hover{background:#fef3c7}
+#mocktime{font-weight:800;color:#92400e;font-family:ui-monospace,monospace;font-size:15px}
+#app{max-width:1200px;margin:0 auto;padding:20px}
+h1{font-size:26px;margin:0 0 6px}
+h2{font-size:22px;margin:0 0 4px}
+h3{font-size:16px;margin:14px 0 8px}
+.sub{color:var(--muted);font-size:13px;margin:0 0 14px}
+.mb{margin-bottom:14px}
+.mt{margin-top:14px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:18px;margin-bottom:14px;box-shadow:0 1px 2px rgba(0,0,0,.03)}
+.grid{display:grid;gap:14px}
+.g2{grid-template-columns:1fr 1fr}
+.g3{grid-template-columns:repeat(3,1fr)}
+.g4{grid-template-columns:repeat(4,1fr)}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:16px;text-align:center;box-shadow:0 1px 2px rgba(0,0,0,.03)}
+.stat .k{color:var(--muted);font-size:12.5px;margin-bottom:4px}
+.stat .v{font-size:28px;font-weight:800;color:var(--brand)}
+.stat .v small{font-size:14px;color:var(--muted);font-weight:500}
+.alert{border-radius:8px;padding:12px 14px;display:flex;gap:10px;align-items:flex-start;font-size:13.5px}
+.alert.warn{background:#fffbeb;border:1px solid #fde68a;color:#92400e}
+.alert.info{background:#eff6ff;border:1px solid #bfdbfe;color:#1e40af}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border-radius:7px;border:1px solid transparent;cursor:pointer;font-size:13.5px;font-weight:600;text-decoration:none;transition:.15s}
+.btn:hover{text-decoration:none;transform:translateY(-1px)}
+.btn-primary{background:var(--brand);color:#fff}
+.btn-primary:hover{background:var(--brand2)}
+.btn-primary:disabled{background:#a7c4b4;cursor:not-allowed;transform:none}
+.btn-ghost{background:#fff;color:var(--ink);border-color:var(--line)}
+.btn-ghost:hover{border-color:var(--brand);color:var(--brand)}
+.btn-sm{padding:5px 11px;font-size:12.5px}
+.tag{display:inline-block;padding:2px 8px;border-radius:5px;font-size:11.5px;font-weight:600;margin:1px 2px}
+.t-tag{background:var(--graybg);color:var(--gray)}
+.t-know{background:rgba(0,166,90,.1);color:var(--brand)}
+.t-diff1{background:#e8f5e9;color:#2e7d32}
+.t-diff2{background:#e0f7fa;color:#00838f}
+.t-diff3{background:#e3f2fd;color:#1565c0}
+.t-diff4{background:#f3e5f5;color:#7b1fa2}
+table{width:100%;border-collapse:collapse;font-size:13.5px}
+th,td{padding:8px 10px;text-align:left;border-bottom:1px solid var(--line)}
+th{background:var(--graybg);font-weight:700;color:var(--muted);font-size:12.5px}
+.compare td:nth-child(2){color:var(--muted)}
+.compare td:nth-child(3){font-weight:600}
+.searchbox{display:flex;align-items:center;background:#fff;border:1px solid var(--line);border-radius:8px;padding:0 12px;margin-bottom:12px}
+.searchbox .ic{color:var(--muted)}
+.searchbox input{flex:1;border:none;outline:none;padding:10px 8px;font-size:14px;background:transparent}
+.chip{display:inline-block;padding:4px 11px;border-radius:99px;background:#fff;border:1px solid var(--line);font-size:12.5px;cursor:pointer;color:var(--muted);margin:2px;user-select:none}
 .chip:hover{border-color:var(--brand);color:var(--brand)}
-.chip.on{background:var(--brand);border-color:var(--brand);color:#fff}
-table{width:100%;border-collapse:collapse;font-size:14px}
-th,td{text-align:left;padding:10px 12px;border-bottom:1px solid var(--line)}
-th{color:var(--muted);font-weight:600;background:#fafbfc;font-size:13px}
-tr:hover td{background:#f4faf7}
+.chip.on{background:var(--brand);color:#fff;border-color:var(--brand)}
+.lv{display:inline-block;padding:2px 8px;border-radius:4px;color:#fff;font-size:11.5px;font-weight:700}
+.lvbar{display:flex;height:14px;border-radius:7px;overflow:hidden;background:var(--graybg)}
+.problem-row{display:flex;align-items:center;gap:12px;padding:11px 16px;border-bottom:1px solid var(--line);cursor:pointer;transition:.12s;position:relative}
+.problem-row:last-child{border-bottom:none}
+.problem-row:hover{background:rgba(0,166,90,.04)}
+.problem-row::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--dc,var(--line))}
+.problem-row .id{font-weight:800;color:var(--brand);font-family:ui-monospace,monospace;font-size:13px;width:42px}
+.problem-row .nm{flex:1;font-weight:600;font-size:14px}
+.status{font-size:12px;font-weight:700;padding:2px 8px;border-radius:4px}
+.st-done{background:#dcfce7;color:#15803d}
+.st-part{background:#fef3c7;color:#a16207}
+.st-wa{background:#fee2e2;color:#b91c1c}
+.st-none{background:var(--graybg);color:var(--gray)}
+.phead{font-size:12px;color:var(--muted)}
+/* 题目页 */
+.problem-wrap{display:grid;gap:16px}
+.panel{background:#fff;border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.panel-hd{padding:10px 16px;border-bottom:1px solid var(--line);font-weight:700;font-size:13.5px;background:var(--graybg);display:flex;align-items:center}
+.sample-box{background:var(--graybg);border:1px solid var(--line);border-radius:7px;padding:10px 14px;margin:6px 0;font-family:ui-monospace,Consolas,monospace;font-size:13px;white-space:pre-wrap;position:relative}
+.sample-box .lbl{position:absolute;top:-8px;left:10px;background:var(--brand);color:#fff;font-size:10.5px;padding:1px 7px;border-radius:4px;font-weight:700;font-family:sans-serif}
+.kbd{background:var(--graybg);border:1px solid var(--line);border-radius:4px;padding:1px 6px;font-family:ui-monospace,monospace;font-size:12px}
+.editor-tools{display:flex;align-items:center;gap:8px;padding:8px 12px;border-bottom:1px solid var(--line);background:var(--graybg)}
+.editor-tools .btns{margin-left:auto;display:flex;gap:6px}
+.tpl{border:1px solid var(--line);border-radius:5px;padding:4px 8px;font-size:12.5px;background:#fff}
+.CodeMirror{height:380px;font-size:13px}
+.result-item{display:flex;justify-content:space-between;align-items:center;padding:8px 14px;border-bottom:1px solid var(--line);font-size:13px}
+.result-item:last-child{border-bottom:none}
+.result-item .ti{color:var(--muted);font-size:11.5px}
 .v-AC{color:var(--green);font-weight:700}
 .v-WA{color:var(--red);font-weight:700}
-.v-RE,.v-CE{color:var(--amber);font-weight:700}
-.v-TLE{color:var(--gray);font-weight:700}
-.btn{border:none;cursor:pointer;border-radius:5px;padding:9px 18px;font-size:14px;font-weight:600;transition:.15s}
-.btn-primary{background:var(--brand);color:#fff}
-.btn-primary:hover{background:#00884c}
-.btn-primary:disabled{opacity:.5;cursor:not-allowed}
-.btn-ghost{background:#fff;color:var(--brand);border:1px solid var(--brand)}
-.btn-ghost:hover{background:var(--greenbg)}
-.btn-sm{padding:5px 11px;font-size:12.5px;border-radius:4px}
-/* problem layout */
-.problem-wrap{display:grid;grid-template-columns:minmax(300px,1fr) minmax(420px,1.15fr);gap:18px}
-@media(max-width:980px){.problem-wrap{grid-template-columns:1fr}}
-.panel{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden}
-.panel-hd{display:flex;align-items:center;gap:10px;padding:11px 16px;border-bottom:1px solid var(--line);background:#fafbfc;font-weight:700;font-size:14px}
-.editor-tools{padding:10px 14px;background:#ffffff;border-bottom:1px solid var(--line);display:flex;gap:10px;align-items:center;flex-wrap:wrap}
-.editor-tools .btns{margin-left:auto;display:flex;gap:8px}
-.CodeMirror{height:430px;font-size:13.5px;line-height:1.5}
-.result-item{display:flex;justify-content:space-between;align-items:center;padding:9px 14px;border-bottom:1px solid var(--line);font-size:14px}
-.result-item .ti{color:var(--muted);font-size:12px}
-.diff-star{color:#f59e0b;letter-spacing:1px}
-.sample-box{background:#f6f8fa;color:#24292e;border-radius:4px;padding:10px 14px;font-size:13px;overflow:auto;margin:6px 0;border:1px solid var(--line);font-family:Consolas,monospace}
-.sample-box .lbl{color:var(--muted);font-size:11px;text-transform:uppercase;margin-bottom:4px;font-family:inherit}
-code.kbd{background:#eef2f7;padding:1px 6px;border-radius:5px;font-family:Consolas,monospace;font-size:12.5px}
-.solbox{background:var(--amberbg);border:1px solid #f6e2c0;border-radius:10px;padding:14px 16px;margin-top:12px;font-size:14px}
-.know-block{margin-bottom:18px}
-.know-block .cat{font-weight:800;margin-bottom:8px;display:flex;align-items:center;gap:10px}
-.know-block .cat .pct{margin-left:auto;font-size:12px;color:var(--muted);font-weight:600}
-.problem-row{display:flex;align-items:center;gap:12px;padding:11px 14px 11px 16px;border-bottom:1px solid var(--line);cursor:pointer;transition:.12s;position:relative}
-.problem-row:last-child{border-bottom:none}
-.problem-row:hover{background:#f0f9f4}
-.problem-row::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--dc,#cbd5e0)}
-.problem-row .id{font-family:Consolas,monospace;color:var(--muted);font-size:13px;width:42px;font-weight:600}
-.problem-row .nm{font-weight:600;flex:1;color:#24292e;font-size:14.5px}
-.problem-row:hover .nm{color:var(--brand)}
-.problem-row .status{font-size:12px;font-weight:600;padding:2px 9px;border-radius:4px}
-.st-done{background:var(--greenbg);color:var(--green)}
-.st-part{background:var(--amberbg);color:var(--amber)}
-.st-none{background:var(--graybg);color:#9aa7b5}
-.st-wa{background:var(--redbg);color:var(--red)}
-.mockbar{position:sticky;top:56px;z-index:40;background:#0f172a;color:#e2e8f0;padding:10px 0}
-.mockbar .in{max-width:1200px;margin:0 auto;padding:0 20px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
-.mockbar .t{font-weight:700}
-.mockbar .probs{display:flex;gap:6px;flex-wrap:wrap}
-.mockbar .pb{background:rgba(255,255,255,.12);color:#fff;padding:4px 10px;border-radius:8px;font-size:12px;cursor:pointer}
-.mockbar .pb.active{background:var(--brand)}
-.mockbar .pb.done{background:var(--green)}
-.mockbar .time{margin-left:auto;font-variant-numeric:tabular-nums;font-size:16px;font-weight:800;color:#7dd3fc}
-/* 搜索框 */
-.searchbox{display:flex;gap:10px;align-items:center;background:#fff;border:1px solid var(--line);border-radius:6px;padding:9px 14px;margin-bottom:12px}
-.searchbox input{flex:1;border:none;outline:none;font-size:14px;background:transparent}
-.searchbox .ic{color:var(--muted)}
-/* 题单卡片 */
-.pl-card{display:flex;flex-direction:column;height:100%}
-.pl-card .plist{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0}
-.pl-chip{display:inline-flex;align-items:center;gap:6px;padding:4px 10px;background:#f0f9f4;border:1px solid var(--line);border-radius:6px;font-size:12.5px;cursor:pointer;color:var(--ink);font-weight:600}
+.v-CE{color:var(--orange);font-weight:700}
+.v-RE{color:var(--purple);font-weight:700}
+.v-TLE{color:var(--blue);font-weight:700}
+.v-ERR{color:var(--gray);font-weight:700}
+.spinner{display:inline-block;width:14px;height:14px;border:2px solid var(--line);border-top-color:var(--brand);border-radius:50%;animation:spin .7s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.detail-pre{background:#1e293b;color:#fca5a5;padding:10px;border-radius:6px;font-size:12px;overflow-x:auto;white-space:pre-wrap;margin:4px 0}
+.bar{height:8px;background:var(--graybg);border-radius:4px;overflow:hidden}
+.bar i{display:block;height:100%;background:linear-gradient(90deg,var(--brand),var(--brand2));border-radius:4px;transition:width .4s}
+.ring{width:80px;height:80px;border-radius:50%;background:conic-gradient(var(--c) calc(var(--p)*1%),var(--graybg) 0);display:grid;place-items:center;position:relative}
+.ring::before{content:"";position:absolute;inset:8px;background:#fff;border-radius:50%}
+.ring b{position:relative;font-size:18px}
+.know-block .cat{display:flex;align-items:center;gap:8px;margin-bottom:8px;font-weight:700}
+.know-block .pct{margin-left:auto;color:var(--muted);font-size:12.5px}
+.pl-card{display:flex;flex-direction:column}
+.plist{display:flex;flex-wrap:wrap;gap:5px;margin-top:8px}
+.pl-chip{background:var(--graybg);padding:4px 9px;border-radius:5px;font-size:12px;cursor:pointer;border:1px solid transparent}
 .pl-chip:hover{border-color:var(--brand);color:var(--brand)}
-.pl-chip .lv{font-size:10px;padding:1px 6px}
-/* 难度分布条 */
-.lvbar{display:flex;height:14px;border-radius:999px;overflow:hidden;margin:8px 0}
-.lvbar>div{transition:.3s}
-.footer{max-width:1200px;margin:0 auto;padding:18px 20px;color:var(--muted);font-size:12.5px;border-top:1px solid var(--line)}
-.mt{margin-top:18px}
-.mb{margin-bottom:12px}
-.alert{display:flex;gap:12px;align-items:flex-start;padding:14px 16px;border-radius:6px;font-size:13.5px}
-.alert.warn{background:var(--amberbg);border:1px solid #f6e2c0;color:#7c4a12}
-.compare th{width:50%}
-.ring{--p:0;--c:var(--brand);width:74px;height:74px;border-radius:50%;background:conic-gradient(var(--c) calc(var(--p)*1%),#e6ecf5 0);display:grid;place-items:center}
-.ring b{width:56px;height:56px;background:#fff;border-radius:50%;display:grid;place-items:center;font-size:16px}
-.detail-pre{white-space:pre-wrap;word-break:break-word}
-.empty{text-align:center;color:var(--muted);padding:36px 0;font-size:14px}
-.spinner{display:inline-block;width:15px;height:15px;border:2px solid #cbd5e1;border-top-color:var(--brand);border-radius:50%;animation:sp 0.7s linear infinite;vertical-align:-2px}
-@keyframes sp{to{transform:rotate(360deg)}}
-select.tpl{border:1px solid var(--line);border-radius:6px;padding:6px 10px;font-size:12.5px;background:#fff;color:var(--ink);cursor:pointer}
-.hist{display:flex;gap:14px;font-size:12.5px;color:var(--muted);margin-top:10px;flex-wrap:wrap}
-.hist b{color:var(--ink)}
+.empty{text-align:center;color:var(--muted);padding:24px;font-size:13.5px}
+.hidden{display:none!important}
 /* 知识点卡片 */
-.kcard-row{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
-.kcard{flex:1;min-width:150px;border:1.5px solid var(--line);border-radius:6px;padding:12px 14px;background:#fbfcfe;cursor:pointer;transition:.15s;position:relative}
+.kcard-row{display:flex;gap:10px;flex-wrap:wrap}
+.kcard{background:var(--graybg);border:2px solid var(--line);border-radius:8px;padding:10px 14px;cursor:pointer;transition:.15s;min-width:120px;position:relative}
 .kcard:hover{border-color:var(--brand)}
-.kcard .kc-name{font-weight:800;font-size:14px;margin-bottom:4px}
-.kcard .kc-state{font-size:11.5px;font-weight:700;padding:2px 8px;border-radius:999px;display:inline-block}
-.ks-none{background:var(--graybg);color:var(--gray)}
-.ks-review{background:var(--redbg);color:var(--red);animation:pulse 1.6s infinite}
-.ks-ok{background:var(--greenbg);color:var(--green)}
-.kcard.flagged{border-color:var(--red);background:#fff7f7}
-.kcard.mastered{border-color:var(--green);background:#f4fbf6}
-@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(220,38,38,.25)}50%{box-shadow:0 0 0 6px rgba(220,38,38,0)}}
-/* 算法可视化 */
-.viz-stage{padding:20px;overflow:auto;background:#fafbfe;flex:1;min-height:200px}
-.viz-desc{padding:12px 0;background:transparent;border:none;font-size:14px;min-height:0}
-.viz-ctl{display:flex;gap:8px;align-items:flex-wrap;background:transparent;border:none;padding:0 0 8px}
-.viz-ctl .prog{margin-left:auto;font-size:12.5px;color:var(--muted);font-variant-numeric:tabular-nums}
-.viz-boxrow{display:flex;gap:6px;flex-wrap:wrap;align-items:flex-end;margin:10px 0}
-.vcell{min-width:38px;height:38px;border-radius:6px;background:#eef2f7;display:grid;place-items:center;font-weight:700;font-size:13px;font-family:Consolas,monospace;border:1px solid #dde5ef}
-.vcell.hi{background:var(--brand);color:#fff;border-color:var(--brand)}
-.vcell.ok{background:var(--green);color:#fff;border-color:var(--green)}
-.vcell.bad{background:var(--red);color:#fff;border-color:var(--red)}
-.vcell.lo{background:#fff3d6;color:#92600a;border-color:#f0d488}
-.vlbl{font-size:11px;color:var(--muted);text-align:center;margin-top:3px;font-family:Consolas,monospace}
-.vbar{display:inline-block;background:var(--brand);color:#fff;border-radius:4px 4px 0 0;display:grid;place-items:end;font-size:11px;font-weight:700;padding-bottom:3px;align-self:flex-end;transition:.3s}
-.vgrid{display:grid;gap:4px;margin:8px 0}
-.vcell.wall{background:#334155;color:#94a3b8}
-.vcell.start{background:#0ea5e9;color:#fff}
-.vcell.end{background:#f59e0b;color:#fff}
-.vcell.visited{background:#bbf7d0;color:#166534}
-.vcell.frontier{background:#93c5fd;color:#1e3a8a}
-/* 跑我的算法对比 */
-.minebox{margin-top:12px;border-top:1px dashed var(--line);padding-top:12px}
-.minecmp{border-radius:6px;padding:12px 14px;margin-top:10px;font-size:13.5px;line-height:1.7}
-.minecmp.ok{background:var(--greenbg);border:1px solid #bfe6cc;color:#14532d}
-.minecmp.bad{background:var(--redbg);border:1px solid #f3c0c0;color:#7f1d1d}
-#ivStage{background:#fafbfe}
+.kcard.mastered{background:#dcfce7;border-color:#22c55e}
+.kcard.flagged{background:#fee2e2;border-color:#ef4444;animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(239,68,68,.3)}50%{box-shadow:0 0 0 6px rgba(239,68,68,0)}}
+.kc-name{font-weight:700;font-size:13px}
+.kc-state{font-size:11px;display:block;margin-top:3px}
+.ks-ok{color:#15803d}
+.ks-review{color:#b91c1c;font-weight:700}
+.ks-none{color:var(--gray)}
+/* 可视化 */
+.viz-ctl{display:flex;align-items:center;gap:8px;padding:10px;background:var(--graybg);border-radius:8px 8px 0 0;border-bottom:1px solid var(--line)}
+.viz-ctl .prog{margin-left:auto;font-size:12.5px;color:var(--muted);font-weight:600}
+.viz-stage{padding:16px;background:#fff;min-height:180px;font-family:ui-monospace,Consolas,monospace;font-size:13px}
+.viz-desc{padding:10px 16px;background:#f0fdf4;border-top:1px solid #bbf7d0;font-size:13px;color:#166534;border-radius:0 0 8px 8px}
+.viz-array{display:inline-flex;gap:0;margin:4px 0}
+.viz-cell{width:36px;height:36px;border:1px solid var(--line);display:grid;place-items:center;font-weight:700;background:#fff;position:relative}
+.viz-cell.hl{background:#fef08a;border-color:#f59e0b;color:#92400e}
+.viz-cell.bad{background:#fecaca;border-color:#ef4444;color:#991b1b}
+.viz-cell.good{background:#bbf7d0;border-color:#22c55e;color:#15803d}
+.viz-cell .idx{position:absolute;bottom:-16px;font-size:10px;color:var(--gray);font-weight:400}
+.minebox{margin-top:12px;padding:12px;background:#f8fafc;border:1px solid var(--line);border-radius:8px}
+.minecmp{padding:12px;border-radius:8px;margin-top:8px;font-size:13px}
+.minecmp.ok{background:#f0fdf4;border:1px solid #bbf7d0}
+.minecmp.bad{background:#fef2f2;border:1px solid #fecaca}
+.lk-check{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.ck{padding:4px 10px;border-radius:5px;font-size:12px;font-weight:600;cursor:default;font-family:ui-monospace,monospace}
+.ck.ok{background:#dcfce7;color:#15803d}
+.ck.bad{background:#fee2e2;color:#b91c1c;cursor:pointer;border:1px dashed #ef4444}
+.ck.bad:hover{background:#fecaca}
+.flash-bad{animation:flashbad 1s ease-in-out 2}
+@keyframes flashbad{0%,100%{box-shadow:none}50%{box-shadow:0 0 0 4px rgba(239,68,68,.4);border-color:#ef4444}}
 /* 洛谷风格 */
-.problem-wrap h3{padding-left:10px;border-left:3px solid var(--brand);margin:14px 0 6px;font-size:15px;color:#24292e}
-.luogu-id{font-family:Consolas,monospace;color:var(--brand);font-size:14px;font-weight:700;margin-right:2px}
-.lk-check{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
-.lk-check .ck{font-family:Consolas,monospace;font-size:12.5px;padding:5px 10px;border-radius:6px;border:1px solid var(--line);background:#fff}
-.lk-check .ck.ok{background:var(--greenbg);border-color:#bfe6cc;color:#14532d}
-.lk-check .ck.bad{background:var(--redbg);border-color:#f3c0c0;color:#7f1d1d;animation:pulse 1.6s infinite;cursor:pointer}
-#ivStage.flash-bad{border-color:var(--red)!important;box-shadow:0 0 0 3px rgba(231,76,60,.25)}
+.lgbreadcrumb{padding:8px 0}
+.luogu-id{font-family:ui-monospace,monospace;font-weight:700;color:var(--brand)}
+.lgtabs{display:flex;gap:0;border-bottom:2px solid var(--line)}
+.lgtab{padding:10px 18px;cursor:pointer;font-size:13.5px;font-weight:600;color:var(--muted);border-bottom:2px solid transparent;margin-bottom:-2px;transition:.15s}
+.lgtab:hover{color:var(--ink)}
+.lgtab.on{color:var(--brand);border-bottom-color:var(--brand)}
+.lginfo{display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--line);font-size:13px}
+.lginfo:last-child{border-bottom:none}
+.lginfo span:first-child{color:var(--muted)}
+.tut-code{background:var(--editor);color:#e2e8f0;padding:14px;border-radius:8px;font-family:ui-monospace,Consolas,monospace;font-size:12.5px;overflow-x:auto;white-space:pre;line-height:1.6;margin:8px 0}
+.disc-item{padding:12px 0;border-bottom:1px solid var(--line)}
+.disc-item:last-child{border-bottom:none}
+.disc-head{display:flex;align-items:center;gap:8px;margin-bottom:6px}
+.disc-avatar{width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,var(--brand),var(--brand2));color:#fff;display:grid;place-items:center;font-size:12px;font-weight:700}
+.disc-user{font-weight:700;font-size:13px}
+.disc-time{color:var(--muted);font-size:11.5px;margin-left:auto}
+.disc-content{font-size:13.5px;line-height:1.7;padding-left:36px;white-space:pre-wrap}
+.disc-input{width:100%;min-height:70px;border:1px solid var(--line);border-radius:8px;padding:10px;font-size:13.5px;font-family:inherit;resize:vertical}
+.disc-input:focus{outline:none;border-color:var(--brand)}
+.prob-stats{display:flex;gap:16px;padding:10px 0;font-size:13px}
+.fav-btn{cursor:pointer;user-select:none;font-size:18px;color:var(--gray);transition:.15s}
+.fav-btn:hover{color:var(--orange)}
+.fav-btn.on{color:var(--orange)}
+.sub-row{display:flex;align-items:center;gap:10px;padding:9px 14px;border-bottom:1px solid var(--line);cursor:pointer;font-size:13px;transition:.12s}
+.sub-row:last-child{border-bottom:none}
+.sub-row:hover{background:rgba(0,166,90,.04)}
+.sub-row .sid{font-family:ui-monospace,monospace;color:var(--muted);font-size:12px;width:70px}
+.sub-row .st{width:60px;font-size:12px;font-weight:700;text-align:center;padding:2px 0;border-radius:4px}
+.lb-row{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--line);font-size:13.5px}
+.lb-row:last-child{border-bottom:none}
+.lb-rank{width:28px;height:28px;border-radius:50%;background:var(--graybg);display:grid;place-items:center;font-weight:800;font-size:13px;color:var(--muted)}
+.lb-rank.r1{background:linear-gradient(135deg,#fbbf24,#f59e0b);color:#fff}
+.lb-rank.r2{background:linear-gradient(135deg,#94a3b8,#64748b);color:#fff}
+.lb-rank.r3{background:linear-gradient(135deg,#fb923c,#ea580c);color:#fff}
+.lb-name{flex:1;font-weight:600}
+.lb-score{font-weight:800;color:var(--brand);font-family:ui-monospace,monospace}
+.rand-btn{background:#fff;border:1px solid var(--line);border-radius:6px;padding:5px 12px;font-size:12.5px;cursor:pointer;font-weight:600;color:var(--ink)}
+.rand-btn:hover{border-color:var(--brand);color:var(--brand)}
+.solbox{background:#f0fdf4;border:1px solid #bbf7d0;border-radius:8px;padding:12px 16px;margin:8px 0;font-size:13.5px;line-height:1.8}
+@media(max-width:900px){.g2,.g3,.g4{grid-template-columns:1fr}.problem-wrap{grid-template-columns:1fr!important}#nav{overflow-x:auto}#topbar .inner{gap:10px;padding:0 12px}}
 </style>
 </head>
 <body>
-
-<header class="topbar">
-  <div class="in">
-    <div class="logo"><span class="badge">CSP-S</span>第二轮 · 在线刷题评测</div>
-    <nav class="nav" id="nav">
-      <button data-view="dashboard">首页</button>
+<div id="topbar">
+  <div class="inner">
+    <div id="logo"><span class="dot">CSP</span> 第二轮备考</div>
+    <div id="nav">
+      <button data-view="dashboard" class="active">首页</button>
       <button data-view="practice">题库</button>
       <button data-view="playlists">题单</button>
       <button data-view="mock">模拟赛</button>
       <button data-view="knowledge">知识图谱</button>
-      <button data-view="records">我的</button>
-    </nav>
-    <div class="navright"><span class="countdown" id="cd"></span></div>
-  </div>
-</header>
-
-<div class="mockbar hidden" id="mockbar">
-  <div class="in">
-    <span class="t">⚡ 模拟赛进行中</span>
-    <span class="probs" id="mockprobs"></span>
-    <span class="time" id="mocktime">--:--</span>
+      <button data-view="records">我的记录</button>
+    </div>
+    <div id="cd"></div>
   </div>
 </div>
-
-<main class="wrap" id="app"></main>
-
-<footer class="footer">
-  CSP-S 2026 第二轮备考工具 · 机试 4 题 × 100 分 = 400 分 · 官方时间 2026-10-31 14:30–18:30（以 CCF 通知为准）<br>
-  实时评测由 Wandbox 公共编译服务提供（GitHub Pages 无法直接编译 C++，故调用公共 API）。难度配色参考洛谷。数据保存在本机浏览器 localStorage。
-</footer>
+<div id="mockbar" class="hidden">
+  <b>⏱ 模拟赛进行中</b>
+  <span id="mockprobs"></span>
+  <span style="margin-left:auto">剩余 <span id="mocktime">4:00:00</span></span>
+</div>
+<div id="app"></div>
 
 <script>
-"use strict";
-/*================ 题库数据 ================*/
-window.CSP_PROBLEMS=[{"id":"p01","no":1,"title":"数字统计","tier":"T1","diff":1,"knowledge":["排序","哈希 / 计数统计"],"tag":"基础算法 · 模拟","points":100,"statement":"给定 n 个整数，统计每个不同数值出现的次数，并按数值从小到大输出。","inputFormat":"第一行一个整数 n（1 ≤ n ≤ 1e5）。第二行 n 个整数 aᵢ（0 ≤ aᵢ ≤ 1e9）。","outputFormat":"若干行，每行两个整数，格式为“数值 次数”，按数值升序排列。","constraints":"时间 1s，内存 128MB。","solution":"用 map<long long,int> 计数，或读入后排序再统计。时间复杂度 O(n log n)，空间 O(n)。注意数值可达 1e9 需用 long long。","sample":{"input":"5\n1 2 1 3 2\n","output":"1 2\n2 2\n3 1"},"judge":[{"input":"5\n1 2 1 3 2\n","output":"1 2\n2 2\n3 1","score":20},{"input":"1\n1000000000\n","output":"1000000000 1","score":20},{"input":"8\n9 9 9 9 9 9 9 9\n","output":"9 8","score":20},{"input":"6\n5 4 3 2 1 5\n","output":"1 1\n2 1\n3 1\n4 1\n5 2","score":20},{"input":"7\n100 7 100 7 100 7 2\n","output":"2 1\n7 3\n100 3","score":20}]},{"id":"p02","no":2,"title":"区间和","tier":"T1","diff":1,"knowledge":["前缀和"],"tag":"基础算法 · 前缀和","points":100,"statement":"给定 n 个数 a₁..aₙ，进行 q 次询问，每次给出区间 [l, r]，求该区间所有数之和。","inputFormat":"第一行两个整数 n, q（1 ≤ n, q ≤ 2e5）。第二行 n 个整数 aᵢ（|aᵢ| ≤ 1e9）。接下来 q 行，每行两个整数 l, r（1 ≤ l ≤ r ≤ n）。","outputFormat":"对每个询问输出一行，为该区间的和。","constraints":"时间 1s，内存 256MB。","solution":"预处理前缀和 pre[i]=pre[i-1]+a[i]，查询 O(1) 输出 pre[r]-pre[l-1]。注意结果用 long long。","sample":{"input":"5 3\n1 2 3 4 5\n1 5\n2 3\n3 3\n","output":"15\n5\n3"},"judge":[{"input":"5 3\n1 2 3 4 5\n1 5\n2 3\n3 3\n","output":"15\n5\n3","score":33},{"input":"4 2\n10 20 30 40\n2 4\n1 1\n","output":"90\n10","score":33},{"input":"3 1\n1000000000 1000000000 1000000000\n1 3\n","output":"3000000000","score":34}]},{"id":"p03","no":3,"title":"切绳子","tier":"T2","diff":2,"knowledge":["二分答案"],"tag":"二分 · 贪心","points":100,"statement":"有 n 根木棍，长度分别为 Lᵢ。现在要把它们切成 k 段等长的木棍（每段长度必须为正整数），求能切出的最大段长。","inputFormat":"第一行两个整数 n, k（1 ≤ n ≤ 1e5，1 ≤ k ≤ 1e9）。第二行 n 个整数 Lᵢ（1 ≤ Lᵢ ≤ 1e9）。","outputFormat":"一个整数，表示能切出的最大整数段长。","constraints":"时间 1s，内存 256MB。","solution":"答案满足单调性：段长 x 可行当且仅当 Σ(Lᵢ/x) ≥ k。对 x 在 [1, max(Lᵢ)] 上二分即可。复杂度 O(n log maxL)。","sample":{"input":"3 5\n6 7 9\n","output":"3"},"judge":[{"input":"3 5\n6 7 9\n","output":"3","score":20},{"input":"2 4\n10 10\n","output":"5","score":20},{"input":"1 1\n7\n","output":"7","score":20},{"input":"4 10\n1 2 3 4\n","output":"0","score":20},{"input":"5 3\n1000000000 1 1 1 1\n","output":"333333333","score":20}]},{"id":"p04","no":4,"title":"会议安排","tier":"T2","diff":2,"knowledge":["贪心"],"tag":"贪心 · 区间调度","points":100,"statement":"一天内有 n 场会议，第 i 场会议占用区间 [sᵢ, eᵢ]。要选择尽量多两两不相交的会议（会议可首尾相接，即后一场开始时间 ≥ 前一场结束时间），求最多能选几场。","inputFormat":"第一行一个整数 n（1 ≤ n ≤ 1e5）。接下来 n 行，每行两个整数 sᵢ, eᵢ（0 ≤ sᵢ < eᵢ ≤ 1e9）。","outputFormat":"一个整数，表示最多能安排的会议场数。","constraints":"时间 1s，内存 128MB。","solution":"按结束时间从小到大排序，贪心选取结束最早且不与上一场冲突的会议。复杂度 O(n log n)。","sample":{"input":"4\n1 3\n2 5\n3 6\n5 7\n","output":"2"},"judge":[{"input":"4\n1 3\n2 5\n3 6\n5 7\n","output":"2","score":33},{"input":"3\n1 2\n2 3\n3 4\n","output":"3","score":33},{"input":"5\n1 100\n2 99\n3 98\n100 101\n50 50\n","output":"2","score":34}]},{"id":"p05","no":5,"title":"最大矩形","tier":"T3","diff":3,"knowledge":["单调栈"],"tag":"数据结构 · 单调栈","points":100,"statement":"在平面上有 n 个并排排列的柱形，高度分别为 hᵢ，宽均为 1。求这些柱形能围成的最大矩形面积。","inputFormat":"第一行一个整数 n（1 ≤ n ≤ 1e5）。第二行 n 个整数 hᵢ（0 ≤ hᵢ ≤ 1e9）。","outputFormat":"一个整数，表示最大矩形面积。","constraints":"时间 1s，内存 128MB。","solution":"维护一个关于高度的单调递增栈，枚举每个高度作为矩形高，利用栈确定左右边界。复杂度 O(n)。","sample":{"input":"6\n2 1 5 6 2 3\n","output":"10"},"judge":[{"input":"6\n2 1 5 6 2 3\n","output":"10","score":20},{"input":"4\n1 1 1 1\n","output":"4","score":20},{"input":"1\n5\n","output":"5","score":20},{"input":"7\n6 2 5 4 5 1 6\n","output":"12","score":20},{"input":"5\n2 4 4 4 2\n","output":"12","score":20}]},{"id":"p06","no":6,"title":"最小生成树","tier":"T3","diff":3,"knowledge":["并查集","最小生成树"],"tag":"图论 · 生成树","points":100,"statement":"给定一个 n 个点、m 条边的带权无向连通图，求其最小生成树的边权和；若图不连通，输出 orz。","inputFormat":"第一行两个整数 n, m（1 ≤ n ≤ 1e5，0 ≤ m ≤ 2e5）。接下来 m 行，每行三个整数 u, v, w（1 ≤ u,v ≤ n，0 ≤ w ≤ 1e9）。","outputFormat":"一个整数表示最小生成树边权和；若不连通输出 orz。","constraints":"时间 1s，内存 256MB。","solution":"Kruskal：按边权排序，用并查集维护连通性，依次加入不形成环的边，直到加入 n-1 条边。复杂度 O(m log m)。","sample":{"input":"4 5\n1 2 1\n1 3 3\n2 3 1\n2 4 6\n3 4 5\n","output":"7"},"judge":[{"input":"4 5\n1 2 1\n1 3 3\n2 3 1\n2 4 6\n3 4 5\n","output":"7","score":25},{"input":"3 1\n1 2 5\n","output":"orz","score":25},{"input":"3 3\n1 2 2\n2 3 2\n1 3 2\n","output":"4","score":25},{"input":"5 4\n1 2 10\n2 3 10\n3 4 10\n4 5 10\n","output":"40","score":25}]},{"id":"p07","no":7,"title":"高精度加法","tier":"T3","diff":3,"knowledge":["高精度"],"tag":"基础算法 · 高精度","points":100,"statement":"给出两个非负大整数 A、B（均以十进制字符串给出），求它们的和。","inputFormat":"两行，每行一个由数字组成的非负大整数，长度均不超过 1e5，且不含前导零（0 除外）。","outputFormat":"一行，为 A + B 的结果。","constraints":"时间 1s，内存 128MB。","solution":"模拟竖式加法：从低位向高位逐位相加并处理进位，用字符串存储。复杂度 O(max(lenA,lenB))。","sample":{"input":"123\n456\n","output":"579"},"judge":[{"input":"123\n456\n","output":"579","score":20},{"input":"999\n1\n","output":"1000","score":20},{"input":"999999999999999999999999999999\n1\n","output":"1000000000000000000000000000000","score":20},{"input":"0\n0\n","output":"0","score":20},{"input":"123456789012345678901234567890\n987654321098765432109876543210\n","output":"1111111110111111111011111111100","score":20}]},{"id":"p08","no":8,"title":"最长上升子序列","tier":"T4","diff":3,"knowledge":["动态规划","LIS"],"tag":"DP · 序列","points":100,"statement":"给定一个长度为 n 的整数序列 a，求其最长严格上升子序列（LIS）的长度。","inputFormat":"第一行一个整数 n（1 ≤ n ≤ 2e5）。第二行 n 个整数 aᵢ（|aᵢ| ≤ 1e9）。","outputFormat":"一个整数，表示最长严格上升子序列的长度。","constraints":"时间 1s，内存 256MB。","solution":"维护数组 d，d[i] 表示长度为 i+1 的上升子序列的最小末尾。对每个 aᵢ 用 lower_bound 定位并更新。复杂度 O(n log n)。","sample":{"input":"6\n1 3 2 4 3 5\n","output":"4"},"judge":[{"input":"6\n1 3 2 4 3 5\n","output":"4","score":25},{"input":"5\n5 4 3 2 1\n","output":"1","score":25},{"input":"4\n1 2 3 4\n","output":"4","score":25},{"input":"8\n10 9 2 5 3 7 101 18\n","output":"4","score":25}]},{"id":"p09","no":9,"title":"0-1 背包","tier":"T4","diff":3,"knowledge":["动态规划","背包"],"tag":"DP · 背包","points":100,"statement":"有 n 件物品，第 i 件物品重量为 wᵢ、价值为 vᵢ。背包容量为 C，每件物品最多取一次，求能装入的最大总价值。","inputFormat":"第一行两个整数 n, C（1 ≤ n ≤ 1000，1 ≤ C ≤ 1e5）。接下来 n 行，每行两个整数 wᵢ, vᵢ（1 ≤ wᵢ ≤ C，1 ≤ vᵢ ≤ 1e9）。","outputFormat":"一个整数，表示最大总价值。","constraints":"时间 1s，内存 256MB。","solution":"01 背包滚动数组优化：dp[c]=max(dp[c], dp[c-w]+v)，容量倒序枚举。复杂度 O(n·C)。","sample":{"input":"3 10\n5 6\n4 4\n6 8\n","output":"12"},"judge":[{"input":"3 10\n5 6\n4 4\n6 8\n","output":"12","score":25},{"input":"2 5\n3 10\n3 10\n","output":"10","score":25},{"input":"4 7\n2 3\n3 4\n4 5\n5 6\n","output":"9","score":25},{"input":"1 100\n50 9999\n","output":"9999","score":25}]},{"id":"p10","no":10,"title":"单源最短路","tier":"T4","diff":4,"knowledge":["最短路","Dijkstra"],"tag":"图论 · 最短路","points":100,"statement":"给定一个 n 个点、m 条边的带权有向图（可能有重边，边权非负），求从 1 号点出发到每个点的最短路径长度。若某点不可达，输出 2147483647。","inputFormat":"第一行两个整数 n, m（1 ≤ n ≤ 1e5，0 ≤ m ≤ 2e5）。接下来 m 行，每行三个整数 u, v, w（1 ≤ u,v ≤ n，0 ≤ w ≤ 1e9）。","outputFormat":"一行 n 个整数，为 1 号点到各点的最短路长度，空格分隔。","constraints":"时间 1s，内存 256MB。","solution":"Dijkstra + 优先队列优化。dist 用 long long，不可达保留 INF=2147483647。复杂度 O(m log n)。","sample":{"input":"4 4\n1 2 2\n1 3 1\n2 4 5\n3 4 1\n","output":"0 2 1 2"},"judge":[{"input":"4 4\n1 2 2\n1 3 1\n2 4 5\n3 4 1\n","output":"0 2 1 2","score":25},{"input":"3 1\n1 2 3\n","output":"0 3 2147483647","score":25},{"input":"3 2\n1 2 4\n2 3 5\n","output":"0 4 9","score":25},{"input":"5 4\n1 2 1\n2 3 1\n3 4 1\n4 5 1\n","output":"0 1 2 3 4","score":25}]},{"id":"p11","no":11,"title":"树的直径","tier":"T4","diff":3,"knowledge":["树上问题","BFS"],"tag":"图论 · 树","points":100,"statement":"给定一棵 n 个节点的树，求树的直径，即任意两点间最长路径经过的边数。","inputFormat":"第一行一个整数 n（1 ≤ n ≤ 1e5）。接下来 n-1 行，每行两个整数 u, v，表示一条无向边。","outputFormat":"一个整数，表示树的直径长度（边数）。","constraints":"时间 1s，内存 256MB。","solution":"任取一点做 BFS/DFS 找到最远点 s，再从 s 做一次 BFS/DFS 得到最远距离即直径。复杂度 O(n)。","sample":{"input":"4\n1 2\n2 3\n3 4\n","output":"3"},"judge":[{"input":"4\n1 2\n2 3\n3 4\n","output":"3","score":25},{"input":"5\n1 2\n1 3\n1 4\n1 5\n","output":"2","score":25},{"input":"5\n1 2\n2 3\n2 4\n4 5\n","output":"3","score":25},{"input":"3\n1 2\n2 3\n","output":"2","score":25}]},{"id":"p12","no":12,"title":"DAG 最长路","tier":"T4","diff":4,"knowledge":["拓扑排序","动态规划"],"tag":"图论 · DAG / DP","points":100,"statement":"给定一个 n 个点、m 条边的有向无环图，边权为非负整数。求从 1 号点到 n 号点的最长路径长度；若 1 到 n 不可达，输出 -1。","inputFormat":"第一行两个整数 n, m（1 ≤ n ≤ 1e5，0 ≤ m ≤ 2e5）。接下来 m 行，每行三个整数 u, v, w（1 ≤ u,v ≤ n，0 ≤ w ≤ 1e9）。","outputFormat":"一个整数，表示 1 到 n 的最长路长度；不可达输出 -1。","constraints":"时间 1s，内存 256MB。","solution":"对 DAG 做拓扑排序，按拓扑序做 DP：dp[v]=max(dp[v], dp[u]+w)。初始化 dp[1]=0，其余为 -∞。复杂度 O(n+m)。","sample":{"input":"3 3\n1 2 5\n2 3 3\n1 3 4\n","output":"8"},"judge":[{"input":"3 3\n1 2 5\n2 3 3\n1 3 4\n","output":"8","score":25},{"input":"5 5\n1 2 1\n1 3 2\n2 4 3\n3 4 1\n4 5 2\n","output":"6","score":25},{"input":"3 1\n2 3 1\n","output":"-1","score":25},{"input":"4 4\n1 2 2\n2 4 3\n1 3 5\n3 4 1\n","output":"6","score":25}]},{"id":"p13","no":13,"title":"斐波那契（矩阵快速幂）","tier":"T4","diff":4,"knowledge":["数论","矩阵快速幂"],"tag":"数论 · 矩阵","points":100,"statement":"斐波那契数列 F(1)=F(2)=1，F(n)=F(n-1)+F(n-2)。给定 n，求 F(n) mod 1e9+7。","inputFormat":"一行一个整数 n（1 ≤ n ≤ 1e18）。","outputFormat":"一个整数，表示 F(n) 对 1e9+7 取模的结果。","constraints":"时间 1s，内存 128MB。","solution":"构造转移矩阵 [[1,1],[1,0]]，用矩阵快速幂求出 F(n)。复杂度 O(log n)。","sample":{"input":"10\n","output":"55"},"judge":[{"input":"10\n","output":"55","score":20},{"input":"1\n","output":"1","score":20},{"input":"2\n","output":"1","score":20},{"input":"100\n","output":"687995182","score":20},{"input":"1000000000000000000\n","output":"209783453","score":20}]},{"id":"p14","no":14,"title":"字符串匹配","tier":"T4","diff":3,"knowledge":["字符串","KMP"],"tag":"字符串 · KMP","points":100,"statement":"给定主串 s 与模式串 t，求 t 在 s 中出现的次数（允许重叠）。","inputFormat":"两行，第一行为主串 s，第二行为模式串 t。两串仅含小写字母，长度均不超过 1e6。","outputFormat":"一个整数，表示 t 在 s 中出现的次数。","constraints":"时间 1s，内存 128MB。","solution":"使用 KMP 算法，匹配到完整模式串后回退到 pi 值继续匹配，统计重叠出现次数。复杂度 O(|s|+|t|)。","sample":{"input":"aaaa\naa\n","output":"3"},"judge":[{"input":"aaaa\naa\n","output":"3","score":20},{"input":"abc\nd\n","output":"0","score":20},{"input":"ababab\naba\n","output":"2","score":20},{"input":"a\na\n","output":"1","score":20},{"input":"abcabcabc\nabc\n","output":"3","score":20}]},{"id":"p15","no":15,"title":"迷宫最短路","tier":"T2","diff":2,"knowledge":["搜索","BFS"],"tag":"搜索 · 广度优先","points":100,"statement":"给定一个 n 行 m 列的网格，0 表示可通行，1 表示墙。每一步可以上下左右移动一格，求从 (1,1) 到 (n,m) 的最少步数；若不可达输出 -1。","inputFormat":"第一行两个整数 n, m（1 ≤ n, m ≤ 1000）。接下来 n 行，每行一个长度为 m 的 0/1 字符串。起点与终点保证为 0。","outputFormat":"一个整数，表示最少步数；不可达输出 -1。","constraints":"时间 1s，内存 256MB。","solution":"BFS 求最短路，dist 数组记录步数。复杂度 O(n·m)。","sample":{"input":"2 2\n00\n00\n","output":"2"},"judge":[{"input":"2 2\n00\n00\n","output":"2","score":20},{"input":"3 3\n000\n010\n000\n","output":"4","score":20},{"input":"3 3\n010\n010\n010\n","output":"-1","score":20},{"input":"1 1\n0\n","output":"0","score":20},{"input":"4 4\n0000\n0110\n0000\n0110\n","output":"6","score":20}]},{"id":"p16","no":16,"title":"单点修改区间求和","tier":"T4","diff":3,"knowledge":["树状数组 / 线段树"],"tag":"数据结构 · BIT","points":100,"statement":"给定长度为 n 的数列，支持两种操作：1. 单点修改：将第 i 个数改为 x；2. 区间查询：求 [l, r] 的和。","inputFormat":"第一行两个整数 n, q（1 ≤ n, q ≤ 2e5）。第二行 n 个整数 aᵢ（|aᵢ| ≤ 1e9）。接下来 q 行，每行先给出操作类型：若为 1，则跟两个整数 i, x（单点修改）；若为 2，则跟两个整数 l, r（区间求和，1 ≤ l ≤ r ≤ n）。","outputFormat":"对每个类型 2 的操作，输出一行区间和。","constraints":"时间 1s，内存 256MB。","solution":"树状数组支持单点加与前缀和查询，修改用增量。复杂度 O((n+q) log n)。","sample":{"input":"5 3\n1 2 3 4 5\n2 1 5\n1 3 10\n2 1 5\n","output":"15\n22"},"judge":[{"input":"5 3\n1 2 3 4 5\n2 1 5\n1 3 10\n2 1 5\n","output":"15\n22","score":33},{"input":"3 2\n5 5 5\n2 2 3\n1 1 0\n2 1 3\n","output":"10","score":33},{"input":"4 2\n1 2 3 4\n2 1 4\n1 2 5\n2 1 4\n","output":"10","score":34}]}];
-const PROBLEMS=window.CSP_PROBLEMS||[];
-
-/* 洛谷风格难度 */
-const LEVELS={
- 1:{name:"普及-",color:"#00a600"},
- 2:{name:"普及/提高-",color:"#03bdbd"},
- 3:{name:"普及+/提高",color:"#0066cc"},
- 4:{name:"提高+/省选-",color:"#9900dd"}
-};
-const lvBadge=p=>{const L=LEVELS[p.diff]||LEVELS[1];return `<span class="lv" style="background:${L.color}" title="洛谷难度配色">${L.name}</span>`;};
-
-/* 专题题单（洛谷 Playlist） */
-const PLAYLISTS=[
- {name:"🌟 入门稳分 · T1 必拿",desc:"送分题，考场前 10 分钟必须 AC，练的是不犯低级错误",probs:["p01","p02"]},
- {name:"🧠 思维训练 · 贪心与二分",desc:"观察性质 + 二分答案 + 区间调度 + BFS 搜索",probs:["p03","p04","p15"]},
- {name:"🏗 数据结构专项",desc:"单调栈、并查集/Kruskal、树状数组——T3 主力",probs:["p05","p06","p16"]},
- {name:"🎯 动态规划专项",desc:"LIS O(nlogn)、0-1 背包",probs:["p08","p09"]},
- {name:"🕸 图论专项",desc:"MST、Dijkstra、树的直径、DAG 拓扑 DP",probs:["p06","p10","p11","p12"]},
- {name:"🔢 数论与字符串",desc:"高精度、矩阵快速幂、KMP",probs:["p07","p13","p14"]}
+/*================ 题库数据（CSP-S 提高组第二轮考点全覆盖） ================*/
+window.CSP_PROBLEMS=[
+{id:"p01",no:1,tier:"T1",title:"数字统计",tag:"模拟 / 枚举",diff:1,points:100,constraints:"1s / 256MB",
+ knowledge:["枚举与模拟","STL 容器"],
+ statement:"给定两个正整数 L 和 R（1≤L≤R≤10^6），统计区间 [L,R] 中所有整数的十进制表示里，数字 2 出现的总次数。",
+ inputFormat:"一行两个整数 L R。",outputFormat:"一个整数，表示数字 2 出现的总次数。",
+ sample:{input:"2 22",output:"6"},
+ solution:"从 L 到 R 枚举每个数，逐位取模 10 判断是否为 2 并计数。复杂度 O((R-L+1)×位数)，R≤10^6 完全没问题。也可以用数位 DP 做更大范围。",
+ judge:[{input:"2 22\n",output:"6",score:30},{input:"1 100\n",output:"20",score:30},{input:"123 4567\n",output:"1441",score:40}]},
+{id:"p02",no:2,tier:"T1",title:"区间和查询",tag:"前缀和",diff:1,points:100,constraints:"1s / 256MB",
+ knowledge:["前缀和 / 差分","枚举与模拟"],
+ statement:"给定长度为 n 的数组 a 和 q 次询问，每次询问给出 l,r，求 a[l]+a[l+1]+…+a[r] 的和。",
+ inputFormat:"第一行 n q；第二行 n 个整数；接下来 q 行每行 l r。",outputFormat:"每行一个整数表示答案。",
+ sample:{input:"5 3\n1 2 3 4 5\n1 3\n2 5\n1 5",output:"6\n14\n15"},
+ solution:"预处理前缀和 s[i]=a[1]+…+a[i]，每次询问 O(1) 输出 s[r]-s[l-1]。注意下标从 1 开始。",
+ judge:[{input:"5 3\n1 2 3 4 5\n1 3\n2 5\n1 5\n",output:"6\n14\n15",score:50},{input:"6 2\n10 -5 3 7 -2 4\n1 6\n2 4\n",output:"17\n5",score:50}]},
+{id:"p03",no:3,tier:"T2",title:"切绳子",tag:"二分答案",diff:2,points:100,constraints:"1s / 256MB",
+ knowledge:["二分答案","贪心"],
+ statement:"有 n 根绳子，长度分别为 a[i]。现在要切出 k 段长度相同的绳子，问每段最长能有多长（保留两位小数）。",
+ inputFormat:"第一行 n k；第二行 n 个正整数。",outputFormat:"一个浮点数，保留两位小数。",
+ sample:{input:"4 11\n8 10 12 15",output:"3.00"},
+ solution:"二分答案长度 x，判断 sum(a[i]/x)≥k 是否成立。为避免浮点误差，可以把长度乘 100 转成整数二分。",
+ judge:[{input:"4 11\n8 10 12 15\n",output:"3.00",score:40},{input:"3 5\n5 5 5\n",output:"3.00",score:30},{input:"1 1\n100\n",output:"100.00",score:30}]},
+{id:"p04",no:4,tier:"T2",title:"会议安排",tag:"贪心",diff:2,points:100,constraints:"1s / 256MB",
+ knowledge:["贪心","排序"],
+ statement:"有 n 个会议，每个会议有开始时间 s[i] 和结束时间 e[i]。一个会议室同一时间只能开一个会，问最多能安排多少个不冲突的会议。",
+ inputFormat:"第一行 n；接下来 n 行每行 s e。",outputFormat:"一个整数，表示最多会议数。",
+ sample:{input:"4\n1 3\n2 4\n3 5\n4 6",output:"3"},
+ solution:"经典区间调度：按结束时间从小到大排序，每次选结束最早且不冲突的会议。贪心正确性：结束越早，留给后面的时间越多。",
+ judge:[{input:"4\n1 3\n2 4\n3 5\n4 6\n",output:"3",score:40},{input:"3\n1 10\n2 3\n4 5\n",output:"2",score:30},{input:"5\n1 2\n2 3\n3 4\n4 5\n1 5\n",output:"4",score:30}]},
+{id:"p05",no:5,tier:"T3",title:"最大矩形",tag:"单调栈",diff:3,points:100,constraints:"1s / 256MB",
+ knowledge:["栈 / 队列 / 堆","枚举与模拟"],
+ statement:"给定一个直方图（n 个柱子的高度 h[i]），求直方图中面积最大的矩形的面积。",
+ inputFormat:"第一行 n；第二行 n 个整数。",outputFormat:"一个整数，表示最大面积。",
+ sample:{input:"6\n2 1 5 6 2 3",output:"10"},
+ solution:"单调栈经典题。维护一个高度递增的栈，遇到比栈顶小的柱子时弹出栈顶并计算以该高度为高的矩形宽度。每个元素进出栈一次，O(n)。",
+ judge:[{input:"6\n2 1 5 6 2 3\n",output:"10",score:40},{input:"5\n1 1 1 1 1\n",output:"5",score:30},{input:"8\n4 2 0 3 2 5 1 4\n",output:"8",score:30}]},
+{id:"p06",no:6,tier:"T3",title:"最小生成树",tag:"图论 / MST",diff:3,points:100,constraints:"1s / 256MB",
+ knowledge:["最小生成树","并查集"],
+ statement:"给定 n 个点 m 条边的无向连通图，每条边有边权 w。求最小生成树的总边权。",
+ inputFormat:"第一行 n m；接下来 m 行每行 u v w。",outputFormat:"一个整数，表示最小生成树总权值。",
+ sample:{input:"4 5\n1 2 2\n1 3 3\n2 3 1\n2 4 4\n3 4 5",output:"7"},
+ solution:"Kruskal 算法：将边按权值排序，用并查集维护连通性，依次加入不形成环的边。复杂度 O(m log m)。",
+ judge:[{input:"4 5\n1 2 2\n1 3 3\n2 3 1\n2 4 4\n3 4 5\n",output:"7",score:40},{input:"3 3\n1 2 10\n2 3 20\n1 3 30\n",output:"30",score:30},{input:"5 7\n1 2 4\n1 3 2\n2 3 1\n2 4 5\n3 4 8\n3 5 10\n4 5 2\n",output:"9",score:30}]},
+{id:"p07",no:7,tier:"T1",title:"高精度加法",tag:"高精度",diff:1,points:100,constraints:"1s / 256MB",
+ knowledge:["高精度","STL 容器"],
+ statement:"给定两个不超过 1000 位的非负整数，求它们的和。",
+ inputFormat:"两行，每行一个大整数。",outputFormat:"一行，表示两数之和。",
+ sample:{input:"123\n456",output:"579"},
+ solution:"用数组或字符串模拟竖式加法，从低位到低位逐位相加并处理进位。注意前导零和结果为 0 的情况。",
+ judge:[{input:"123\n456\n",output:"579",score:30},{input:"999\n1\n",output:"1000",score:30},{input:"12345678901234567890\n98765432109876543210\n",output:"111111111011111111100",score:40}]},
+{id:"p08",no:8,tier:"T2",title:"最长上升子序列",tag:"DP / 二分",diff:2,points:100,constraints:"1s / 256MB",
+ knowledge:["线性 DP","二分答案"],
+ statement:"给定长度为 n 的序列 a，求最长严格上升子序列的长度。",
+ inputFormat:"第一行 n；第二行 n 个整数。",outputFormat:"一个整数。",
+ sample:{input:"6\n1 3 2 4 3 5",output:"4"},
+ solution:"O(n log n) 做法：维护 tails 数组，tails[i] 表示长度为 i+1 的上升子序列的最小末尾。对每个元素用 lower_bound 找位置替换。",
+ judge:[{input:"6\n1 3 2 4 3 5\n",output:"4",score:40},{input:"5\n5 4 3 2 1\n",output:"1",score:30},{input:"8\n1 2 3 4 5 6 7 8\n",output:"8",score:30}]},
+{id:"p09",no:9,tier:"T3",title:"01 背包",tag:"动态规划",diff:3,points:100,constraints:"1s / 256MB",
+ knowledge:["背包 DP","动态规划"],
+ statement:"有 n 件物品，每件有重量 w[i] 和价值 v[i]。背包容量为 W，每件物品最多选一次，求最大价值。",
+ inputFormat:"第一行 n W；接下来 n 行每行 w v。",outputFormat:"一个整数。",
+ sample:{input:"4 10\n2 6\n2 3\n6 5\n5 4",output:"11"},
+ solution:"01 背包标准 DP：dp[j] 表示容量 j 的最大价值，倒序枚举容量保证每件物品只选一次。dp[j]=max(dp[j],dp[j-w]+v)。",
+ judge:[{input:"4 10\n2 6\n2 3\n6 5\n5 4\n",output:"11",score:40},{input:"3 5\n2 3\n3 4\n4 5\n",output:"7",score:30},{input:"1 10\n5 100\n",output:"100",score:30}]},
+{id:"p10",no:10,tier:"T4",title:"单源最短路",tag:"Dijkstra",diff:3,points:100,constraints:"1s / 256MB",
+ knowledge:["最短路 Dijkstra / SPFA / Floyd","栈 / 队列 / 堆"],
+ statement:"给定 n 个点 m 条边的有向图（边权非负），求从点 1 到所有点的最短距离。",
+ inputFormat:"第一行 n m；接下来 m 行每行 u v w。",outputFormat:"n 个整数，空格分隔，表示点 1 到各点的最短距离（不可达输出 -1）。",
+ sample:{input:"4 4\n1 2 2\n1 3 1\n2 4 5\n3 4 1",output:"0 2 1 2"},
+ solution:"Dijkstra + 优先队列：dist 数组初始化为无穷，dist[1]=0，每次取未访问的最近点松弛邻边。复杂度 O((n+m)log n)。",
+ judge:[{input:"4 4\n1 2 2\n1 3 1\n2 4 5\n3 4 1\n",output:"0 2 1 2",score:40},{input:"3 2\n1 2 5\n2 3 3\n",output:"0 5 8",score:30},{input:"5 6\n1 2 1\n1 3 4\n2 3 2\n2 4 5\n3 4 1\n4 5 3\n",output:"0 1 3 4 7",score:30}]},
+{id:"p11",no:11,tier:"T4",title:"树的直径",tag:"树形 / DFS",diff:3,points:100,constraints:"1s / 256MB",
+ knowledge:["树上 LCA / 直径 / 重心 / 换根","DFS 深度优先"],
+ statement:"给定一棵 n 个节点的树，每条边有边权，求树的直径（任意两点间最长路径的长度）。",
+ inputFormat:"第一行 n；接下来 n-1 行每行 u v w。",outputFormat:"一个整数。",
+ sample:{input:"5\n1 2 3\n2 3 4\n2 4 2\n4 5 5",output:"12"},
+ solution:"两次 DFS：第一次从任意点找到最远点 A，第二次从 A 找到最远点 B，A-B 即为直径。也可以树形 DP：每个节点维护最长和次长路。",
+ judge:[{input:"5\n1 2 3\n2 3 4\n2 4 2\n4 5 5\n",output:"12",score:40},{input:"4\n1 2 1\n2 3 1\n3 4 1\n",output:"3",score:30},{input:"6\n1 2 5\n1 3 3\n2 4 2\n2 5 4\n3 6 6\n",output:"15",score:30}]},
+{id:"p12",no:12,tier:"T4",title:"DAG 最长路",tag:"拓扑排序 / DP",diff:3,points:100,constraints:"1s / 256MB",
+ knowledge:["拓扑排序","线性 DP"],
+ statement:"给定一个 n 个点 m 条边的有向无环图（DAG），边权为正，求从点 1 到点 n 的最长路径长度。",
+ inputFormat:"第一行 n m；接下来 m 行每行 u v w。",outputFormat:"一个整数。",
+ sample:{input:"4 4\n1 2 3\n1 3 2\n2 4 4\n3 4 5",output:"7"},
+ solution:"拓扑排序后按拓扑序 DP：dist[v]=max(dist[v],dist[u]+w)。DAG 上最长路不能用 Dijkstra（边权为正但求最长），拓扑序 DP 是正解。",
+ judge:[{input:"4 4\n1 2 3\n1 3 2\n2 4 4\n3 4 5\n",output:"7",score:40},{input:"3 2\n1 2 10\n2 3 20\n",output:"30",score:30},{input:"5 6\n1 2 1\n1 3 3\n2 4 2\n3 4 1\n2 5 4\n4 5 1\n",output:"5",score:30}]},
+{id:"p13",no:13,tier:"T4",title:"矩阵快速幂",tag:"数论 / 快速幂",diff:4,points:100,constraints:"1s / 256MB",
+ knowledge:["矩阵快速幂","快速幂"],
+ statement:"求斐波那契数列第 n 项（F(1)=1,F(2)=1,F(n)=F(n-1)+F(n-2)），n 可以很大（n≤10^18），答案对 10^9+7 取模。",
+ inputFormat:"一个整数 n。",outputFormat:"F(n) mod 10^9+7。",
+ sample:{input:"10",output:"55"},
+ solution:"矩阵快速幂：[[1,1],[1,0]]^(n-1) × [F(2),F(1)]^T = [F(n),F(n-1)]^T。矩阵乘法 O(log n) 次，每次 O(2^3)。",
+ judge:[{input:"10\n",output:"55",score:30},{input:"1\n",output:"1",score:20},{input:"100\n",output:"782204094",score:50}]},
+{id:"p14",no:14,tier:"T4",title:"字符串匹配",tag:"KMP",diff:4,points:100,constraints:"1s / 256MB",
+ knowledge:["KMP","字符串哈希"],
+ statement:"给定文本串 S 和模式串 T，求 T 在 S 中出现的次数（可以重叠）。",
+ inputFormat:"两行，第一行 S，第二行 T。",outputFormat:"一个整数。",
+ sample:{input:"ababab\naba",output:"2"},
+ solution:"KMP 算法：先求模式串的 next 数组（最长公共前后缀），然后在匹配失败时利用 next 回退，避免暴力回溯。复杂度 O(|S|+|T|)。",
+ judge:[{input:"ababab\naba\n",output:"2",score:40},{input:"aaaa\naa\n",output:"3",score:30},{input:"abcdefg\nxyz\n",output:"0",score:30}]},
+{id:"p15",no:15,tier:"T2",title:"迷宫最短路",tag:"BFS",diff:2,points:100,constraints:"1s / 256MB",
+ knowledge:["BFS 广度优先","枚举与模拟"],
+ statement:"给定 n×m 的迷宫，0 表示可走，1 表示墙。从左上角 (1,1) 到右下角 (n,m)，求最少步数（上下左右移动）。",
+ inputFormat:"第一行 n m；接下来 n 行每行 m 个字符（0/1）。",outputFormat:"一个整数（保证有解）。",
+ sample:{input:"3 3\n000\n010\n000",output:"4"},
+ solution:"BFS 从起点开始，队列维护待扩展的格子，dist 数组记录距离。第一次到达终点即为最短路（边权均为 1）。",
+ judge:[{input:"3 3\n000\n010\n000\n",output:"4",score:40},{input:"2 2\n00\n00\n",output:"2",score:30},{input:"5 5\n00000\n01110\n01010\n01010\n00010\n",output:"8",score:30}]},
+{id:"p16",no:16,tier:"T3",title:"树状数组",tag:"数据结构 / BIT",diff:3,points:100,constraints:"1s / 256MB",
+ knowledge:["树状数组 / 线段树","前缀和 / 差分"],
+ statement:"给定长度为 n 的数组，支持两种操作：① 给位置 i 加上 x；② 查询前缀和 [1,i]。共 q 次操作。",
+ inputFormat:"第一行 n q；第二行 n 个初始值；接下来 q 行，每行形如 1 i x（修改）或 2 i（查询）。",outputFormat:"对每个查询输出一行。",
+ sample:{input:"5 3\n1 2 3 4 5\n2 3\n1 2 10\n2 3",output:"6\n16"},
+ solution:"树状数组（BIT）：lowbit 维护，add(i,x) 和 query(i) 均 O(log n)。query(3)=1+2+3=6，修改后 a[2]=12，query(3)=1+12+3=16。",
+ judge:[{input:"5 3\n1 2 3 4 5\n2 3\n1 2 10\n2 3\n",output:"6\n16",score:50},{input:"3 4\n0 0 0\n1 1 5\n2 1\n1 3 3\n2 3\n",output:"5\n8",score:50}]}
 ];
-
-/* 常用代码模板（一键插入） */
-const TEMPLATES={
- "快速 IO":`ios::sync_with_stdio(false);
-cin.tie(nullptr);`,
- "并查集 DSU":`struct DSU{
-  vector<int> p;
-  DSU(int n):p(n+1){iota(p.begin(),p.end(),0);}
-  int f(int x){return p[x]==x?x:p[x]=f(p[x]);}
-  bool un(int a,int b){a=f(a);b=f(b);if(a==b)return false;p[a]=b;return true;}
-};`,
- "Dijkstra":`vector<ll> dist(n+1,INF); dist[1]=0;
-priority_queue<pair<ll,int>,vector<pair<ll,int>>,greater<>> pq; pq.push({0,1});
-while(!pq.empty()){
-  auto [d,u]=pq.top(); pq.pop();
-  if(d>dist[u]) continue;
-  for(auto [v,w]:g[u]) if(dist[v]>d+w){ dist[v]=d+w; pq.push({dist[v],v}); }
-}`,
- "树状数组 BIT":`vector<ll> bit(n+1,0);
-auto add=[&](int i,ll v){for(;i<=n;i+=i&-i) bit[i]+=v;};
-auto sum=[&](int i){ll s=0;for(;i>0;i-=i&-i)s+=bit[i];return s;};`,
- "二分答案框架":`long long lo=0, hi=MAX, ans=0;
-while(lo<=hi){
-  long long mid=(lo+hi)/2;
-  if(check(mid)){ ans=mid; lo=mid+1; }
-  else hi=mid-1;
-}`,
- "KMP":`vector<int> pi(m);
-for(int i=1;i<m;i++){
-  int j=pi[i-1];
-  while(j>0 && t[i]!=t[j]) j=pi[j-1];
-  if(t[i]==t[j]) j++;
-  pi[i]=j;
-}`,
- "矩阵快速幂":`struct Mat{ ll a[2][2]{}; };
-Mat mul(Mat x,Mat y){
-  Mat r;
-  for(int i=0;i<2;i++)for(int j=0;j<2;j++)for(int k=0;k<2;k++)
-    r.a[i][j]=(r.a[i][j]+x.a[i][k]*y.a[k][j])%MOD;
-  return r;
-}`,
- "高精度加法":`string bigAdd(string a,string b){
-  reverse(a.begin(),a.end()); reverse(b.begin(),b.end());
-  string r; int c=0;
-  for(size_t i=0;i<max(a.size(),b.size());i++){
-    int x=i<a.size()?a[i]-'0':0;
-    int y=i<b.size()?b[i]-'0':0;
-    int s=x+y+c; r+='0'+s%10; c=s/10;
-  }
-  if(c) r+='1';
-  reverse(r.begin(),r.end());
-  return r;
-}`
-};
-
-/*================ 算法可视化（经典算法逐步演示） ================*/
-/* 每一帧: {t:讲解文字, body:可视化 HTML} */
-const VIZ={};
-function rowCells(arr,hi,cls){ // hi: index or Set of indices to highlight
-  let s="<div class='viz-boxrow'>";
-  arr.forEach((v,i)=>{
-    const isHi = hi instanceof Set ? hi.has(i) : (hi===i);
-    s+=`<div style="text-align:center"><div class="vcell ${isHi?'hi':(cls||'')}">${v}</div><div class="vlbl">${i}</div></div>`;
-  });
-  return s+"</div>";
-}
-/* p02 前缀和 */
-VIZ.p02=()=>{
-  const a=[1,2,3,4,5],pre=[0,1,3,6,10,15];
-  return [
-   {t:"数组 a = [1,2,3,4,5]。先预处理前缀和 pre[i] = a[1]+...+a[i]。",body:"a："+rowCells(a)+"pre："+rowCells(pre)},
-   {t:"pre[0]=0, pre[1]=1, pre[2]=3, pre[3]=6, pre[4]=10, pre[5]=15。",body:rowCells(pre,new Set([1,2,3,4,5]))},
-   {t:"查询 [1,5]：pre[5] - pre[0] = 15 - 0 = 15。",body:rowCells(pre,new Set([5]))+"<p style='margin-top:8px;font-weight:700'>= 15 ✔</p>"},
-   {t:"查询 [2,3]：pre[3] - pre[1] = 6 - 1 = 5。",body:rowCells(pre,new Set([3,1]))+"<p style='margin-top:8px;font-weight:700'>= 5 ✔</p>"},
-   {t:"查询 [3,3]：pre[3] - pre[2] = 6 - 3 = 3。每次查询 O(1)。",body:rowCells(pre,new Set([3,2]))+"<p style='margin-top:8px;font-weight:700'>= 3 ✔</p>"}
-  ];
-};
-/* p03 二分答案 */
-VIZ.p03=()=>{
-  const steps=[
-   {lo:1,hi:9,mid:5,cuts:3,feasible:false,note:"mid=5：Σ(6/5+7/5+9/5)=1+1+1=3 < 5，段长太大切不够，hi=mid-1=4"},
-   {lo:1,hi:4,mid:2,cuts:10,feasible:true,note:"mid=2：3+3+4=10 ≥ 5，可行，记录 ans=2，lo=mid+1=3"},
-   {lo:3,hi:4,mid:3,cuts:7,feasible:true,note:"mid=3：2+2+3=7 ≥ 5，可行，记录 ans=3，lo=mid+1=4"},
-   {lo:4,hi:3,mid:null,cuts:null,feasible:null,note:"lo>hi，二分结束。最大段长 ans=3。"}
-  ];
-  return steps.map(s=>({
-    t:s.note,
-    body:`<div style="font-family:Consolas,monospace;font-size:14px">区间 [lo,hi]=[${s.lo},${s.hi}]${s.mid?`，中点 mid=<b style="color:var(--brand)">${s.mid}</b>`:""}<br>
-      <span class="vcell ${s.feasible===true?'ok':s.feasible===false?'bad':''}" style="min-width:120px">可切段数 = ${s.cuts??'-'}</span></div>
-      <div class="viz-boxrow" style="margin-top:14px">${[1,2,3,4,5,6,7,8,9].map(x=>`<div style="text-align:center"><div class="vcell ${x===s.mid?'hi':''} ${x===3?'ok':''}">${x}</div><div class="vlbl">${x<=s.hi?'':'×'}</div></div>`).join("")}</div>
-      <p style="margin-top:8px;color:var(--muted);font-size:12.5px">蓝色=当前中点，绿色=最终答案 3。</p>`
-  }));
-};
-/* p04 贪心区间调度 */
-VIZ.p04=()=>{
-  const iv=[[1,3],[2,5],[3,6],[5,7]];
-  const chosen=new Set([0,3]);
-  return [
-   {t:"4 场会议，按结束时间从早到晚排序：[1,3],[2,5],[3,6],[5,7]。",body:iv.map((v,i)=>`<div style="font-family:Consolas,monospace;margin:4px 0">[${v[0]},${v[1]}]</div>`).join("")},
-   {t:"贪心选结束最早的：[1,3]。上一场结束在 3。",body:iv.map((v,i)=>`<div style="font-family:Consolas,monospace;margin:4px 0"><span class="vcell ${i===0?'ok':''}" style="min-width:120px">[${v[0]},${v[1]}]</span></div>`).join("")},
-   {t:"[2,5] 开始于 2 < 3，冲突，跳过。[3,6] 开始于 3 但结束更晚，也不选。",body:iv.map((v,i)=>`<div style="font-family:Consolas,monospace;margin:4px 0"><span class="vcell ${i===0?'ok':i===1||i===2?'bad':''}" style="min-width:120px">[${v[0]},${v[1]}]</span></div>`).join("")},
-   {t:"[5,7] 开始于 5 ≥ 3，不冲突，选入。共 2 场。",body:iv.map((v,i)=>`<div style="font-family:Consolas,monospace;margin:4px 0"><span class="vcell ${chosen.has(i)?'ok':''}" style="min-width:120px">[${v[0]},${v[1]}]</span></div>`).join("")+"<p style='margin-top:8px;font-weight:700'>最多 2 场 ✔</p>"}
-  ];
-};
-/* p05 单调栈 */
-VIZ.p05=()=>{
-  const h=[2,1,5,6,2,3];
-  return [
-   {t:"柱形高度 [2,1,5,6,2,3]。维护单调递增栈，栈内存 (高度, 左边界)。",body:h.map(x=>`<span class="vbar" style="height:${x*14}px;width:30px">${x}</span>`).join("")},
-   {t:"i=0 高度2：栈空，入栈。栈=[(2,0)]。",body:"栈：(2,0)"},
-   {t:"i=1 高度1：1<2，弹出 (2,0)。以 2 为高的矩形宽=1-0=1，面积 2。再入栈 (1,-1)。",body:"弹出高2 → 面积=2×1=2<br>栈：(1,-1)"},
-   {t:"i=2 高度5：5>1，入栈。栈=[(1,-1),(5,2)]。",body:"栈：(1,-1) (5,2)"},
-   {t:"i=3 高度6：6>5，入栈。栈=[(1,-1),(5,2),(6,3)]。",body:"栈：(1,-1) (5,2) (6,3)"},
-   {t:"i=4 高度2：2<6 弹出，高6宽=4-3=1→面积6；2<5 弹出，高5宽=4-2=2→面积10。记录最大=10。入栈 (2,4)。",body:"弹出6→面积6；弹出5→面积 5×2=10 ✔<br>栈：(1,-1) (2,4)"},
-   {t:"i=5 高度3：3>2，入栈。最后弹空栈，最大面积=10。",body:"栈：(1,-1) (2,4) (3,5)<br><b>最大矩形面积 = 10 ✔</b>"}
-  ];
-};
-/* p07 高精度加法 */
-VIZ.p07=()=>{
-  return [
-   {t:"123 + 456，从低位对齐相加：",body:`<div style="font-family:Consolas,monospace;font-size:18px;line-height:2">
-     &nbsp;&nbsp;1 2 3<br>+&nbsp; 4 5 6<br>---------<br>&nbsp;&nbsp;5 7 9</div>`},
-   {t:"个位：3+6=9，无进位。",body:`<div style="font-family:Consolas,monospace;font-size:18px">个位 <span class="vcell ok">3</span>+<span class="vcell ok">6</span>=<span class="vcell hi">9</span></div>`},
-   {t:"十位：2+5=7。百位：1+4=5。结果 579。",body:`<div style="font-family:Consolas,monospace;font-size:18px">
-     十位 <span class="vcell ok">2</span>+<span class="vcell ok">5</span>=<span class="vcell hi">7</span><br>
-     百位 <span class="vcell ok">1</span>+<span class="vcell ok">4</span>=<span class="vcell hi">5</span><br><b>= 579 ✔</b></div>`},
-   {t:"遇到 999+1 这类情况：9+1=10，写 0 进 1，要持续向高位进位。这就是高精度要手动处理进位的原因。",body:"<div style='font-family:Consolas,monospace'>999<br>+&nbsp;&nbsp;1<br>----<br>1000</div>"}
-  ];
-};
-/* p08 LIS */
-VIZ.p08=()=>{
-  const seq=[1,3,2,4,3,5];
-  const tails=[[],[1],[1,3],[1,2],[1,2,4],[1,2,3],[1,2,3,5]];
-  return seq.map((x,i)=>({
-    t:`处理 a[${i}]=${x}：${i===0?"tails 为空，放入":(x>tails[i][tails[i].length-1]?"接在末尾，长度+1":"替换 tails 中第一个 ≥ "+x+" 的位置，不增长长度")}。`,
-    body:`当前序列：${rowCells(seq,new Set([i]))}<br>tails：${rowCells(tails[i+1])}<p style="margin-top:6px;color:var(--muted);font-size:12.5px">tails 长度 ${tails[i+1].length} = 当前 LIS 长度</p>`
-  })).concat([{t:"最终 tails 长度为 4，即最长严格上升子序列长度。",body:rowCells(tails[6],new Set([0,1,2,3]))+"<p style='margin-top:8px;font-weight:700'>LIS = 4 ✔</p>"}]);
-};
-/* p10 Dijkstra */
-VIZ.p10=()=>{
-  return [
-   {t:"图：1→2(2), 1→3(1), 2→4(5), 3→4(1)。dist 初始：[0, ∞, ∞, ∞]。",body:"节点：1,2,3,4<br>dist=[0,∞,∞,∞]"},
-   {t:"弹出 dist 最小的节点 1(=0)。松弛邻居：dist[2]=2, dist[3]=1。",body:"dist=[0,<span style='color:var(--brand)'>2</span>,<span style='color:var(--brand)'>1</span>,∞]，已确定节点：1"},
-   {t:"弹出节点 3(=1)。松弛邻居 4：dist[4]=1+1=2。",body:"dist=[0,2,1,<span style='color:var(--brand)'>2</span>]，已确定：1,3"},
-   {t:"弹出节点 2(=2)。松弛邻居 4：2+5=7 > 当前 dist[4]=2，不更新。",body:"dist=[0,2,1,2]，已确定：1,3,2"},
-   {t:"弹出节点 4(=2)。全部确定。最终最短路：0 2 1 2。",body:"<b>dist = [0, 2, 1, 2] ✔</b>"}
-  ];
-};
-/* p14 KMP */
-VIZ.p14=()=>{
-  return [
-   {t:"主串 s=ababab，模式串 t=aba。先求 t 的 pi 数组（最长相等真前后缀长度）。",body:"t：<span class='vcell'>a</span><span class='vcell'>b</span><span class='vcell'>a</span>"},
-   {t:"pi[0]=0；pi[1]：b 前后缀无相等=0；pi[2]：'a' 前后缀都是 a=1。pi=[0,0,1]。",body:"pi：<span class='vcell'>0</span><span class='vcell'>0</span><span class='vcell hi'>1</span>"},
-   {t:"i=0,j=0：s[0]=a=t[0]，j++。i=1,j=1：s[1]=b=t[1]，j++。i=2,j=2：s[2]=a=t[2]，j=3==|t|，匹配成功一次！",body:"s: a b a b a b<br>t: a b a → 命中 #1"},
-   {t:"命中后 j=pi[2]=1 继续。i=3,j=1：s[3]=b=t[1]。i=4,j=2：s[4]=a=t[2]，j=3，命中第二次（重叠）！",body:"s: . . a b a b<br>t: . . a b a → 命中 #2（重叠）"},
-   {t:"j=pi[2]=1，继续到末尾，无第三次。共出现 2 次。",body:"<b>出现次数 = 2 ✔</b>"}
-  ];
-};
-/* p15 BFS */
-VIZ.p15=()=>{
-  const grid=[[0,0,0],[0,1,0],[0,0,0]];
-  const layers=[
-   "起点(0,0)，dist=0。",
-   "扩展 (0,1)=1, (1,0)=1。",
-   "扩展 (0,2)=2, (1,1)是墙跳过, (2,0)=2。",
-   "扩展 (1,2)=3(从0,2), (2,1)=3(从2,0)。",
-   "扩展终点 (2,2)=4(从1,2或2,1)。最少步数=4。"
-  ];
-  const dist=[[0,1,2],[1,'墙',3],[2,3,4]];
-  return layers.map((l,i)=>({t:l,body:"<div class='vgrid' style='grid-template-columns:repeat(3,44px)'>"+dist.map((row,r)=>row.map((c,col)=>{
-    let cls=c==='墙'?'wall':(r===0&&col===0?'start':(r===2&&col===2?'end':c<=i?'visited':'frontier'));
-    return `<div class="vcell ${cls}" style="height:40px">${c}</div>`;
-  }).join("")).join("")+"</div><p style='font-size:12px;color:var(--muted)'>蓝色=已到达，绿=访问过，终点橙色。</p>"}));
-};
-
-/* 跑「我的算法并对比」所用的小输入与正确输出（与上方演示一致）
-   checks: 逐帧对照点，at=对应可视化帧序号(0-based)，expect=该步正确答案，label=说明 */
-const VIZ_TRACE={
- p02:{input:"5 3\n1 2 3 4 5\n1 5\n2 3\n3 3\n",expected:"15\n5\n3",tokenMode:"line",checks:[
-   {at:2,expect:"15",label:"查询 [1,5]"},{at:3,expect:"5",label:"查询 [2,3]"},{at:4,expect:"3",label:"查询 [3,3]"}]},
- p03:{input:"3 5\n6 7 9\n",expected:"3",tokenMode:"token",checks:[
-   {at:3,expect:"3",label:"最大段长"}]},
- p04:{input:"4\n1 3\n2 5\n3 6\n5 7\n",expected:"2",tokenMode:"token",checks:[
-   {at:3,expect:"2",label:"最多场数"}]},
- p05:{input:"6\n2 1 5 6 2 3\n",expected:"10",tokenMode:"token",checks:[
-   {at:6,expect:"10",label:"最大面积"}]},
- p07:{input:"123\n456\n",expected:"579",tokenMode:"token",checks:[
-   {at:3,expect:"579",label:"竖式结果"}]},
- p08:{input:"6\n1 3 2 4 3 5\n",expected:"4",tokenMode:"token",checks:[
-   {at:6,expect:"4",label:"LIS 长度"}]},
- p10:{input:"4 4\n1 2 2\n1 3 1\n2 4 5\n3 4 1\n",expected:"0 2 1 2",tokenMode:"token",checks:[
-   {at:1,expect:"0",label:"dist[1]"},{at:2,expect:"2",label:"dist[2]"},{at:2,expect:"1",label:"dist[3]"},{at:4,expect:"2",label:"dist[4]"}]},
- p14:{input:"ababab\naba\n",expected:"2",tokenMode:"token",checks:[
-   {at:4,expect:"2",label:"出现次数"}]},
- p15:{input:"3 3\n000\n010\n000\n",expected:"4",tokenMode:"token",checks:[
-   {at:4,expect:"4",label:"最短路程"}]
- }
-};
-
-/*================ 考点全覆盖（CSP-S 提高组第二轮·NOI大纲） ================*/
-const KNOWLEDGE=[
- {cat:"基础算法",items:["枚举与模拟","排序","贪心","二分答案","高精度","分治与倍增","前缀和 / 差分","离散化"]},
- {cat:"搜索",items:["DFS 深度优先","BFS 广度优先","剪枝优化","双向 BFS / 迭代加深","A* 与启发式","状态压缩搜索"]},
- {cat:"动态规划",items:["线性 DP","区间 DP","背包 DP","树形 DP","状压 DP","数位 DP","单调队列优化","斜率 / 四边形优化"]},
- {cat:"图论",items:["最短路 Dijkstra / SPFA / Floyd","最小生成树","拓扑排序","二分图与匈牙利","Tarjan 强连通 / 割点桥","差分约束","树上 LCA / 直径 / 重心 / 换根","网络流基础"]},
- {cat:"数据结构",items:["栈 / 队列 / 堆","并查集","树状数组 / 线段树","ST 表","平衡树","Trie 字典树","字符串哈希","分块 / 莫队"]},
- {cat:"字符串",items:["KMP","Manacher","AC 自动机","后缀数组 / 自动机"]},
- {cat:"数论",items:["素数筛 / 质因数分解","GCD / EXGCD","快速幂","矩阵快速幂","组合数学与逆元","欧拉函数","中国剩余定理","卡特兰数"]},
- {cat:"数学进阶",items:["博弈论","概率与期望"]},
- {cat:"计算几何",items:["向量基础","凸包"]},
- {cat:"STL 与 C++",items:["STL 容器","输入输出优化","代码风格与调试","复杂度分析"]}
-];
-
-/* 两轮对比 */
-const ROUND_COMPARE=[
- ["认证形式","集中笔试","现场集中上机认证（机试）"],
- ["题目数量","约 20 题（选择 / 判断）","4 道编程题，每题 100 分，总分 400 分"],
- ["考查范围","计算机基础 + C++ 语法 + 简单算法","算法设计与实现：数据结构 / DP / 图论 / 数论 / 字符串"],
- ["答题方式","读题选答案","编写并提交 C++ 程序，机器评测"],
- ["评分","按答案正确计分","按通过测试数据比例给分（可部分得分）"],
- ["时长","约 2 小时","约 4 小时（2026-10-31 14:30–18:30）"],
- ["晋级","第一轮达省分数线者进入第二轮","第二轮成绩作为省级认证成绩，供后续使用"]
-];
-
-const MOCK_EXAMS=[
- {id:"A",name:"2026 模拟卷 A（稳扎稳打）",problems:["p02","p03","p05","p08"],minutes:240},
- {id:"B",name:"2026 模拟卷 B（进阶突破）",problems:["p01","p15","p06","p10"],minutes:240},
- {id:"C",name:"2026 模拟卷 C（挑战压轴）",problems:["p07","p12","p13","p16"],minutes:240}
-];
-const MOCK_DEADLINE_KEY="csps_mock_deadline";
-
-/*================ 存储 ================*/
-const LS={get(k,d){try{return JSON.parse(localStorage.getItem(k))??d}catch(e){return d}},set(k,v){localStorage.setItem(k,JSON.stringify(v))}};
-const getSubs=()=>LS.get("csps_subs",[]);
-const saveSubs=s=>LS.set("csps_subs",s);
-const getKnow=()=>LS.get("csps_know",{});
-const saveKnow=k=>LS.set("csps_know",k);
-const getWrong=()=>LS.get("csps_wrong",[]);
-const saveWrong=w=>LS.set("csps_wrong",w);
-const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,6);
-
-/*================ 判题（Wandbox） ================*/
-const WANDBOX="https://wandbox.org/api/compile.json";
-const COMPILER="gcc-13.2.0";
-const DEFAULT_CODE=`#include <bits/stdc++.h>
-using namespace std;
-int main(){
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    return 0;
-}
-`;
-function normOut(s){return (s||"").replace(/\r\n/g,"\n").replace(/[ \t]+$/gm,"").replace(/\s+$/,"");}
-async function execWandbox(code,stdin){
-  const ctrl=new AbortController();const timer=setTimeout(()=>ctrl.abort(),26000);
-  const t0=Date.now();
-  try{
-    const res=await fetch(WANDBOX,{method:"POST",headers:{"Content-Type":"application/json"},
-      body:JSON.stringify({code:code,compiler:COMPILER,stdin:stdin||""}),signal:ctrl.signal});
-    clearTimeout(timer);
-    if(!res.ok) return {verdict:"ERR",detail:"服务返回状态 "+res.status};
-    const j=await res.json(); const ms=Date.now()-t0;
-    if(j.status==="1" || (j.compiler_message&&j.compiler_message.trim()))
-      return {verdict:"CE",detail:(j.compiler_error||j.compiler_message||"").slice(0,600)};
-    if(j.signal&&j.signal.trim())
-      return {verdict:"RE",detail:j.signal+"  "+(j.program_error||"").trim().slice(0,200)};
-    return {verdict:"RUN",out:j.program_output||"",err:(j.program_error||""),ms};
-  }catch(e){
-    clearTimeout(timer);
-    return {verdict:"TLE",detail:"运行超时或服务无响应（约 26s）"};
-  }
-}
-async function judgeTest(code,t){
-  const r=await execWandbox(code,t.input);
-  if(r.verdict!=="RUN"){
-    const isCE=r.verdict==="CE";
-    return {verdict:isCE?"CE":"RE",score:0,out:r.out,detail:r.detail,ce:isCE};
-  }
-  const got=normOut(r.out), want=normOut(t.output);
-  if(got===want) return {verdict:"AC",score:t.score,ms:r.ms};
-  return {verdict:"WA",score:0,out:got,detail:"期望输出与你的输出不一致",ms:r.ms};
-}
-
-/*================ 状态计算 ================*/
-function problemStatus(id){
-  const subs=getSubs().filter(s=>s.problem===id&&s.mode!=="mock");
-  if(!subs.length) return "none";
-  const best=Math.max(...subs.map(s=>s.score));
-  if(best>=100) return "done";
-  if(best>0) return "part";
-  const last=subs[subs.length-1];
-  return last&&last.verdictBest==="WA"?"wa":"part";
-}
-function bestScore(id){
-  const subs=getSubs().filter(s=>s.problem===id&&s.mode!=="mock");
-  if(!subs.length)return 0; return Math.max(...subs.map(s=>s.score));
-}
-function submitCount(id){return getSubs().filter(s=>s.problem===id&&s.mode!=="mock").length;}
-function stats(){
-  const subs=getSubs(); const solved=new Set(); const full=new Set(); let totalScore=0,totalMax=0,wa=0;
-  for(const s of subs){ totalScore+=s.score; totalMax+=100; if(s.score>=100)full.add(s.problem); if(s.score>0)solved.add(s.problem); if(s.verdictBest==="WA")wa++; }
-  const know=getKnow(); let marked=0, mastered=0;
-  for(const c of KNOWLEDGE) for(const it of c.items){ if(know[it]){marked++; if(know[it]==="1")mastered++; } }
-  const knowTotal=KNOWLEDGE.reduce((a,c)=>a+c.items.length,0);
-  return {subs:solved.size,full:full.size,totalScore,totalMax,rate:totalMax?Math.round(totalScore/totalMax*100):0,wa,
-          knowMarked:marked,knowMastered:mastered,knowTotal,solvedSet:solved};
-}
-function normDate(d){return d<10?"0"+d:d;}
-function countdownTo(){ return new Date(2026,9,31,14,30,0).getTime(); }
-
-/* 难度分布（洛谷风格） */
-function levelDist(){
-  const dist={1:[0,0],2:[0,0],3:[0,0],4:[0,0]}; // [ac,total]
-  for(const p of PROBLEMS){ dist[p.diff][1]++; if(problemStatus(p.id)==="done") dist[p.diff][0]++; }
-  return dist;
-}
-
-/*================ 渲染 ================*/
-const app=document.getElementById("app");
-const esc=s=>String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
-
-function header(title,sub){return `<h2>${title}</h2><div class="sub">${sub}</div>`;}
-function diffStars(d){return `<span class="diff-star">${"★".repeat(d)}${"☆".repeat(5-d)}</span>`;}
-
-const VIEWS={
-dashboard(){renderDashboard();},
-practice(){renderPracticeList();},
-playlists(){renderPlaylists();},
-problem(id){renderProblem(id);},
-mock(){renderMockList();},
-mockExam(mid){renderMock(mid);},
-knowledge(){renderKnowledge();},
-records(){renderRecords();}
-};
-
-/* ---------- 首页 ---------- */
-function renderDashboard(){
-  const s=stats();
-  const cd=countdownTo()-Date.now();
-  const days=Math.max(0,Math.ceil(cd/(86400000)));
-  const dist=levelDist();
-  const distBar=Object.keys(LEVELS).map(k=>{
-    const L=LEVELS[k];const [ac,tot]=dist[k];const w=tot?ac/tot*100:0;
-    return `<div style="width:${tot/PROBLEMS.length*100}%;background:${L.color};opacity:${tot?0.35+0.65*(ac/tot):0.15}" title="${L.name} ${ac}/${tot}"></div>`;
-  }).join("");
-  app.innerHTML=`
-  ${header("CSP-S 2026 第二轮 · 高效备考","机试：现场上机编程 · 4 题 × 100 分 = 400 分 · 官方时间 2026-10-31 14:30–18:30")}
-  <div class="alert warn mb"><div>📌</div><div><b>判题说明：</b>本站在浏览器中调用 <b>Wandbox</b> 公共编译服务实时运行你的 C++ 代码并按测试数据评分（GitHub Pages 无法直接编译 C++）。难度配色参考洛谷。评测结果以官方评测环境为准。</div></div>
-  <div class="grid g4 mb">
-    <div class="stat"><div class="k">距第二轮机试</div><div class="v">${days}<small> 天</small></div></div>
-    <div class="stat"><div class="k">已 AC 题目</div><div class="v">${s.full}<small> / ${PROBLEMS.length}</small></div></div>
-    <div class="stat"><div class="k">平均得分率</div><div class="v">${s.rate}<small>%</small></div></div>
-    <div class="stat"><div class="k">已掌握考点</div><div class="v">${s.knowMastered}<small> / ${s.knowTotal}</small></div></div>
-  </div>
-  <div class="card mb">
-    <div style="display:flex;align-items:center;gap:12px;margin-bottom:6px"><h3 style="margin:0">难度分布（洛谷配色）</h3><span class="sub" style="margin:0">色块越深 = 你在该难度 AC 越多</span></div>
-    <div class="lvbar">${distBar}</div>
-    <div style="display:flex;gap:16px;flex-wrap:wrap;font-size:12px;color:var(--muted);margin-top:6px">
-      ${Object.keys(LEVELS).map(k=>{const L=LEVELS[k];const [ac,tot]=dist[k];return `<span><span class="lv" style="background:${L.color}">${L.name}</span> ${ac}/${tot}</span>`;}).join("")}
-    </div>
-  </div>
-  <div class="grid g2 mb">
-    <div class="card">
-      <h3>本轮怎么考</h3>
-      <div class="sub">第二轮为上机编程，按测试数据给分，重点考察算法设计与代码实现能力。</div>
-      <table><thead><tr><th>题型 / 位置</th><th>考察方向</th></tr></thead><tbody>
-      <tr><td><b>T1</b> 基础模拟</td><td>读题、边界、实现稳定：模拟 / 前缀和 / 简单数学</td></tr>
-      <tr><td><b>T2</b> 思维题</td><td>贪心、二分答案、搜索 BFS，常需观察性质</td></tr>
-      <tr><td><b>T3</b> 工程模拟 / 数据结构</td><td>题面长、细节多、代码量大，常用单调栈 / 并查集 / BIT / 线段树</td></tr>
-      <tr><td><b>T4</b> 高级算法</td><td>DP 优化、图论（最短路 / 树上 / 拓扑）、数论、字符串</td></tr>
-      </tbody></table>
-      <a class="btn btn-ghost mt" data-go="practice">进入题库开始刷题</a>
-    </div>
-    <div class="card">
-      <h3>两轮对比</h3>
-      <div class="sub">从第一轮到第二轮的备考思路切换。</div>
-      <table class="compare"><thead><tr><th>维度</th><th>第一轮（笔试）</th><th>第二轮（机试）</th></tr></thead><tbody>
-      ${ROUND_COMPARE.map(r=>`<tr><td><b>${r[0]}</b></td><td>${r[1]}</td><td>${r[2]}</td></tr>`).join("")}
-      </tbody></table>
-      <a class="btn btn-ghost mt" data-go="knowledge">查看考点全覆盖图谱</a>
-    </div>
-  </div>
-  <div class="grid g3 mb">
-    <div class="card"><h3>📚 全考点题库</h3><div class="sub">${PROBLEMS.length} 道题，支持搜索 / 难度筛选 / 标签筛选。</div><a class="btn btn-ghost" data-go="practice">刷题</a></div>
-    <div class="card"><h3>📋 专题题单</h3><div class="sub">按知识点分组的刷题路径，像洛谷题单一样按专题突破。</div><a class="btn btn-ghost" data-go="playlists">看题单</a></div>
-    <div class="card"><h3>⏱ 模拟赛</h3><div class="sub">3 套模拟卷，每套 4 题 400 分，限时 240 分钟。</div><a class="btn btn-ghost" data-go="mock">开赛</a></div>
-  </div>
-  <div class="card">
-    <h3>备考建议（基于 CCF 高分选手经验）</h3>
-    <div class="sub">来自 CSP 高分选手的共性与考场策略</div>
-    <ul style="padding-left:20px;font-size:14px">
-      <li><b>稳拿 T1/T2：</b>前两题是定海神针，务必又快又稳，先吃透基础语法、排序、模拟、前缀和、二分、贪心。</li>
-      <li><b>啃下 T3：</b>题面长、细节多，边读题边在草稿上记录对象、状态与操作顺序，用模板库简化实现。</li>
-      <li><b>突破 T4：</b>系统掌握 DP（线性/区间/背包/树形/状压）与图论（最短路/生成树/拓扑/树上），并学会复杂度分析。</li>
-      <li><b>以题带点：</b>先按题单刷专题，遇到盲区再回头学对应算法，切忌死磕超纲内容。</li>
-      <li><b>写对暴力：</b>不会正解时先写朴素算法拿部分分，O(n) 与 O(n²) 数据分档非常明显。</li>
-    </ul>
-  </div>`;
-  afterRender();
-}
-
-/* ---------- 题库（搜索 + 筛选） ---------- */
-let pfState={q:"",level:0,status:"all"};
-function renderPracticeList(){
-  const tiers=["T1","T2","T3","T4"];
-  const tierNote={T1:"基础：模拟 / 前缀和 / 简单数学",T2:"思维：贪心 / 二分 / 搜索",T3:"数据结构与工程模拟：栈 / 并查集 / BIT",T4:"高级：DP 优化 / 图论 / 数论 / 字符串"};
-  let html=header("题库 · 在线答题","点击题目进入作答，提交后实时评测并按测试数据给分。支持按关键词、难度、通过状态筛选。");
-  html+=`<div class="searchbox"><span class="ic">🔍</span><input id="pfQ" placeholder="搜索题号 / 标题 / 考点…（如 背包、Dijkstra、p08）" value="${esc(pfState.q)}"></div>`;
-  html+=`<div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin-bottom:14px">
-    <span class="sub" style="margin:0">难度：</span>
-    <span class="chip ${pfState.level===0?'on':''}" data-lv="0">全部</span>
-    ${Object.keys(LEVELS).map(k=>`<span class="chip ${pfState.level==k?'on':''}" data-lv="${k}"><span class="lv" style="background:${LEVELS[k].color};font-size:11px">${LEVELS[k].name}</span></span>`).join("")}
-    <span class="sub" style="margin:0 0 0 12px">状态：</span>
-    ${[["all","全部"],["done","已 AC"],["part","部分分"],["none","未做"]].map(([v,l])=>`<span class="chip ${pfState.status===v?'on':''}" data-st="${v}">${l}</span>`).join("")}
-  </div>`;
-  const q=pfState.q.trim().toLowerCase();
-  const match=p=>{
-    if(pfState.level&&p.diff!=pfState.level)return false;
-    if(pfState.status!=="all"&&problemStatus(p.id)!==pfState.status)return false;
-    if(q){const hay=(p.id+" "+p.title+" "+p.tag+" "+p.knowledge.join(" ")+" "+p.tier).toLowerCase();if(!hay.includes(q))return false;}
-    return true;
-  };
-  for(const t of tiers){
-    const list=PROBLEMS.filter(p=>p.tier===t&&match(p));
-    if(!list.length)continue;
-    html+=`<div class="card mb" style="padding:0;overflow:hidden"><div style="display:flex;align-items:center;padding:11px 16px;border-bottom:1px solid var(--line);background:#fafbfc"><h3 style="margin:0;font-size:14.5px">${t} <span style="font-weight:400;color:var(--muted);font-size:12.5px">${tierNote[t]}</span></h3><span class="sub" style="margin:0 0 0 auto;font-size:12.5px">${list.length} 题</span></div>
-    <div>${list.map(p=>{
-      const st=problemStatus(p.id); const map={done:["✔ AC","st-done"],part:["部分分","st-part"],wa:["再试","st-wa"],none:["未做","st-none"]}[st];
-      const dc=(LEVELS[p.diff]||LEVELS[1]).color;
-      return `<div class="problem-row" style="--dc:${dc}" data-go="problem/${p.id}">
-        <span class="id">P${String(p.no).padStart(3,"0")}</span>
-        <span class="nm">${p.title}</span>
-        <span style="color:#9aa7b5;font-size:12.5px">${p.knowledge.slice(0,2).join(" / ")}</span>
-        ${lvBadge(p)}
-        <span class="status ${map[1]}">${map[0]}</span></div>`;
-    }).join("")}</div></div>`;
-  }
-  app.innerHTML=html; afterRender();
-  // wire search & filters (re-render but keep focus)
-  const qi=document.getElementById("pfQ");
-  qi.oninput=e=>{pfState.q=e.target.value; renderPracticeList(); const nq=document.getElementById("pfQ"); nq.focus(); nq.setSelectionRange(nq.value.length,nq.value.length);};
-  document.querySelectorAll("[data-lv]").forEach(c=>c.onclick=()=>{pfState.level=Number(c.dataset.lv);renderPracticeList();});
-  document.querySelectorAll("[data-st]").forEach(c=>c.onclick=()=>{pfState.status=c.dataset.st;renderPracticeList();});
-}
-
-/* ---------- 专题题单 ---------- */
-function renderPlaylists(){
-  let html=header("题单 · 专题训练","按知识点分组的刷题路径（参考洛谷题单）。从 T1 必拿题开始，按专题逐个突破。");
-  html+=`<div class="grid g3">`;
-  for(const pl of PLAYLISTS){
-    const list=pl.probs.map(id=>PROBLEMS.find(p=>p.id===id));
-    const ac=list.filter(p=>problemStatus(p.id)==="done").length;
-    html+=`<div class="card pl-card"><h3>${pl.name}</h3><div class="sub">${pl.desc}</div>
-      <div class="sub" style="margin:0">进度 <b>${ac}/${list.length}</b> 已 AC</div>
-      <div class="bar" style="margin:6px 0 4px"><i style="width:${list.length?ac/list.length*100:0}%"></i></div>
-      <div class="plist">${list.map(p=>`<span class="pl-chip" data-go="problem/${p.id}">${lvBadge(p)} ${p.title}${problemStatus(p.id)==="done"?" ✔":""}</span>`).join("")}</div>
-    </div>`;
-  }
-  html+=`</div>`;
-  app.innerHTML=html; afterRender();
-}
-
-/* ---------- 题目详情 + 作答 ---------- */
-/* ---------- 知识点卡片 ---------- */
-function knowState(k){return (getKnow()[k])||null;} // null=未标记, "1"=掌握, "2"=待巩固
-function knowCardHTML(p){
-  const know=getKnow();
-  return `<div class="mb" style="margin-top:16px">
-    <h3 style="margin-bottom:4px">知识点卡片</h3>
-    <div class="sub" style="margin:0 0 8px">做错本题会自动把下列考点标记为「待巩固」；AC 后自动记为「已掌握」。点击卡片可手动切换。</div>
-    <div class="kcard-row">
-    ${p.knowledge.map(k=>{
-      const st=know[k];
-      const cls=st==="1"?"mastered":st==="2"?"flagged":"";
-      const stCls=st==="1"?"ks-ok":st==="2"?"ks-review":"ks-none";
-      const stTxt=st==="1"?"✔ 已掌握":st==="2"?"⚠ 待巩固":"○ 未标记";
-      return `<div class="kcard ${cls}" data-know="${esc(k)}"><div class="kc-name">${esc(k)}</div><span class="kc-state ${stCls}">${stTxt}</span></div>`;
-    }).join("")}
-    </div></div>`;
-}
-function wireKnowCards(){
-  document.querySelectorAll("[data-know]").forEach(c=>c.onclick=()=>{
-    const k=c.dataset.know; const kk=getKnow();
-    const cur=kk[k]; kk[k]=(cur==="1")?"2":(cur==="2"?undefined:"1");
-    if(kk[k]===undefined)delete kk[k];
-    saveKnow(kk); renderProblem(currentProblem.id, currentPre||{});
-  });
-}
-/* ---------- 算法可视化（同页内嵌播放器） ---------- */
-let vizTimer=null, vizIdx=0, vizFrames=[], vizPlaying=false, vizSpeed=1200;
-function renderInlineViz(pid){
-  if(!VIZ[pid]) return "";
-  return `<div class="card mb" style="margin-top:16px" id="vizWrap">
-    <h3 style="margin-bottom:2px">▶ 算法可视化 <span style="font-weight:400;font-size:12.5px;color:var(--muted)">与本题同屏 · 对照正确算法逐步演示</span></h3>
-    <div class="sub" style="margin-bottom:8px">用「上一步 / 下一步」或「播放」看正确算法每一步在做什么；再点下方「跑我的算法并对比」把你编辑器里的代码真实跑一遍。</div>
-    <div class="viz-ctl" style="border:none;padding:0 0 8px;background:transparent">
-      <button class="btn btn-ghost btn-sm" id="ivPrev">⏮ 上一步</button>
-      <button class="btn btn-primary btn-sm" id="ivPlay">▶ 播放</button>
-      <button class="btn btn-ghost btn-sm" id="ivNext">下一步 ⏭</button>
-      <select class="tpl" id="ivSpeed"><option value="1600">慢</option><option value="1000" selected>中</option><option value="500">快</option></select>
-      <span class="prog" id="ivProg" style="margin-left:auto"></span>
-    </div>
-    <div class="viz-stage" id="ivStage" style="min-height:200px;border:1px solid var(--line);border-radius:6px;padding:16px"></div>
-    <div class="viz-desc" id="ivDesc"></div>
-    <div class="minebox">
-      <button class="btn btn-primary btn-sm" id="runMine">▶ 跑我的算法并对比</button>
-      <div class="sub" style="margin:6px 0 0">用你上方编辑器里的 C++ 代码在本题小输入上真实编译运行（Wandbox），和正确算法输出逐行对比。</div>
-      <div id="mineResult"></div>
-    </div>
-  </div>`;
-}
-function wireInlineViz(pid){
-  if(!VIZ[pid]) return;
-  stopViz(); vizPlaying=false; vizFrames=VIZ[pid](); vizIdx=0; vizSpeed=1200;
-  document.getElementById("ivPrev").onclick=()=>{vizPlaying=false;stopViz();vizIdx=Math.max(0,vizIdx-1);drawIv();};
-  document.getElementById("ivNext").onclick=()=>{vizPlaying=false;stopViz();vizIdx=Math.min(vizFrames.length-1,vizIdx+1);drawIv();};
-  const pl=document.getElementById("ivPlay");
-  pl.onclick=()=>{vizPlaying=!vizPlaying;pl.textContent=vizPlaying?"⏸ 暂停":"▶ 播放";if(vizPlaying)startIv();};
-  document.getElementById("ivSpeed").onchange=e=>{vizSpeed=Number(e.target.value);if(vizPlaying){stopViz();startIv();}};
-  document.getElementById("runMine").onclick=()=>runMineCompare(pid);
-  drawIv();
-}
-function drawIv(){
-  const f=vizFrames[vizIdx];
-  document.getElementById("ivStage").innerHTML=f.body;
-  document.getElementById("ivDesc").textContent="步骤 "+(vizIdx+1)+" / "+vizFrames.length+"："+f.t;
-  document.getElementById("ivProg").textContent=vizIdx+1+" / "+vizFrames.length;
-}
-function startIv(){vizTimer=setInterval(()=>{if(vizIdx>=vizFrames.length-1){vizPlaying=false;stopViz();document.getElementById("ivPlay").textContent="▶ 播放";return;}vizIdx++;drawIv();},vizSpeed);}
-function stopViz(){if(vizTimer){clearInterval(vizTimer);vizTimer=null;}}
-async function runMineCompare(pid){
-  const tr=VIZ_TRACE[pid];
-  const out=document.getElementById("mineResult");
-  if(!tr){out.innerHTML="<div class='sub'>本题暂未提供对比输入。</div>";return;}
-  const code=editor?editor.getValue():DEFAULT_CODE;
-  out.innerHTML='<div class="sub" style="margin-top:8px"><span class="spinner"></span> 正在用 Wandbox 编译并运行你的代码…</div>';
-  const r=await execWandbox(code,tr.input);
-  if(r.verdict!=="RUN"){
-    out.innerHTML=`<div class="minecmp bad">⚠ 你的代码没能跑起来：<b>${r.verdict}</b> ${esc((r.detail||"").slice(0,200))}<br><span style="color:#7f1d1d">先修复编译 / 运行错误，再对比输出。</span></div>`;
-    return;
-  }
-  const got=normOut(r.out), want=normOut(tr.expected);
-  const ok=got===want;
-  // 逐帧对照：把你的输出按行/按 token 拆开，和每个检查点逐一比对
-  const pieces = tr.tokenMode==="line" ? got.split("\n").filter(x=>x.trim()!=="") : got.split(/\s+/).filter(x=>x!=="");
-  const checks=(tr.checks||[]).map((c,i)=>{
-    const mine = pieces[i]??"(缺)";
-    const pass = mine===c.expect;
-    return {...c, mine, pass};
-  });
-  const firstBad = checks.findIndex(c=>!c.pass);
-  // 渲染逐格对照 chips
-  const chips = checks.map((c,i)=>`<span class="ck ${c.pass?'ok':'bad'}" ${c.pass?'':`onclick="vizJumpTo(${c.at})"`} title="${c.pass?'':'点我跳到正确算法这一步'}">${esc(c.label)}：${esc(c.mine)} ${c.pass?'✔':'✗ 应='+esc(c.expect)}</span>`).join("");
-  out.innerHTML=`<div class="minecmp ${ok?'ok':'bad'}">
-    <div><b>${ok?'✅ 你的算法结果与正确算法一致':'❌ 你的算法结果与正确算法不一致'}</b>${r.ms?' <span style="font-weight:400;font-size:12px">('+r.ms+'ms)</span>':''}</div>
-    <div style="font-family:Consolas,monospace;font-size:13px;margin-top:6px;line-height:1.9">
-      测试输入：<code class="kbd">${esc(tr.input.trim().replace(/\n/g,' / '))}</code><br>
-      你的输出：<code class="kbd">${esc(got.slice(0,200))||'(空)'}</code><br>
-      正确输出：<code class="kbd">${esc(want.slice(0,200))}</code>
-    </div>
-    <div class="lk-check">${chips}</div>
-    ${ok?'<div class="sub" style="margin-top:8px;color:#14532d">每一步都对了；再去「提交评测」跑全部测试点。</div>':'<div class="sub" style="margin-top:8px;color:#7f1d1d">点上面红色的格子，会自动跳到正确算法对应的那一步，对照看你哪里算错了（边界？初始化？更新顺序？）。</div>'}
-  </div>`;
-  // 自动跳到第一个出错的帧并红框高亮
-  if(firstBad>=0){ vizJumpTo(checks[firstBad].at, true); }
-}
-function vizJumpTo(frameIdx, flash){
-  vizIdx=Math.max(0,Math.min(vizFrames.length-1,frameIdx)); drawIv();
-  const st=document.getElementById("ivStage");
-  if(st){ st.classList.add("flash-bad"); setTimeout(()=>st.classList.remove("flash-bad"),2000); }
-}
-
-let editor=null, currentProblem=null, currentPre=null, submitting=false, mockCtx=null;
-function initEditor(){
-  if(editor) return;
-  if(window.CodeMirror){
-    editor=CodeMirror(document.getElementById("ed"),{value:DEFAULT_CODE,mode:"text/x-c++src",lineNumbers:true,lineWrapping:false,theme:"default",indentUnit:4,tabSize:4,styleActiveLine:true,extraKeys:{"Tab":(cm)=>{cm.replaceSelection("    ")}}});
-  }else{
-    const ta=document.getElementById("ed"); ta.removeAttribute("hidden"); editor={getValue:()=>ta.value,setValue:v=>{ta.value=v},replaceSelection:v=>{ta.value+=v;},focus:()=>ta.focus(),isTA:true};
-  }
-}
-function renderProblem(id,pre){
-  const p=PROBLEMS.find(x=>x.id===id); if(!p)return renderPracticeList();
-  currentProblem=p; currentPre=pre||{};
-  const inMock=!!(pre&&pre.mock);
-  const btn=inMock?"提交到模拟赛":"提交评测";
-  const bs=bestScore(id), sc=submitCount(id);
-  const hasViz=!!VIZ[id];
-  app.innerHTML=`
-  <button class="btn btn-ghost mb" data-go="${inMock?`mockExam/${pre.mock}`:"practice"}">← ${inMock?"返回模拟赛":"返回题库"}</button>
-  <div class="problem-wrap">
-    <div class="panel">
-      <div class="panel-hd"><span class="luogu-id">P${String(p.no).padStart(3,"0")}</span>${lvBadge(p)} <span class="tag t-tier">${p.tier}</span> <span style="font-weight:800">${p.title}</span> <span style="margin-left:auto;color:var(--muted);font-weight:600">${p.points} 分</span></div>
-      <div style="padding:18px">
-        <div class="hist"><span>我的最佳：<b class="${bs>=100?"v-AC":bs>0?"v-RE":"v-WA"}">${bs} / 100</b></span><span>累计提交：<b>${sc}</b> 次</span></div>
-        <div class="sub mt" style="margin-bottom:14px"><span class="tag t-know">${p.knowledge.join(" / ")}</span><span class="tag t-tag">${p.tag}</span> ${diffStars(p.diff)} <span style="float:right">${p.constraints}</span></div>
-        <h3>题目描述</h3><p class="mb">${p.statement}</p>
-        <h3>输入格式</h3><p class="mb">${p.inputFormat}</p>
-        <h3>输出格式</h3><p class="mb">${p.outputFormat}</p>
-        <h3>样例</h3>
-        <div class="sample-box"><div class="lbl">输入</div>${esc(p.sample.input)}</div>
-        <div class="sample-box"><div class="lbl">输出</div>${esc(p.sample.output)}</div>
-        <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:12px">
-          <button class="btn btn-ghost" id="showSol">查看思路解析</button>
-        </div>
-        <div class="solbox hidden" id="solbox">${p.solution}</div>
-        ${knowCardHTML(p)}
-        ${hasViz?renderInlineViz(p):""}
-      </div>
-    </div>
-    <div>
-      <div class="panel">
-        <div class="editor-tools">
-          <b style="font-size:13px">main.cpp</b><span class="tag t-tag">C++17 · gcc</span>
-          <select class="tpl" id="tplSel"><option value="">+ 插入代码模板…</option>${Object.keys(TEMPLATES).map(k=>`<option value="${esc(k)}">${esc(k)}</option>`).join("")}</select>
-          <span class="btns">
-            <button class="btn btn-ghost btn-sm" id="resetCode">重置</button>
-            <button class="btn btn-primary" id="submitBtn">${btn}</button>
-          </span>
-        </div>
-        <textarea id="ed" spellcheck="false" style="width:100%;height:430px;background:var(--editor);color:#e2e8f0;border:none;padding:12px;font-family:ui-monospace,Consolas,monospace;font-size:13px" hidden>${DEFAULT_CODE}</textarea>
-        <div id="edhost"></div>
-      </div>
-      <div class="panel mt" id="resultPanel">
-        <div class="panel-hd">评测结果 <span style="margin-left:auto;font-weight:600" id="resScore"></span></div>
-        <div id="resBody"><div class="empty">提交代码后，将按测试数据逐条实时评测。</div></div>
-      </div>
-    </div>
-  </div>`;
-  const eh=document.getElementById("edhost"); const ta=document.getElementById("ed");
-  if(window.CodeMirror){ eh.appendChild(ta); initEditor(); } else { ta.hidden=false; initEditor(); }
-  const saved=LS.get("csps_code_"+id,null);
-  if(saved) editor.setValue(saved);
-  document.getElementById("submitBtn").onclick=()=>submit(id,pre);
-  document.getElementById("resetCode").onclick=()=>{editor.setValue(DEFAULT_CODE);LS.set("csps_code_"+id,DEFAULT_CODE);};
-  document.getElementById("tplSel").onchange=e=>{
-    const k=e.target.value; if(!k)return;
-    const tpl="\n"+TEMPLATES[k]+"\n";
-    if(editor.replaceSelection) editor.replaceSelection(tpl); else editor.setValue(editor.getValue()+tpl);
-    editor.focus&&editor.focus();
-    e.target.value="";
-  };
-  document.getElementById("showSol").onclick=e=>{document.getElementById("solbox").classList.toggle("hidden");e.currentTarget.textContent=document.getElementById("solbox").classList.contains("hidden")?"查看思路解析":"收起解析";};
-  wireInlineViz(id);
-  wireKnowCards();
-  afterRender();
-}
-async function submit(id,pre){
-  if(submitting)return; submitting=true;
-  const p=PROBLEMS.find(x=>x.id===id); const code=editor.getValue(); LS.set("csps_code_"+id,code);
-  const btn=document.getElementById("submitBtn"); btn.disabled=true; btn.innerHTML='<span class="spinner"></span> 评测中…';
-  const resBody=document.getElementById("resBody"); const resScore=document.getElementById("resScore");
-  resScore.textContent="";
-  const rows=[];
-  let score=0, ce=false;
-  const verdictLabel={AC:"AC 正确",WA:"WA 答案错误",RE:"RE 运行错误",CE:"CE 编译错误",TLE:"TLE/无响应",ERR:"服务异常"};
-  for(let i=0;i<p.judge.length;i++){
-    const t=p.judge[i];
-    rows.push(`<div class="result-item" data-i="${i}"><span>测试点 ${i+1} <span class="ti">${t.score} 分</span></span><span class="spinner"></span></div>`);
-    resBody.innerHTML=rows.join("");
-    const r=await judgeTest(code,t);
-    if(ce){}
-    else if(r.verdict==="CE"){ce=true;score=0;}
-    else if(r.verdict==="AC")score+=t.score;
-    let detail="";
-    if(r.verdict==="WA")detail=`<div class="sub" style="margin-top:6px">${esc(r.detail)}<br>你的输出：<code class="kbd">${esc((r.out||"").slice(0,120))}</code> 期望：<code class="kbd">${esc((t.output||"").slice(0,120))}</code></div>`;
-    else if(r.verdict==="CE")detail=`<div class="sub" style="margin-top:6px"><pre class="detail-pre">${esc(r.detail||"")}</pre></div>`;
-    else if(r.verdict==="RE")detail=`<div class="sub" style="margin-top:6px">${esc(r.detail||"")}</div>`;
-    rows[i]=`<div class="result-item"><span>测试点 ${i+1} <span class="ti">${t.score} 分</span></span><span class="v-${r.verdict}">${verdictLabel[r.verdict]}${r.ms?" · "+r.ms+"ms":""}</span></div>${detail}`;
-    resBody.innerHTML=rows.join("");
-    await new Promise(r=>setTimeout(r,120));
-  }
-  if(ce){resBody.innerHTML=rows.join("");resScore.innerHTML=`<span class="v-CE">编译错误 · 0 分</span>`;}
-  else{resScore.innerHTML=`<span class="v-${score>=100?"AC":"WA"}" style="font-size:18px">${score} / 100 分</span>`;}
-  const verdictBest=score>=100?"AC":(ce?"CE":(score>0?"部分":"WA"));
-  const rec={id:uid(),time:Date.now(),problem:id,title:p.title,tier:p.tier,score,verdict:verdictBest,code,mode:pre&&pre.mock?"mock":"practice",mockId:pre&&pre.mock?pre.mock:undefined};
-  const subs=getSubs(); subs.push(rec); saveSubs(subs);
-  if(score>0&&score<100){const w=getWrong(); if(!w.find(x=>x.problem===id))w.push({problem:id,title:p.title,score});saveWrong(w);}
-  // 知识点自动标记：做错→待巩固(2)，AC→已掌握(1)
-  {
-    const kk=getKnow(); let changed=false;
-    for(const k of p.knowledge){
-      if(score>=100){ if(kk[k]!=="1"){kk[k]="1";changed=true;} }
-      else { if(kk[k]!=="1"){kk[k]="2";changed=true;} } // 已掌握的不降级
-    }
-    if(changed){saveKnow(kk);
-      // 刷新知识点卡片状态（不重渲染整个页面，避免丢编辑器内容）
-      const box=document.querySelector(".kcard-row");
-      if(box){ p.knowledge.forEach((k,i)=>{
-        const st=kk[k]; const card=document.querySelectorAll("[data-know]")[i];
-        if(!card)return;
-        card.className="kcard "+(st==="1"?"mastered":st==="2"?"flagged":"");
-        const sc=card.querySelector(".kc-state");
-        sc.className="kc-state "+(st==="1"?"ks-ok":st==="2"?"ks-review":"ks-none");
-        sc.textContent=st==="1"?"✔ 已掌握":st==="2"?"⚠ 待巩固":"○ 未标记";
-      });}
-    }
-  }
-  if(pre&&pre.mock){ syncMockUI(); }
-  submitting=false; btn.disabled=false; btn.textContent=pre&&pre.mock?"提交到模拟赛":"提交评测";
-}
-
-/* ---------- 模拟赛 ---------- */
-function renderMockList(){
-  let html=header("模拟赛 · 全真上机","3 套模拟卷，每套 4 题对应 T1–T4，总分 400 分，限时 240 分钟（与官方时长一致）。");
-  html+=`<div class="grid g3 mb">`;
-  for(const m of MOCK_EXAMS){
-    const bestScore=LS.get("csps_mockscore_"+m.id,null);
-    html+=`<div class="card"><h3>${m.name}</h3><div class="sub">${m.problems.map(id=>PROBLEMS.find(p=>p.id===id).title).join(" · ")}</div>
-    ${bestScore!=null?`<div class="stat" style="padding:10px 0;border:none;box-shadow:none"><span class="v" style="font-size:22px">${bestScore}</span><small> / 400 分</small></div>`:""}
-    <a class="btn btn-primary" data-go="mockExam/${m.id}">${bestScore!=null?"再次挑战":"开始模拟赛"}</a></div>`;
-  }
-  html+=`</div><div class="card"><h3>使用说明</h3><div class="sub" style="margin:0">
-  <ul style="padding-left:20px;font-size:14px;line-height:2">
-    <li>开赛后倒计时开始（默认 240 分钟），可在顶部模拟赛栏内切换 4 道题作答。</li>
-    <li>每道题可多次提交，以<b>最高分</b>计入该场总分；关闭页面计时仍在后台继续。</li>
-    <li>时间到后自动锁定提交，页面刷新后可查看该场成绩。</li>
-  </ul></div></div>`;
-  app.innerHTML=html; afterRender();
-}
-function renderMock(mid){
-  const m=MOCK_EXAMS.find(x=>x.id===mid); if(!m)return renderMockList();
-  const deadline=Number(LS.get(MOCK_DEADLINE_KEY,0));
-  const now=Date.now();
-  if(!deadline||now>=deadline){
-    LS.set(MOCK_DEADLINE_KEY,now+m.minutes*60000);
-    LS.set("csps_mockset_"+mid,m.problems);
-  }
-  mockCtx={mid,problems:m.problems,minutes:m.minutes};
-  showMockbar(mockCtx);
-  renderProblem(m.problems[0],{mock:mid});
-  syncMockUI(); tickMock();
-}
-function showMockbar(ctx){
-  const bar=document.getElementById("mockbar"); bar.classList.remove("hidden");
-  const probs=document.getElementById("mockprobs");
-  probs.innerHTML=ctx.problems.map(id=>{
-    const p=PROBLEMS.find(x=>x.id===id); const best=bestMockScore(ctx.mid,id);
-    return `<span class="pb" data-go="problem/${id}" data-mock="${ctx.mid}">${p.tier}${best>=100?" ✔":""}</span>`;
-  }).join("");
-  document.querySelectorAll("#mockbar .pb").forEach(el=>el.onclick=()=>{nav("problem/"+el.dataset.go.split("/")[1],{mock:el.dataset.mock});syncMockUI();});
-}
-function bestMockScore(mid,id){
-  const subs=getSubs().filter(s=>s.mode==="mock"&&s.problem===id&&(mockCtx&&s.mockId===mid));
-  if(!subs.length)return 0; return Math.max(...subs.map(s=>s.score));
-}
-function tickMock(){
-  const bar=document.getElementById("mockbar"); const el=document.getElementById("mocktime");
-  const iv=setInterval(()=>{
-    const deadline=Number(LS.get(MOCK_DEADLINE_KEY,0));
-    const left=Math.max(0,deadline-Date.now());
-    const h=Math.floor(left/3600000),m=Math.floor(left%3600000/60000),s=Math.floor(left%60000/1000);
-    el.textContent=`${h}:${normDate(m)}:${normDate(s)}`;
-    if(left<=0){clearInterval(iv);
-      let total=0; for(const sp of (mockCtx?mockCtx.problems:[])) total+=bestMockScore(mockCtx.mid,sp);
-      LS.set("csps_mockscore_"+mockCtx.mid,total);
-      if(mockCtx){el.textContent="已结束"; const names=mockCtx.problems.map(id=>PROBLEMS.find(p=>p.id===id).title);
-        if(!LS.get("csps_mockend_"+mockCtx.mid)){LS.set("csps_mockend_"+mockCtx.mid,1);
-          alert(`⏱ 模拟赛结束！\n${names.join(" · ")}\n本场总分：${total} / 400`);} }
-      }
-  },1000);
-}
-function syncMockUI(){
-  if(!mockCtx)return; const bar=document.getElementById("mockbar");
-  if(bar.classList.contains("hidden"))bar.classList.remove("hidden");
-  showMockbar(mockCtx);
-}
-
-/* ---------- 知识图谱 ---------- */
-function renderKnowledge(){
-  const know=getKnow(); let marked=0,mastered=0,total=0;
-  for(const c of KNOWLEDGE){for(const it of c.items){total++; if(know[it]){marked++; if(know[it]==="1")mastered++;}}}
-  const pct=Math.round(mastered/total*100);
-  const byCat=cat=>{const items=KNOWLEDGE.find(c=>c.cat===cat).items;let ms=0;for(const it of items)if(know[it]==="1")ms++;return {ms,total:items.length};};
-  let html=header("知识图谱 · 考点全覆盖","CSP-S 提高组第二轮机试考点自评。点击标签切换“掌握 / 待巩固”。");
-  html+=`<div class="card mb" style="display:flex;align-items:center;gap:24px;flex-wrap:wrap">
-    <div class="ring" style="--p:${pct};--c:${pct>=70?"var(--green)":"var(--brand)"}"><b>${pct}%</b></div>
-    <div><div class="sub" style="margin:0">整体掌握度 · 已掌握 ${mastered} / ${total} 考点</div>
-    <div class="bar" style="width:260px;margin-top:8px"><i style="width:${pct}%"></i></div>
-    <div class="sub mt" style="margin:0">点击下方任意考点可在“掌握”与“待巩固”间切换；结合<b>题单</b>中对应题目的 AC 情况查漏补缺。</div></div></div>`;
-  for(const c of KNOWLEDGE){
-    const b=byCat(c.cat); const cp=Math.round(b.ms/b.total*100);
-    html+=`<div class="card mb know-block"><div class="cat"><span>${c.cat}</span><span class="tag t-tag">${b.ms}/${b.total} 掌握</span><span class="pct">${cp}%</span>
-      <div class="bar" style="width:120px;margin:0 0 0 6px"><i style="width:${cp}%"></i></div></div>
-      <div>${c.items.map(it=>{const st=know[it];return `<span class="chip ${st==="1"?"on":""}" data-k="${esc(it)}" ${st==="2"?"style='border-color:var(--red);color:var(--red)'":""}>${esc(it)}${st==="2"?" <b style='color:var(--red)'>(待)</b>":""}</span>`;}).join("")}</div></div>`;
-  }
-  app.innerHTML=html; afterRender();
-  document.querySelectorAll("[data-k]").forEach(el=>el.onclick=()=>{
-    const k=el.dataset.k; const cur=getKnow()[k]; const nxt=cur==="1"?"2":"1"; const kk=getKnow(); kk[k]=nxt; saveKnow(kk); renderKnowledge();
-  });
-}
-
-/* ---------- 记录 ---------- */
-function renderRecords(){
-  const subs=getSubs().slice().reverse(); const wrong=getWrong();
-  const dist=levelDist();
-  let html=header("我的记录 · 提交历史与错题本","所有数据仅保存在本机浏览器，不会上传。");
-  html+=`<div class="card mb">
-    <div style="display:flex;align-items:center;gap:12px;margin-bottom:6px"><h3 style="margin:0">我的难度掌握分布</h3></div>
-    <div class="lvbar">${Object.keys(LEVELS).map(k=>{const L=LEVELS[k];const [ac,tot]=dist[k];return `<div style="width:${tot/PROBLEMS.length*100}%;background:${L.color};opacity:${tot?0.35+0.65*(ac/tot):0.15}" title="${L.name} ${ac}/${tot}"></div>`;}).join("")}</div>
-    <div style="display:flex;gap:16px;flex-wrap:wrap;font-size:12.5px;color:var(--muted);margin-top:6px">
-      ${Object.keys(LEVELS).map(k=>{const L=LEVELS[k];const [ac,tot]=dist[k];return `<span><span class="lv" style="background:${L.color}">${L.name}</span> AC <b>${ac}</b>/${tot}</span>`;}).join("")}
-    </div></div>`;
-  html+=`<div class="grid g2 mb">
-    <div class="card"><h3>📕 错题本（部分分 / 未通过）</h3>
-      ${wrong.length?wrong.map(w=>`<div class="problem-row" data-go="problem/${w.problem}"><span class="nm">${w.title}</span><span class="status st-wa">${w.score} 分</span><span style="color:var(--brand);font-size:13px">去重做 →</span></div>`).join(""):`<div class="empty">暂无错题，继续加油 🎯</div>`}
-    </div>
-    <div class="card"><h3>✅ 已 AC 题目</h3>
-      ${PROBLEMS.filter(p=>problemStatus(p.id)==="done").length?PROBLEMS.filter(p=>problemStatus(p.id)==="done").map(p=>`<div class="problem-row" data-go="problem/${p.id}"><span class="nm">${p.title}</span>${lvBadge(p)}<span class="status st-done">✔ AC</span></div>`).join(""):`<div class="empty">还没有 AC 的题目，去刷一道吧。</div>`}
-    </div></div>`;
-  html+=`<div class="grid g2 mb">
-    <div class="card"><h3>🧮 统计</h3><div class="sub">累计提交 ${subs.length} 次</div>
-      <div class="grid g2" style="margin-top:8px">
-        <div class="stat"><div class="k">满分题目</div><div class="v">${stats().full}<small> / ${PROBLEMS.length}</small></div></div>
-        <div class="stat"><div class="k">平均得分率</div><div class="v">${stats().rate}<small>%</small></div></div>
-      </div>
-    </div></div>`;
-  html+=`<div class="card"><h3>🕘 提交记录</h3>
-    ${subs.length?`<table><thead><tr><th>时间</th><th>题目</th><th>类型</th><th>分数</th><th>结果</th><th></th></tr></thead><tbody>
-    ${subs.slice(0,120).map(s=>{const d=new Date(s.time);const cls={AC:"v-AC",WA:"v-WA",CE:"v-CE","部分":"v-WA"}[s.verdict]||"v-WA";
-      return `<tr><td>${d.getMonth()+1}-${d.getDate()} ${normDate(d.getHours())}:${normDate(d.getMinutes())}</td><td>${esc(s.title)}</td><td>${s.mode==="mock"?"模拟赛":"练习"}</td><td><b>${s.score}/100</b></td><td class="${cls}">${s.verdict==="AC"?"AC 正确":s.verdict==="CE"?"编译错误":s.verdict==="部分"?"部分分":"未通过"}</td><td><a data-viewcode="${s.id}">查看代码</a></td></tr>`;
-    }).join("")}</tbody></table>`:`<div class="empty">还没有提交记录，去题库刷一道题吧。</div>`}</div>`;
-  app.innerHTML=html; afterRender();
-  document.querySelectorAll("[data-viewcode]").forEach(a=>a.onclick=()=>{const s=getSubs().find(x=>x.id===a.dataset.viewcode);if(s)alert(s.code);});
-}
-
-/*================ 路由 ================*/
-function nav(hash,opts){
-  const seg=hash.replace(/^#\//,"").split("/");
-  document.querySelectorAll("#nav button").forEach(b=>b.classList.toggle("active",b.dataset.view===seg[0]));
-  if(seg[0]==="problem"){ VIEWS.problem(seg[1],opts); }
-  else if(seg[0]==="mockExam"){ VIEWS.mockExam(seg[1]); }
-  else if(VIEWS[seg[0]]){ VIEWS[seg[0]](); }
-  else VIEWS.dashboard();
-  window.scrollTo(0,0);
-}
-function afterRender(){
-  document.querySelectorAll("[data-go]").forEach(a=>a.onclick=()=>{const v=a.dataset.go;nav(v,{mock:a.dataset.mock});});
-  document.querySelectorAll("#nav button").forEach(b=>b.onclick=()=>nav(b.dataset.view));
-}
-
-/*================ 启动 ================*/
-function boot(){
-  const cd=document.getElementById("cd");
-  const tick=()=>{const left=countdownTo()-Date.now();if(left<=0){cd.textContent="考试已开始 🎯";return;}
-    const d=Math.floor(left/86400000),h=Math.floor(left%86400000/3600000),m=Math.floor(left%3600000/60000);
-    cd.textContent=`距机试 ${d}天 ${h}时 ${m}分`;};
-  tick(); setInterval(tick,60000);
-  const deadline=Number(LS.get(MOCK_DEADLINE_KEY,0));
-  if(deadline>Date.now()){
-    const mid=LS.get("csps_mockset_last","A"); const probs=LS.get("csps_mockset_"+mid,[]);
-    if(probs.length){mockCtx={mid,problems:probs}; showMockbar(mockCtx); tickMock();}
-  }
-  nav((location.hash||"#/dashboard"));
-  window.addEventListener("hashchange",()=>nav(location.hash));
-}
-document.addEventListener("DOMContentLoaded",boot);
-</script>
-</body>
-</html>
