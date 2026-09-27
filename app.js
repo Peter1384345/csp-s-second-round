@@ -13,8 +13,6 @@ const getDiscuss=id=>LS.get("csps_discuss_"+id,[]);
 const saveDiscuss=(id,d)=>LS.set("csps_discuss_"+id,d);
 const addDiscuss=(id,content,user)=>{const d=getDiscuss(id);d.push({id:uid(),user:user||"匿名用户",time:Date.now(),content});saveDiscuss(id,d);return d;};
 const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,6);
-
-/*================ 登录 ================*/
 const getUser=()=>LS.get("csps_user",null);
 const setUser=u=>LS.set("csps_user",u);
 function logout(){localStorage.removeItem("csps_user");renderLoginArea();nav((location.hash||"#/dashboard").replace(/^#\//,""));}
@@ -42,8 +40,6 @@ function doLogin(){
   renderLoginArea();
   nav((location.hash||"#/dashboard").replace(/^#\//,""));
 }
-
-/*================ 判题（Wandbox） ================*/
 const WANDBOX="https://wandbox.org/api/compile.json";
 const COMPILER="gcc-13.2.0";
 const DEFAULT_CODE=`#include <bits/stdc++.h>
@@ -51,7 +47,6 @@ using namespace std;
 int main(){
     ios::sync_with_stdio(false);
     cin.tie(nullptr);
-
     return 0;
 }
 `;
@@ -85,8 +80,6 @@ async function judgeTest(code,t){
   if(got===want) return {verdict:"AC",score:t.score,ms:r.ms};
   return {verdict:"WA",score:0,out:got,detail:"期望输出与你的输出不一致",ms:r.ms};
 }
-
-/*================ 状态计算 ================*/
 function problemStatus(id){
   const subs=getSubs().filter(s=>s.problem===id&&s.mode!=="mock");
   if(!subs.length) return "none";
@@ -117,13 +110,9 @@ function levelDist(){
   for(const p of PROBLEMS){ dist[p.diff][1]++; if(problemStatus(p.id)==="done") dist[p.diff][0]++; }
   return dist;
 }
-
-/*================ 渲染 ================*/
 const app=document.getElementById("app");
 const esc=s=>String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 function header(title,sub){return `<h2>${title}</h2><div class="sub">${sub}</div>`;}
-function lvBadge(p){return `<span class="diff diff-${p.diff}">${LEVELS[p.diff].name}</span>`;}
-
 const VIEWS={
 dashboard(){renderDashboard();},
 practice(){renderPracticeList();},
@@ -134,8 +123,6 @@ mockExam(mid){renderMock(mid);},
 knowledge(){renderKnowledge();},
 records(){renderRecords();}
 };
-
-/* ---------- 首页（洛谷左右分栏） ---------- */
 function renderDashboard(){
   const s=stats();
   const u=getUser();
@@ -221,8 +208,6 @@ function renderDashboard(){
   </div>`;
   afterRender();
 }
-
-/* ---------- 题库（洛谷纯表格） ---------- */
 let pfState={q:"",level:0,status:"all",fav:false};
 function renderPracticeList(){
   let html=`<h2 style="margin-bottom:10px">题库</h2>`;
@@ -274,8 +259,6 @@ function renderPracticeList(){
     location.hash="#/problem/"+p.id;
   };
 }
-
-/* ---------- 题单 ---------- */
 function renderPlaylists(){
   let html=header("题单 · 专题训练","按知识点分组的刷题路径（参考洛谷题单）。");
   html+=`<div class="grid g3">`;
@@ -291,8 +274,6 @@ function renderPlaylists(){
   html+=`</div>`;
   app.innerHTML=html; afterRender();
 }
-
-/* ---------- 题目详情 ---------- */
 function knowCardHTML(p){
   const know=getKnow();
   return `<div class="mb" style="margin-top:16px">
@@ -391,7 +372,6 @@ function vizJumpTo(frameIdx,flash){
   const st=document.getElementById("ivStage");
   if(st){st.classList.add("flash-bad");setTimeout(()=>st.classList.remove("flash-bad"),2000);}
 }
-
 let editor=null,currentProblem=null,currentPre=null,submitting=false,mockCtx=null;
 function initEditor(){
   if(editor)return;
@@ -578,8 +558,6 @@ async function submit(id,pre){
   if(pre&&pre.mock)syncMockUI();
   submitting=false;btn.disabled=false;btn.textContent=pre&&pre.mock?"提交到模拟赛":"提交评测";
 }
-
-/* ---------- 模拟赛 ---------- */
 function renderMockList(){
   let html=header("模拟赛 · 全真上机","3 套模拟卷，每套 4 题 400 分，限时 240 分钟。");
   html+=`<div class="grid g3 mb">`;
@@ -612,8 +590,6 @@ function tickMock(){
   },1000);
 }
 function syncMockUI(){if(!mockCtx)return;const b=document.getElementById("mockbar");if(b.classList.contains("hidden"))b.classList.remove("hidden");showMockbar(mockCtx);}
-
-/* ---------- 知识图谱 ---------- */
 function renderKnowledge(){
   const know=getKnow();let marked=0,mastered=0,total=0;
   for(const c of KNOWLEDGE)for(const it of c.items){total++;if(know[it]){marked++;if(know[it]==="1")mastered++;}}
@@ -630,8 +606,6 @@ function renderKnowledge(){
   app.innerHTML=html;afterRender();
   document.querySelectorAll("[data-k]").forEach(el=>el.onclick=()=>{const k=el.dataset.k;const cur=getKnow()[k];const nxt=cur==="1"?"2":"1";const kk=getKnow();kk[k]=nxt;saveKnow(kk);renderKnowledge();});
 }
-
-/* ---------- 记录 ---------- */
 function renderRecords(){
   const subs=getSubs().slice().reverse(),wrong=getWrong(),dist=levelDist();
   let html=header("我的记录 · 提交历史与错题本","数据保存在本机浏览器。");
@@ -642,8 +616,6 @@ function renderRecords(){
   html+=`<div class="card"><h3>提交记录</h3>${subs.length?`<table><thead><tr><th>时间</th><th>题目</th><th>类型</th><th>分数</th><th>结果</th></tr></thead><tbody>${subs.slice(0,120).map(s=>{const d=new Date(s.time);const cls={AC:"v-AC",WA:"v-WA",CE:"v-CE","部分":"v-WA"}[s.verdict]||"v-WA";return `<tr><td>${d.getMonth()+1}-${d.getDate()} ${normDate(d.getHours())}:${normDate(d.getMinutes())}</td><td>${esc(s.title)}</td><td>${s.mode==="mock"?"模拟赛":"练习"}</td><td><b>${s.score}</b></td><td class="${cls}">${s.verdict}</td></tr>`;}).join("")}</tbody></table>`:'<div class="empty">还没有提交记录</div>'}</div>`;
   app.innerHTML=html;afterRender();
 }
-
-/*================ 路由 ================*/
 function nav(hash,opts){
   const seg=hash.replace(/^#\//,"").split("/");
   document.querySelectorAll("#nav button").forEach(b=>b.classList.toggle("active",b.dataset.view===seg[0]));
