@@ -86,7 +86,7 @@ function countdownTo(){ return new Date(2026,9,31,14,30,0).getTime(); }
 
 /* 难度分布（洛谷风格） */
 function levelDist(){
-  const dist={1:[0,0],2:[0,0],3:[0,0],4:[0,0]}; // [ac,total]
+  const dist={1:[0,0],2:[0,0],3:[0,0],4:[0,0]};
   for(const p of PROBLEMS){ dist[p.diff][1]++; if(problemStatus(p.id)==="done") dist[p.diff][0]++; }
   return dist;
 }
@@ -726,7 +726,7 @@ function renderKnowledge(){
   for(const c of KNOWLEDGE){for(const it of c.items){total++; if(know[it]){marked++; if(know[it]==="1")mastered++;}}}
   const pct=Math.round(mastered/total*100);
   const byCat=cat=>{const items=KNOWLEDGE.find(c=>c.cat===cat).items;let ms=0;for(const it of items)if(know[it]==="1")ms++;return {ms,total:items.length};};
-  let html=header("知识图谱 · 考点全覆盖","CSP-S 提高组第二轮机试考点自评。点击标签切换"掌握 / 待巩固"。");
+  let html=header("知识图谱 · 考点全覆盖","CSP-S 提高组第二轮机试考点自评。点击标签切换“掌握 / 待巩固”。");
   html+=`<div class="card mb" style="display:flex;align-items:center;gap:24px;flex-wrap:wrap">
     <div class="ring" style="--p:${pct};--c:${pct>=70?"var(--green)":"var(--brand)"}"><b>${pct}%</b></div>
     <div><div class="sub" style="margin:0">整体掌握度 · 已掌握 ${mastered} / ${total} 考点</div>
