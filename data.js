@@ -1,0 +1,502 @@
+"use strict";
+/*================ 题库数据 ================*/
+window.CSP_PROBLEMS=[{"id":"p01","no":1,"title":"数字统计","tier":"T1","diff":1,"knowledge":["排序","哈希 / 计数统计"],"tag":"基础算法 · 模拟","points":100,"statement":"给定 n 个整数，统计每个不同数值出现的次数，并按数值从小到大输出。","inputFormat":"第一行一个整数 n（1 ≤ n ≤ 1e5）。第二行 n 个整数 aᵢ（0 ≤ aᵢ ≤ 1e9）。","outputFormat":"若干行，每行两个整数，格式为“数值 次数”，按数值升序排列。","constraints":"时间 1s，内存 128MB。","solution":"用 map<long long,int> 计数，或读入后排序再统计。时间复杂度 O(n log n)，空间 O(n)。注意数值可达 1e9 需用 long long。","sample":{"input":"5\n1 2 1 3 2\n","output":"1 2\n2 2\n3 1"},"judge":[{"input":"5\n1 2 1 3 2\n","output":"1 2\n2 2\n3 1","score":20},{"input":"1\n1000000000\n","output":"1000000000 1","score":20},{"input":"8\n9 9 9 9 9 9 9 9\n","output":"9 8","score":20},{"input":"6\n5 4 3 2 1 5\n","output":"1 1\n2 1\n3 1\n4 1\n5 2","score":20},{"input":"7\n100 7 100 7 100 7 2\n","output":"2 1\n7 3\n100 3","score":20}]},{"id":"p02","no":2,"title":"区间和","tier":"T1","diff":1,"knowledge":["前缀和"],"tag":"基础算法 · 前缀和","points":100,"statement":"给定 n 个数 a₁..aₙ，进行 q 次询问，每次给出区间 [l, r]，求该区间所有数之和。","inputFormat":"第一行两个整数 n, q（1 ≤ n, q ≤ 2e5）。第二行 n 个整数 aᵢ（|aᵢ| ≤ 1e9）。接下来 q 行，每行两个整数 l, r（1 ≤ l ≤ r ≤ n）。","outputFormat":"对每个询问输出一行，为该区间的和。","constraints":"时间 1s，内存 256MB。","solution":"预处理前缀和 pre[i]=pre[i-1]+a[i]，查询 O(1) 输出 pre[r]-pre[l-1]。注意结果用 long long。","sample":{"input":"5 3\n1 2 3 4 5\n1 5\n2 3\n3 3\n","output":"15\n5\n3"},"judge":[{"input":"5 3\n1 2 3 4 5\n1 5\n2 3\n3 3\n","output":"15\n5\n3","score":33},{"input":"4 2\n10 20 30 40\n2 4\n1 1\n","output":"90\n10","score":33},{"input":"3 1\n1000000000 1000000000 1000000000\n1 3\n","output":"3000000000","score":34}]},{"id":"p03","no":3,"title":"切绳子","tier":"T2","diff":2,"knowledge":["二分答案"],"tag":"二分 · 贪心","points":100,"statement":"有 n 根木棍，长度分别为 Lᵢ。现在要把它们切成 k 段等长的木棍（每段长度必须为正整数），求能切出的最大段长。","inputFormat":"第一行两个整数 n, k（1 ≤ n ≤ 1e5，1 ≤ k ≤ 1e9）。第二行 n 个整数 Lᵢ（1 ≤ Lᵢ ≤ 1e9）。","outputFormat":"一个整数，表示能切出的最大整数段长。","constraints":"时间 1s，内存 256MB。","solution":"答案满足单调性：段长 x 可行当且仅当 Σ(Lᵢ/x) ≥ k。对 x 在 [1, max(Lᵢ)] 上二分即可。复杂度 O(n log maxL)。","sample":{"input":"3 5\n6 7 9\n","output":"3"},"judge":[{"input":"3 5\n6 7 9\n","output":"3","score":20},{"input":"2 4\n10 10\n","output":"5","score":20},{"input":"1 1\n7\n","output":"7","score":20},{"input":"4 10\n1 2 3 4\n","output":"0","score":20},{"input":"5 3\n1000000000 1 1 1 1\n","output":"333333333","score":20}]},{"id":"p04","no":4,"title":"会议安排","tier":"T2","diff":2,"knowledge":["贪心"],"tag":"贪心 · 区间调度","points":100,"statement":"一天内有 n 场会议，第 i 场会议占用区间 [sᵢ, eᵢ]。要选择尽量多两两不相交的会议（会议可首尾相接，即后一场开始时间 ≥ 前一场结束时间），求最多能选几场。","inputFormat":"第一行一个整数 n（1 ≤ n ≤ 1e5）。接下来 n 行，每行两个整数 sᵢ, eᵢ（0 ≤ sᵢ < eᵢ ≤ 1e9）。","outputFormat":"一个整数，表示最多能安排的会议场数。","constraints":"时间 1s，内存 128MB。","solution":"按结束时间从小到大排序，贪心选取结束最早且不与上一场冲突的会议。复杂度 O(n log n)。","sample":{"input":"4\n1 3\n2 5\n3 6\n5 7\n","output":"2"},"judge":[{"input":"4\n1 3\n2 5\n3 6\n5 7\n","output":"2","score":33},{"input":"3\n1 2\n2 3\n3 4\n","output":"3","score":33},{"input":"5\n1 100\n2 99\n3 98\n100 101\n50 50\n","output":"2","score":34}]},{"id":"p05","no":5,"title":"最大矩形","tier":"T3","diff":3,"knowledge":["单调栈"],"tag":"数据结构 · 单调栈","points":100,"statement":"在平面上有 n 个并排排列的柱形，高度分别为 hᵢ，宽均为 1。求这些柱形能围成的最大矩形面积。","inputFormat":"第一行一个整数 n（1 ≤ n ≤ 1e5）。第二行 n 个整数 hᵢ（0 ≤ hᵢ ≤ 1e9）。","outputFormat":"一个整数，表示最大矩形面积。","constraints":"时间 1s，内存 128MB。","solution":"维护一个关于高度的单调递增栈，枚举每个高度作为矩形高，利用栈确定左右边界。复杂度 O(n)。","sample":{"input":"6\n2 1 5 6 2 3\n","output":"10"},"judge":[{"input":"6\n2 1 5 6 2 3\n","output":"10","score":20},{"input":"4\n1 1 1 1\n","output":"4","score":20},{"input":"1\n5\n","output":"5","score":20},{"input":"7\n6 2 5 4 5 1 6\n","output":"12","score":20},{"input":"5\n2 4 4 4 2\n","output":"12","score":20}]},{"id":"p06","no":6,"title":"最小生成树","tier":"T3","diff":3,"knowledge":["并查集","最小生成树"],"tag":"图论 · 生成树","points":100,"statement":"给定一个 n 个点、m 条边的带权无向连通图，求其最小生成树的边权和；若图不连通，输出 orz。","inputFormat":"第一行两个整数 n, m（1 ≤ n ≤ 1e5，0 ≤ m ≤ 2e5）。接下来 m 行，每行三个整数 u, v, w（1 ≤ u,v ≤ n，0 ≤ w ≤ 1e9）。","outputFormat":"一个整数表示最小生成树边权和；若不连通输出 orz。","constraints":"时间 1s，内存 256MB。","solution":"Kruskal：按边权排序，用并查集维护连通性，依次加入不形成环的边，直到加入 n-1 条边。复杂度 O(m log m)。","sample":{"input":"4 5\n1 2 1\n1 3 3\n2 3 1\n2 4 6\n3 4 5\n","output":"7"},"judge":[{"input":"4 5\n1 2 1\n1 3 3\n2 3 1\n2 4 6\n3 4 5\n","output":"7","score":25},{"input":"3 1\n1 2 5\n","output":"orz","score":25},{"input":"3 3\n1 2 2\n2 3 2\n1 3 2\n","output":"4","score":25},{"input":"5 4\n1 2 10\n2 3 10\n3 4 10\n4 5 10\n","output":"40","score":25}]},{"id":"p07","no":7,"title":"高精度加法","tier":"T3","diff":3,"knowledge":["高精度"],"tag":"基础算法 · 高精度","points":100,"statement":"给出两个非负大整数 A、B（均以十进制字符串给出），求它们的和。","inputFormat":"两行，每行一个由数字组成的非负大整数，长度均不超过 1e5，且不含前导零（0 除外）。","outputFormat":"一行，为 A + B 的结果。","constraints":"时间 1s，内存 128MB。","solution":"模拟竖式加法：从低位向高位逐位相加并处理进位，用字符串存储。复杂度 O(max(lenA,lenB))。","sample":{"input":"123\n456\n","output":"579"},"judge":[{"input":"123\n456\n","output":"579","score":20},{"input":"999\n1\n","output":"1000","score":20},{"input":"999999999999999999999999999999\n1\n","output":"1000000000000000000000000000000","score":20},{"input":"0\n0\n","output":"0","score":20},{"input":"123456789012345678901234567890\n987654321098765432109876543210\n","output":"1111111110111111111011111111100","score":20}]},{"id":"p08","no":8,"title":"最长上升子序列","tier":"T4","diff":3,"knowledge":["动态规划","LIS"],"tag":"DP · 序列","points":100,"statement":"给定一个长度为 n 的整数序列 a，求其最长严格上升子序列（LIS）的长度。","inputFormat":"第一行一个整数 n（1 ≤ n ≤ 2e5）。第二行 n 个整数 aᵢ（|aᵢ| ≤ 1e9）。","outputFormat":"一个整数，表示最长严格上升子序列的长度。","constraints":"时间 1s，内存 256MB。","solution":"维护数组 d，d[i] 表示长度为 i+1 的上升子序列的最小末尾。对每个 aᵢ 用 lower_bound 定位并更新。复杂度 O(n log n)。","sample":{"input":"6\n1 3 2 4 3 5\n","output":"4"},"judge":[{"input":"6\n1 3 2 4 3 5\n","output":"4","score":25},{"input":"5\n5 4 3 2 1\n","output":"1","score":25},{"input":"4\n1 2 3 4\n","output":"4","score":25},{"input":"8\n10 9 2 5 3 7 101 18\n","output":"4","score":25}]},{"id":"p09","no":9,"title":"0-1 背包","tier":"T4","diff":3,"knowledge":["动态规划","背包"],"tag":"DP · 背包","points":100,"statement":"有 n 件物品，第 i 件物品重量为 wᵢ、价值为 vᵢ。背包容量为 C，每件物品最多取一次，求能装入的最大总价值。","inputFormat":"第一行两个整数 n, C（1 ≤ n ≤ 1000，1 ≤ C ≤ 1e5）。接下来 n 行，每行两个整数 wᵢ, vᵢ（1 ≤ wᵢ ≤ C，1 ≤ vᵢ ≤ 1e9）。","outputFormat":"一个整数，表示最大总价值。","constraints":"时间 1s，内存 256MB。","solution":"01 背包滚动数组优化：dp[c]=max(dp[c], dp[c-w]+v)，容量倒序枚举。复杂度 O(n·C)。","sample":{"input":"3 10\n5 6\n4 4\n6 8\n","output":"12"},"judge":[{"input":"3 10\n5 6\n4 4\n6 8\n","output":"12","score":25},{"input":"2 5\n3 10\n3 10\n","output":"10","score":25},{"input":"4 7\n2 3\n3 4\n4 5\n5 6\n","output":"9","score":25},{"input":"1 100\n50 9999\n","output":"9999","score":25}]},{"id":"p10","no":10,"title":"单源最短路","tier":"T4","diff":4,"knowledge":["最短路","Dijkstra"],"tag":"图论 · 最短路","points":100,"statement":"给定一个 n 个点、m 条边的带权有向图（可能有重边，边权非负），求从 1 号点出发到每个点的最短路径长度。若某点不可达，输出 2147483647。","inputFormat":"第一行两个整数 n, m（1 ≤ n ≤ 1e5，0 ≤ m ≤ 2e5）。接下来 m 行，每行三个整数 u, v, w（1 ≤ u,v ≤ n，0 ≤ w ≤ 1e9）。","outputFormat":"一行 n 个整数，为 1 号点到各点的最短路长度，空格分隔。","constraints":"时间 1s，内存 256MB。","solution":"Dijkstra + 优先队列优化。dist 用 long long，不可达保留 INF=2147483647。复杂度 O(m log n)。","sample":{"input":"4 4\n1 2 2\n1 3 1\n2 4 5\n3 4 1\n","output":"0 2 1 2"},"judge":[{"input":"4 4\n1 2 2\n1 3 1\n2 4 5\n3 4 1\n","output":"0 2 1 2","score":25},{"input":"3 1\n1 2 3\n","output":"0 3 2147483647","score":25},{"input":"3 2\n1 2 4\n2 3 5\n","output":"0 4 9","score":25},{"input":"5 4\n1 2 1\n2 3 1\n3 4 1\n4 5 1\n","output":"0 1 2 3 4","score":25}]},{"id":"p11","no":11,"title":"树的直径","tier":"T4","diff":3,"knowledge":["树上问题","BFS"],"tag":"图论 · 树","points":100,"statement":"给定一棵 n 个节点的树，求树的直径，即任意两点间最长路径经过的边数。","inputFormat":"第一行一个整数 n（1 ≤ n ≤ 1e5）。接下来 n-1 行，每行两个整数 u, v，表示一条无向边。","outputFormat":"一个整数，表示树的直径长度（边数）。","constraints":"时间 1s，内存 256MB。","solution":"任取一点做 BFS/DFS 找到最远点 s，再从 s 做一次 BFS/DFS 得到最远距离即直径。复杂度 O(n)。","sample":{"input":"4\n1 2\n2 3\n3 4\n","output":"3"},"judge":[{"input":"4\n1 2\n2 3\n3 4\n","output":"3","score":25},{"input":"5\n1 2\n1 3\n1 4\n1 5\n","output":"2","score":25},{"input":"5\n1 2\n2 3\n2 4\n4 5\n","output":"3","score":25},{"input":"3\n1 2\n2 3\n","output":"2","score":25}]},{"id":"p12","no":12,"title":"DAG 最长路","tier":"T4","diff":4,"knowledge":["拓扑排序","动态规划"],"tag":"图论 · DAG / DP","points":100,"statement":"给定一个 n 个点、m 条边的有向无环图，边权为非负整数。求从 1 号点到 n 号点的最长路径长度；若 1 到 n 不可达，输出 -1。","inputFormat":"第一行两个整数 n, m（1 ≤ n ≤ 1e5，0 ≤ m ≤ 2e5）。接下来 m 行，每行三个整数 u, v, w（1 ≤ u,v ≤ n，0 ≤ w ≤ 1e9）。","outputFormat":"一个整数，表示 1 到 n 的最长路长度；不可达输出 -1。","constraints":"时间 1s，内存 256MB。","solution":"对 DAG 做拓扑排序，按拓扑序做 DP：dp[v]=max(dp[v], dp[u]+w)。初始化 dp[1]=0，其余为 -∞。复杂度 O(n+m)。","sample":{"input":"3 3\n1 2 5\n2 3 3\n1 3 4\n","output":"8"},"judge":[{"input":"3 3\n1 2 5\n2 3 3\n1 3 4\n","output":"8","score":25},{"input":"5 5\n1 2 1\n1 3 2\n2 4 3\n3 4 1\n4 5 2\n","output":"6","score":25},{"input":"3 1\n2 3 1\n","output":"-1","score":25},{"input":"4 4\n1 2 2\n2 4 3\n1 3 5\n3 4 1\n","output":"6","score":25}]},{"id":"p13","no":13,"title":"斐波那契（矩阵快速幂）","tier":"T4","diff":4,"knowledge":["数论","矩阵快速幂"],"tag":"数论 · 矩阵","points":100,"statement":"斐波那契数列 F(1)=F(2)=1，F(n)=F(n-1)+F(n-2)。给定 n，求 F(n) mod 1e9+7。","inputFormat":"一行一个整数 n（1 ≤ n ≤ 1e18）。","outputFormat":"一个整数，表示 F(n) 对 1e9+7 取模的结果。","constraints":"时间 1s，内存 128MB。","solution":"构造转移矩阵 [[1,1],[1,0]]，用矩阵快速幂求出 F(n)。复杂度 O(log n)。","sample":{"input":"10\n","output":"55"},"judge":[{"input":"10\n","output":"55","score":20},{"input":"1\n","output":"1","score":20},{"input":"2\n","output":"1","score":20},{"input":"100\n","output":"687995182","score":20},{"input":"1000000000000000000\n","output":"209783453","score":20}]},{"id":"p14","no":14,"title":"字符串匹配","tier":"T4","diff":3,"knowledge":["字符串","KMP"],"tag":"字符串 · KMP","points":100,"statement":"给定主串 s 与模式串 t，求 t 在 s 中出现的次数（允许重叠）。","inputFormat":"两行，第一行为主串 s，第二行为模式串 t。两串仅含小写字母，长度均不超过 1e6。","outputFormat":"一个整数，表示 t 在 s 中出现的次数。","constraints":"时间 1s，内存 128MB。","solution":"使用 KMP 算法，匹配到完整模式串后回退到 pi 值继续匹配，统计重叠出现次数。复杂度 O(|s|+|t|)。","sample":{"input":"aaaa\naa\n","output":"3"},"judge":[{"input":"aaaa\naa\n","output":"3","score":20},{"input":"abc\nd\n","output":"0","score":20},{"input":"ababab\naba\n","output":"2","score":20},{"input":"a\na\n","output":"1","score":20},{"input":"abcabcabc\nabc\n","output":"3","score":20}]},{"id":"p15","no":15,"title":"迷宫最短路","tier":"T2","diff":2,"knowledge":["搜索","BFS"],"tag":"搜索 · 广度优先","points":100,"statement":"给定一个 n 行 m 列的网格，0 表示可通行，1 表示墙。每一步可以上下左右移动一格，求从 (1,1) 到 (n,m) 的最少步数；若不可达输出 -1。","inputFormat":"第一行两个整数 n, m（1 ≤ n, m ≤ 1000）。接下来 n 行，每行一个长度为 m 的 0/1 字符串。起点与终点保证为 0。","outputFormat":"一个整数，表示最少步数；不可达输出 -1。","constraints":"时间 1s，内存 256MB。","solution":"BFS 求最短路，dist 数组记录步数。复杂度 O(n·m)。","sample":{"input":"2 2\n00\n00\n","output":"2"},"judge":[{"input":"2 2\n00\n00\n","output":"2","score":20},{"input":"3 3\n000\n010\n000\n","output":"4","score":20},{"input":"3 3\n010\n010\n010\n","output":"-1","score":20},{"input":"1 1\n0\n","output":"0","score":20},{"input":"4 4\n0000\n0110\n0000\n0110\n","output":"6","score":20}]},{"id":"p16","no":16,"title":"单点修改区间求和","tier":"T4","diff":3,"knowledge":["树状数组 / 线段树"],"tag":"数据结构 · BIT","points":100,"statement":"给定长度为 n 的数列，支持两种操作：1. 单点修改：将第 i 个数改为 x；2. 区间查询：求 [l, r] 的和。","inputFormat":"第一行两个整数 n, q（1 ≤ n, q ≤ 2e5）。第二行 n 个整数 aᵢ（|aᵢ| ≤ 1e9）。接下来 q 行，每行先给出操作类型：若为 1，则跟两个整数 i, x（单点修改）；若为 2，则跟两个整数 l, r（区间求和，1 ≤ l ≤ r ≤ n）。","outputFormat":"对每个类型 2 的操作，输出一行区间和。","constraints":"时间 1s，内存 256MB。","solution":"树状数组支持单点加与前缀和查询，修改用增量。复杂度 O((n+q) log n)。","sample":{"input":"5 3\n1 2 3 4 5\n2 1 5\n1 3 10\n2 1 5\n","output":"15\n22"},"judge":[{"input":"5 3\n1 2 3 4 5\n2 1 5\n1 3 10\n2 1 5\n","output":"15\n22","score":33},{"input":"3 2\n5 5 5\n2 2 3\n1 1 0\n2 1 3\n","output":"10","score":33},{"input":"4 2\n1 2 3 4\n2 1 4\n1 2 5\n2 1 4\n","output":"10","score":34}]}];
+const PROBLEMS=window.CSP_PROBLEMS||[];
+
+/* 洛谷风格难度 */
+const LEVELS={
+ 1:{name:"普及-",color:"#00a600"},
+ 2:{name:"普及/提高-",color:"#03bdbd"},
+ 3:{name:"普及+/提高",color:"#0066cc"},
+ 4:{name:"提高+/省选-",color:"#9900dd"}
+};
+const lvBadge=p=>{const L=LEVELS[p.diff]||LEVELS[1];return `<span class="lv" style="background:${L.color}" title="洛谷难度配色">${L.name}</span>`;};
+
+/* 专题题单（洛谷 Playlist） */
+const PLAYLISTS=[
+ {name:"🌟 入门稳分 · T1 必拿",desc:"送分题，考场前 10 分钟必须 AC，练的是不犯低级错误",probs:["p01","p02"]},
+ {name:"🧠 思维训练 · 贪心与二分",desc:"观察性质 + 二分答案 + 区间调度 + BFS 搜索",probs:["p03","p04","p15"]},
+ {name:"🏗 数据结构专项",desc:"单调栈、并查集/Kruskal、树状数组——T3 主力",probs:["p05","p06","p16"]},
+ {name:"🎯 动态规划专项",desc:"LIS O(nlogn)、0-1 背包",probs:["p08","p09"]},
+ {name:"🕸 图论专项",desc:"MST、Dijkstra、树的直径、DAG 拓扑 DP",probs:["p06","p10","p11","p12"]},
+ {name:"🔢 数论与字符串",desc:"高精度、矩阵快速幂、KMP",probs:["p07","p13","p14"]}
+];
+
+/* 常用代码模板（一键插入） */
+const TEMPLATES={
+ "快速 IO":`ios::sync_with_stdio(false);
+cin.tie(nullptr);`,
+ "并查集 DSU":`struct DSU{
+  vector<int> p;
+  DSU(int n):p(n+1){iota(p.begin(),p.end(),0);}
+  int f(int x){return p[x]==x?x:p[x]=f(p[x]);}
+  bool un(int a,int b){a=f(a);b=f(b);if(a==b)return false;p[a]=b;return true;}
+};`,
+ "Dijkstra":`vector<ll> dist(n+1,INF); dist[1]=0;
+priority_queue<pair<ll,int>,vector<pair<ll,int>>,greater<>> pq; pq.push({0,1});
+while(!pq.empty()){
+  auto [d,u]=pq.top(); pq.pop();
+  if(d>dist[u]) continue;
+  for(auto [v,w]:g[u]) if(dist[v]>d+w){ dist[v]=d+w; pq.push({dist[v],v}); }
+}`,
+ "树状数组 BIT":`vector<ll> bit(n+1,0);
+auto add=[&](int i,ll v){for(;i<=n;i+=i&-i) bit[i]+=v;};
+auto sum=[&](int i){ll s=0;for(;i>0;i-=i&-i)s+=bit[i];return s;};`,
+ "二分答案框架":`long long lo=0, hi=MAX, ans=0;
+while(lo<=hi){
+  long long mid=(lo+hi)/2;
+  if(check(mid)){ ans=mid; lo=mid+1; }
+  else hi=mid-1;
+}`,
+ "KMP":`vector<int> pi(m);
+for(int i=1;i<m;i++){
+  int j=pi[i-1];
+  while(j>0 && t[i]!=t[j]) j=pi[j-1];
+  if(t[i]==t[j]) j++;
+  pi[i]=j;
+}`,
+ "矩阵快速幂":`struct Mat{ ll a[2][2]{}; };
+Mat mul(Mat x,Mat y){
+  Mat r;
+  for(int i=0;i<2;i++)for(int j=0;j<2;j++)for(int k=0;k<2;k++)
+    r.a[i][j]=(r.a[i][j]+x.a[i][k]*y.a[k][j])%MOD;
+  return r;
+}`,
+ "高精度加法":`string bigAdd(string a,string b){
+  reverse(a.begin(),a.end()); reverse(b.begin(),b.end());
+  string r; int c=0;
+  for(size_t i=0;i<max(a.size(),b.size());i++){
+    int x=i<a.size()?a[i]-'0':0;
+    int y=i<b.size()?b[i]-'0':0;
+    int s=x+y+c; r+='0'+s%10; c=s/10;
+  }
+  if(c) r+='1';
+  reverse(r.begin(),r.end());
+  return r;
+}`
+};
+
+/*================ 标准题解（洛谷式题解区） ================*/
+const STD_CODE={
+ p01:`#include <bits/stdc++.h>
+using namespace std;
+int main(){
+    ios::sync_with_stdio(false); cin.tie(nullptr);
+    int n; cin>>n;
+    map<long long,int> cnt;
+    for(int i=0;i<n;i++){long long x;cin>>x;cnt[x]++;}
+    for(auto& [k,v]:cnt) cout<<k<<" "<<v<<"\\n";
+    return 0;
+}`,
+ p02:`#include <bits/stdc++.h>
+using namespace std;
+int main(){
+    ios::sync_with_stdio(false); cin.tie(nullptr);
+    int n,q; cin>>n>>q;
+    vector<long long> pre(n+1,0);
+    for(int i=1;i<=n;i++){long long x;cin>>x;pre[i]=pre[i-1]+x;}
+    while(q--){int l,r;cin>>l>>r;cout<<pre[r]-pre[l-1]<<"\\n";}
+    return 0;
+}`,
+ p03:`#include <bits/stdc++.h>
+using namespace std;
+int main(){
+    ios::sync_with_stdio(false); cin.tie(nullptr);
+    int n; long long k; cin>>n>>k;
+    vector<long long> L(n); long long hi=0;
+    for(auto& x:L){cin>>x;hi=max(hi,x);}
+    long long lo=1,ans=0;
+    while(lo<=hi){
+        long long mid=(lo+hi)/2,c=0;
+        for(auto x:L) c+=x/mid;
+        if(c>=k){ans=mid;lo=mid+1;} else hi=mid-1;
+    }
+    cout<<ans;
+    return 0;
+}`,
+ p04:`#include <bits/stdc++.h>
+using namespace std;
+int main(){
+    ios::sync_with_stdio(false); cin.tie(nullptr);
+    int n; cin>>n;
+    vector<pair<int,int>> v(n);
+    for(auto& [s,e]:v) cin>>s>>e;
+    sort(v.begin(),v.end(),[](auto&a,auto&b){return a.second<b.second;});
+    int ans=0,last=-1;
+    for(auto& [s,e]:v) if(s>=last){ans++;last=e;}
+    cout<<ans;
+    return 0;
+}`,
+ p05:`#include <bits/stdc++.h>
+using namespace std;
+int main(){
+    ios::sync_with_stdio(false); cin.tie(nullptr);
+    int n; cin>>n;
+    vector<long long> h(n); for(auto& x:h)cin>>x;
+    stack<int> st; long long ans=0;
+    for(int i=0;i<=n;i++){
+        long long cur=(i==n?0:h[i]);
+        while(!st.empty()&&h[st.top()]>cur){
+            long long ht=h[st.top()]; st.pop();
+            long long wd=st.empty()?i:i-st.top()-1;
+            ans=max(ans,ht*wd);
+        }
+        st.push(i);
+    }
+    cout<<ans;
+    return 0;
+}`,
+ p06:`#include <bits/stdc++.h>
+using namespace std;
+struct DSU{vector<int>p;DSU(int n):p(n+1){iota(p.begin(),p.end(),0);}
+int f(int x){return p[x]==x?x:p[x]=f(p[x]);}
+bool un(int a,int b){a=f(a);b=f(b);if(a==b)return false;p[a]=b;return true;}};
+int main(){
+    ios::sync_with_stdio(false); cin.tie(nullptr);
+    int n,m; cin>>n>>m;
+    vector<tuple<long long,int,int>> edges;
+    for(int i=0;i<m;i++){int u,v;long long w;cin>>u>>v>>w;edges.push_back({w,u,v});}
+    sort(edges.begin(),edges.end());
+    DSU dsu(n); long long ans=0; int cnt=0;
+    for(auto& [w,u,v]:edges) if(dsu.un(u,v)){ans+=w;cnt++;}
+    if(cnt<n-1) cout<<"orz"; else cout<<ans;
+    return 0;
+}`,
+ p07:`#include <bits/stdc++.h>
+using namespace std;
+int main(){
+    string a,b; cin>>a>>b;
+    reverse(a.begin(),a.end()); reverse(b.begin(),b.end());
+    string r; int c=0;
+    for(size_t i=0;i<max(a.size(),b.size());i++){
+        int x=i<a.size()?a[i]-'0':0;
+        int y=i<b.size()?b[i]-'0':0;
+        int s=x+y+c; r+='0'+s%10; c=s/10;
+    }
+    if(c) r+='1';
+    reverse(r.begin(),r.end());
+    cout<<r;
+    return 0;
+}`,
+ p08:`#include <bits/stdc++.h>
+using namespace std;
+int main(){
+    ios::sync_with_stdio(false); cin.tie(nullptr);
+    int n; cin>>n;
+    vector<int> d;
+    for(int i=0;i<n;i++){
+        int x; cin>>x;
+        auto it=lower_bound(d.begin(),d.end(),x);
+        if(it==d.end()) d.push_back(x); else *it=x;
+    }
+    cout<<d.size();
+    return 0;
+}`,
+ p09:`#include <bits/stdc++.h>
+using namespace std;
+int main(){
+    ios::sync_with_stdio(false); cin.tie(nullptr);
+    int n,C; cin>>n>>C;
+    vector<long long> dp(C+1,0);
+    for(int i=0;i<n;i++){
+        int w; long long v; cin>>w>>v;
+        for(int c=C;c>=w;c--) dp[c]=max(dp[c],dp[c-w]+v);
+    }
+    cout<<dp[C];
+    return 0;
+}`,
+ p10:`#include <bits/stdc++.h>
+using namespace std;
+typedef long long ll; const ll INF=2147483647;
+int main(){
+    ios::sync_with_stdio(false); cin.tie(nullptr);
+    int n,m; cin>>n>>m;
+    vector<vector<pair<int,ll>>> g(n+1);
+    for(int i=0;i<m;i++){int u,v;ll w;cin>>u>>v>>w;g[u].push_back({v,w});}
+    vector<ll> dist(n+1,INF); dist[1]=0;
+    priority_queue<pair<ll,int>,vector<pair<ll,int>>,greater<>> pq; pq.push({0,1});
+    while(!pq.empty()){
+        auto [d,u]=pq.top(); pq.pop();
+        if(d>dist[u]) continue;
+        for(auto [v,w]:g[u]) if(dist[v]>d+w){dist[v]=d+w;pq.push({dist[v],v});}
+    }
+    for(int i=1;i<=n;i++) cout<<dist[i]<<(i==n?"":" ");
+    return 0;
+}`,
+ p11:`#include <bits/stdc++.h>
+using namespace std;
+int main(){
+    ios::sync_with_stdio(false); cin.tie(nullptr);
+    int n; cin>>n;
+    vector<vector<int>> g(n+1);
+    for(int i=0;i<n-1;i++){int u,v;cin>>u>>v;g[u].push_back(v);g[v].push_back(u);}
+    auto bfs=[&](int s)->pair<int,int>{
+        vector<int> d(n+1,-1); queue<int> q; q.push(s); d[s]=0;
+        int far=s,md=0;
+        while(!q.empty()){int u=q.front();q.pop();for(int v:g[u])if(d[v]<0){d[v]=d[u]+1;q.push(v);if(d[v]>md){md=d[v];far=v;}}}
+        return {far,md};
+    };
+    auto [s,_]=bfs(1); auto [e,ans]=bfs(s);
+    cout<<ans;
+    return 0;
+}`,
+ p12:`#include <bits/stdc++.h>
+using namespace std;
+typedef long long ll;
+int main(){
+    ios::sync_with_stdio(false); cin.tie(nullptr);
+    int n,m; cin>>n>>m;
+    vector<vector<pair<int,ll>>> g(n+1); vector<int> ind(n+1,0);
+    for(int i=0;i<m;i++){int u,v;ll w;cin>>u>>v>>w;g[u].push_back({v,w});ind[v]++;}
+    vector<ll> dp(n+1,LLONG_MIN); dp[1]=0;
+    queue<int> q; for(int i=1;i<=n;i++)if(ind[i]==0)q.push(i);
+    while(!q.empty()){
+        int u=q.front();q.pop();
+        for(auto [v,w]:g[u]){if(dp[u]!=LLONG_MIN)dp[v]=max(dp[v],dp[u]+w);if(--ind[v]==0)q.push(v);}
+    }
+    cout<<(dp[n]==LLONG_MIN?-1:dp[n]);
+    return 0;
+}`,
+ p13:`#include <bits/stdc++.h>
+using namespace std;
+typedef long long ll; const ll MOD=1e9+7;
+struct Mat{ll a[2][2]{};};
+Mat mul(Mat x,Mat y){Mat r;for(int i=0;i<2;i++)for(int j=0;j<2;j++)for(int k=0;k<2;k++)r.a[i][j]=(r.a[i][j]+x.a[i][k]*y.a[k][j])%MOD;return r;}
+Mat pw(Mat x,ll e){Mat r;r.a[0][0]=r.a[1][1]=1;while(e){if(e&1)r=mul(r,x);x=mul(x,x);e>>=1;}return r;}
+int main(){
+    ll n; cin>>n;
+    if(n<=2){cout<<1;return 0;}
+    Mat m; m.a[0][0]=m.a[0][1]=m.a[1][0]=1;
+    Mat r=pw(m,n-2);
+    cout<<(r.a[0][0]+r.a[0][1])%MOD;
+    return 0;
+}`,
+ p14:`#include <bits/stdc++.h>
+using namespace std;
+int main(){
+    ios::sync_with_stdio(false); cin.tie(nullptr);
+    string s,t; cin>>s>>t;
+    int n=s.size(),m=t.size(),ans=0;
+    vector<int> pi(m,0);
+    for(int i=1;i<m;i++){int j=pi[i-1];while(j>0&&t[i]!=t[j])j=pi[j-1];if(t[i]==t[j])j++;pi[i]=j;}
+    int j=0;
+    for(int i=0;i<n;i++){
+        while(j>0&&s[i]!=t[j]) j=pi[j-1];
+        if(s[i]==t[j]) j++;
+        if(j==m){ans++;j=pi[j-1];}
+    }
+    cout<<ans;
+    return 0;
+}`,
+ p15:`#include <bits/stdc++.h>
+using namespace std;
+int main(){
+    ios::sync_with_stdio(false); cin.tie(nullptr);
+    int n,m; cin>>n>>m;
+    vector<string> g(n); for(auto& r:g)cin>>r;
+    vector<vector<int>> d(n,vector<int>(m,-1));
+    queue<pair<int,int>> q; q.push({0,0}); d[0][0]=0;
+    int dx[]={-1,1,0,0},dy[]={0,0,-1,1};
+    while(!q.empty()){
+        auto [x,y]=q.front();q.pop();
+        for(int k=0;k<4;k++){int nx=x+dx[k],ny=y+dy[k];
+        if(nx>=0&&nx<n&&ny>=0&&ny<m&&g[nx][ny]=='0'&&d[nx][ny]<0){d[nx][ny]=d[x][y]+1;q.push({nx,ny});}}
+    }
+    cout<<d[n-1][m-1];
+    return 0;
+}`,
+ p16:`#include <bits/stdc++.h>
+using namespace std;
+typedef long long ll;
+int main(){
+    ios::sync_with_stdio(false); cin.tie(nullptr);
+    int n,q; cin>>n>>q;
+    vector<ll> bit(n+1,0),a(n+1,0);
+    auto add=[&](int i,ll v){for(;i<=n;i+=i&-i)bit[i]+=v;};
+    auto sum=[&](int i){ll s=0;for(;i>0;i-=i&-i)s+=bit[i];return s;};
+    for(int i=1;i<=n;i++){cin>>a[i];add(i,a[i]);}
+    while(q--){
+        int op; cin>>op;
+        if(op==1){int i;ll x;cin>>i>>x;add(i,x-a[i]);a[i]=x;}
+        else{int l,r;cin>>l>>r;cout<<sum(r)-sum(l-1)<<"\\n";}
+    }
+    return 0;
+}`
+};
+
+/*================ 算法可视化（经典算法逐步演示） ================*/
+/* 每一帧: {t:讲解文字, body:可视化 HTML} */
+const VIZ={};
+function rowCells(arr,hi,cls){ // hi: index or Set of indices to highlight
+  let s="<div class='viz-boxrow'>";
+  arr.forEach((v,i)=>{
+    const isHi = hi instanceof Set ? hi.has(i) : (hi===i);
+    s+=`<div style="text-align:center"><div class="vcell ${isHi?'hi':(cls||'')}">${v}</div><div class="vlbl">${i}</div></div>`;
+  });
+  return s+"</div>";
+}
+/* p02 前缀和 */
+VIZ.p02=()=>{
+  const a=[1,2,3,4,5],pre=[0,1,3,6,10,15];
+  return [
+   {t:"数组 a = [1,2,3,4,5]。先预处理前缀和 pre[i] = a[1]+...+a[i]。",body:"a："+rowCells(a)+"pre："+rowCells(pre)},
+   {t:"pre[0]=0, pre[1]=1, pre[2]=3, pre[3]=6, pre[4]=10, pre[5]=15。",body:rowCells(pre,new Set([1,2,3,4,5]))},
+   {t:"查询 [1,5]：pre[5] - pre[0] = 15 - 0 = 15。",body:rowCells(pre,new Set([5]))+"<p style='margin-top:8px;font-weight:700'>= 15 ✔</p>"},
+   {t:"查询 [2,3]：pre[3] - pre[1] = 6 - 1 = 5。",body:rowCells(pre,new Set([3,1]))+"<p style='margin-top:8px;font-weight:700'>= 5 ✔</p>"},
+   {t:"查询 [3,3]：pre[3] - pre[2] = 6 - 3 = 3。每次查询 O(1)。",body:rowCells(pre,new Set([3,2]))+"<p style='margin-top:8px;font-weight:700'>= 3 ✔</p>"}
+  ];
+};
+/* p03 二分答案 */
+VIZ.p03=()=>{
+  const steps=[
+   {lo:1,hi:9,mid:5,cuts:3,feasible:false,note:"mid=5：Σ(6/5+7/5+9/5)=1+1+1=3 < 5，段长太大切不够，hi=mid-1=4"},
+   {lo:1,hi:4,mid:2,cuts:10,feasible:true,note:"mid=2：3+3+4=10 ≥ 5，可行，记录 ans=2，lo=mid+1=3"},
+   {lo:3,hi:4,mid:3,cuts:7,feasible:true,note:"mid=3：2+2+3=7 ≥ 5，可行，记录 ans=3，lo=mid+1=4"},
+   {lo:4,hi:3,mid:null,cuts:null,feasible:null,note:"lo>hi，二分结束。最大段长 ans=3。"}
+  ];
+  return steps.map(s=>({
+    t:s.note,
+    body:`<div style="font-family:Consolas,monospace;font-size:14px">区间 [lo,hi]=[${s.lo},${s.hi}]${s.mid?`，中点 mid=<b style="color:var(--brand)">${s.mid}</b>`:""}<br>
+      <span class="vcell ${s.feasible===true?'ok':s.feasible===false?'bad':''}" style="min-width:120px">可切段数 = ${s.cuts??'-'}</span></div>
+      <div class="viz-boxrow" style="margin-top:14px">${[1,2,3,4,5,6,7,8,9].map(x=>`<div style="text-align:center"><div class="vcell ${x===s.mid?'hi':''} ${x===3?'ok':''}">${x}</div><div class="vlbl">${x<=s.hi?'':'×'}</div></div>`).join("")}</div>
+      <p style="margin-top:8px;color:var(--muted);font-size:12.5px">蓝色=当前中点，绿色=最终答案 3。</p>`
+  }));
+};
+/* p04 贪心区间调度 */
+VIZ.p04=()=>{
+  const iv=[[1,3],[2,5],[3,6],[5,7]];
+  const chosen=new Set([0,3]);
+  return [
+   {t:"4 场会议，按结束时间从早到晚排序：[1,3],[2,5],[3,6],[5,7]。",body:iv.map((v,i)=>`<div style="font-family:Consolas,monospace;margin:4px 0">[${v[0]},${v[1]}]</div>`).join("")},
+   {t:"贪心选结束最早的：[1,3]。上一场结束在 3。",body:iv.map((v,i)=>`<div style="font-family:Consolas,monospace;margin:4px 0"><span class="vcell ${i===0?'ok':''}" style="min-width:120px">[${v[0]},${v[1]}]</span></div>`).join("")},
+   {t:"[2,5] 开始于 2 < 3，冲突，跳过。[3,6] 开始于 3 但结束更晚，也不选。",body:iv.map((v,i)=>`<div style="font-family:Consolas,monospace;margin:4px 0"><span class="vcell ${i===0?'ok':i===1||i===2?'bad':''}" style="min-width:120px">[${v[0]},${v[1]}]</span></div>`).join("")},
+   {t:"[5,7] 开始于 5 ≥ 3，不冲突，选入。共 2 场。",body:iv.map((v,i)=>`<div style="font-family:Consolas,monospace;margin:4px 0"><span class="vcell ${chosen.has(i)?'ok':''}" style="min-width:120px">[${v[0]},${v[1]}]</span></div>`).join("")+"<p style='margin-top:8px;font-weight:700'>最多 2 场 ✔</p>"}
+  ];
+};
+/* p05 单调栈 */
+VIZ.p05=()=>{
+  const h=[2,1,5,6,2,3];
+  return [
+   {t:"柱形高度 [2,1,5,6,2,3]。维护单调递增栈，栈内存 (高度, 左边界)。",body:h.map(x=>`<span class="vbar" style="height:${x*14}px;width:30px">${x}</span>`).join("")},
+   {t:"i=0 高度2：栈空，入栈。栈=[(2,0)]。",body:"栈：(2,0)"},
+   {t:"i=1 高度1：1<2，弹出 (2,0)。以 2 为高的矩形宽=1-0=1，面积 2。再入栈 (1,-1)。",body:"弹出高2 → 面积=2×1=2<br>栈：(1,-1)"},
+   {t:"i=2 高度5：5>1，入栈。栈=[(1,-1),(5,2)]。",body:"栈：(1,-1) (5,2)"},
+   {t:"i=3 高度6：6>5，入栈。栈=[(1,-1),(5,2),(6,3)]。",body:"栈：(1,-1) (5,2) (6,3)"},
+   {t:"i=4 高度2：2<6 弹出，高6宽=4-3=1→面积6；2<5 弹出，高5宽=4-2=2→面积10。记录最大=10。入栈 (2,4)。",body:"弹出6→面积6；弹出5→面积 5×2=10 ✔<br>栈：(1,-1) (2,4)"},
+   {t:"i=5 高度3：3>2，入栈。最后弹空栈，最大面积=10。",body:"栈：(1,-1) (2,4) (3,5)<br><b>最大矩形面积 = 10 ✔</b>"}
+  ];
+};
+/* p07 高精度加法 */
+VIZ.p07=()=>{
+  return [
+   {t:"123 + 456，从低位对齐相加：",body:`<div style="font-family:Consolas,monospace;font-size:18px;line-height:2">
+     &nbsp;&nbsp;1 2 3<br>+&nbsp; 4 5 6<br>---------<br>&nbsp;&nbsp;5 7 9</div>`},
+   {t:"个位：3+6=9，无进位。",body:`<div style="font-family:Consolas,monospace;font-size:18px">个位 <span class="vcell ok">3</span>+<span class="vcell ok">6</span>=<span class="vcell hi">9</span></div>`},
+   {t:"十位：2+5=7。百位：1+4=5。结果 579。",body:`<div style="font-family:Consolas,monospace;font-size:18px">
+     十位 <span class="vcell ok">2</span>+<span class="vcell ok">5</span>=<span class="vcell hi">7</span><br>
+     百位 <span class="vcell ok">1</span>+<span class="vcell ok">4</span>=<span class="vcell hi">5</span><br><b>= 579 ✔</b></div>`},
+   {t:"遇到 999+1 这类情况：9+1=10，写 0 进 1，要持续向高位进位。这就是高精度要手动处理进位的原因。",body:"<div style='font-family:Consolas,monospace'>999<br>+&nbsp;&nbsp;1<br>----<br>1000</div>"}
+  ];
+};
+/* p08 LIS */
+VIZ.p08=()=>{
+  const seq=[1,3,2,4,3,5];
+  const tails=[[],[1],[1,3],[1,2],[1,2,4],[1,2,3],[1,2,3,5]];
+  return seq.map((x,i)=>({
+    t:`处理 a[${i}]=${x}：${i===0?"tails 为空，放入":(x>tails[i][tails[i].length-1]?"接在末尾，长度+1":"替换 tails 中第一个 ≥ "+x+" 的位置，不增长长度")}。`,
+    body:`当前序列：${rowCells(seq,new Set([i]))}<br>tails：${rowCells(tails[i+1])}<p style="margin-top:6px;color:var(--muted);font-size:12.5px">tails 长度 ${tails[i+1].length} = 当前 LIS 长度</p>`
+  })).concat([{t:"最终 tails 长度为 4，即最长严格上升子序列长度。",body:rowCells(tails[6],new Set([0,1,2,3]))+"<p style='margin-top:8px;font-weight:700'>LIS = 4 ✔</p>"}]);
+};
+/* p10 Dijkstra */
+VIZ.p10=()=>{
+  return [
+   {t:"图：1→2(2), 1→3(1), 2→4(5), 3→4(1)。dist 初始：[0, ∞, ∞, ∞]。",body:"节点：1,2,3,4<br>dist=[0,∞,∞,∞]"},
+   {t:"弹出 dist 最小的节点 1(=0)。松弛邻居：dist[2]=2, dist[3]=1。",body:"dist=[0,<span style='color:var(--brand)'>2</span>,<span style='color:var(--brand)'>1</span>,∞]，已确定节点：1"},
+   {t:"弹出节点 3(=1)。松弛邻居 4：dist[4]=1+1=2。",body:"dist=[0,2,1,<span style='color:var(--brand)'>2</span>]，已确定：1,3"},
+   {t:"弹出节点 2(=2)。松弛邻居 4：2+5=7 > 当前 dist[4]=2，不更新。",body:"dist=[0,2,1,2]，已确定：1,3,2"},
+   {t:"弹出节点 4(=2)。全部确定。最终最短路：0 2 1 2。",body:"<b>dist = [0, 2, 1, 2] ✔</b>"}
+  ];
+};
+/* p14 KMP */
+VIZ.p14=()=>{
+  return [
+   {t:"主串 s=ababab，模式串 t=aba。先求 t 的 pi 数组（最长相等真前后缀长度）。",body:"t：<span class='vcell'>a</span><span class='vcell'>b</span><span class='vcell'>a</span>"},
+   {t:"pi[0]=0；pi[1]：b 前后缀无相等=0；pi[2]：'a' 前后缀都是 a=1。pi=[0,0,1]。",body:"pi：<span class='vcell'>0</span><span class='vcell'>0</span><span class='vcell hi'>1</span>"},
+   {t:"i=0,j=0：s[0]=a=t[0]，j++。i=1,j=1：s[1]=b=t[1]，j++。i=2,j=2：s[2]=a=t[2]，j=3==|t|，匹配成功一次！",body:"s: a b a b a b<br>t: a b a → 命中 #1"},
+   {t:"命中后 j=pi[2]=1 继续。i=3,j=1：s[3]=b=t[1]。i=4,j=2：s[4]=a=t[2]，j=3，命中第二次（重叠）！",body:"s: . . a b a b<br>t: . . a b a → 命中 #2（重叠）"},
+   {t:"j=pi[2]=1，继续到末尾，无第三次。共出现 2 次。",body:"<b>出现次数 = 2 ✔</b>"}
+  ];
+};
+/* p15 BFS */
+VIZ.p15=()=>{
+  const grid=[[0,0,0],[0,1,0],[0,0,0]];
+  const layers=[
+   "起点(0,0)，dist=0。",
+   "扩展 (0,1)=1, (1,0)=1。",
+   "扩展 (0,2)=2, (1,1)是墙跳过, (2,0)=2。",
+   "扩展 (1,2)=3(从0,2), (2,1)=3(从2,0)。",
+   "扩展终点 (2,2)=4(从1,2或2,1)。最少步数=4。"
+  ];
+  const dist=[[0,1,2],[1,'墙',3],[2,3,4]];
+  return layers.map((l,i)=>({t:l,body:"<div class='vgrid' style='grid-template-columns:repeat(3,44px)'>"+dist.map((row,r)=>row.map((c,col)=>{
+    let cls=c==='墙'?'wall':(r===0&&col===0?'start':(r===2&&col===2?'end':c<=i?'visited':'frontier'));
+    return `<div class="vcell ${cls}" style="height:40px">${c}</div>`;
+  }).join("")).join("")+"</div><p style='font-size:12px;color:var(--muted)'>蓝色=已到达，绿=访问过，终点橙色。</p>"}));
+};
+
+/* 跑「我的算法并对比」所用的小输入与正确输出（与上方演示一致）
+   checks: 逐帧对照点，at=对应可视化帧序号(0-based)，expect=该步正确答案，label=说明 */
+const VIZ_TRACE={
+ p02:{input:"5 3\n1 2 3 4 5\n1 5\n2 3\n3 3\n",expected:"15\n5\n3",tokenMode:"line",checks:[
+   {at:2,expect:"15",label:"查询 [1,5]"},{at:3,expect:"5",label:"查询 [2,3]"},{at:4,expect:"3",label:"查询 [3,3]"}]},
+ p03:{input:"3 5\n6 7 9\n",expected:"3",tokenMode:"token",checks:[
+   {at:3,expect:"3",label:"最大段长"}]},
+ p04:{input:"4\n1 3\n2 5\n3 6\n5 7\n",expected:"2",tokenMode:"token",checks:[
+   {at:3,expect:"2",label:"最多场数"}]},
+ p05:{input:"6\n2 1 5 6 2 3\n",expected:"10",tokenMode:"token",checks:[
+   {at:6,expect:"10",label:"最大面积"}]},
+ p07:{input:"123\n456\n",expected:"579",tokenMode:"token",checks:[
+   {at:3,expect:"579",label:"竖式结果"}]},
+ p08:{input:"6\n1 3 2 4 3 5\n",expected:"4",tokenMode:"token",checks:[
+   {at:6,expect:"4",label:"LIS 长度"}]},
+ p10:{input:"4 4\n1 2 2\n1 3 1\n2 4 5\n3 4 1\n",expected:"0 2 1 2",tokenMode:"token",checks:[
+   {at:1,expect:"0",label:"dist[1]"},{at:2,expect:"2",label:"dist[2]"},{at:2,expect:"1",label:"dist[3]"},{at:4,expect:"2",label:"dist[4]"}]},
+ p14:{input:"ababab\naba\n",expected:"2",tokenMode:"token",checks:[
+   {at:4,expect:"2",label:"出现次数"}]},
+ p15:{input:"3 3\n000\n010\n000\n",expected:"4",tokenMode:"token",checks:[
+   {at:4,expect:"4",label:"最短路程"}]
+ }
+};
+
+/*================ 考点全覆盖（CSP-S 提高组第二轮·NOI大纲） ================*/
+const KNOWLEDGE=[
+ {cat:"基础算法",items:["枚举与模拟","排序","贪心","二分答案","高精度","分治与倍增","前缀和 / 差分","离散化"]},
+ {cat:"搜索",items:["DFS 深度优先","BFS 广度优先","剪枝优化","双向 BFS / 迭代加深","A* 与启发式","状态压缩搜索"]},
+ {cat:"动态规划",items:["线性 DP","区间 DP","背包 DP","树形 DP","状压 DP","数位 DP","单调队列优化","斜率 / 四边形优化"]},
+ {cat:"图论",items:["最短路 Dijkstra / SPFA / Floyd","最小生成树","拓扑排序","二分图与匈牙利","Tarjan 强连通 / 割点桥","差分约束","树上 LCA / 直径 / 重心 / 换根","网络流基础"]},
+ {cat:"数据结构",items:["栈 / 队列 / 堆","并查集","树状数组 / 线段树","ST 表","平衡树","Trie 字典树","字符串哈希","分块 / 莫队"]},
+ {cat:"字符串",items:["KMP","Manacher","AC 自动机","后缀数组 / 自动机"]},
+ {cat:"数论",items:["素数筛 / 质因数分解","GCD / EXGCD","快速幂","矩阵快速幂","组合数学与逆元","欧拉函数","中国剩余定理","卡特兰数"]},
+ {cat:"数学进阶",items:["博弈论","概率与期望"]},
+ {cat:"计算几何",items:["向量基础","凸包"]},
+ {cat:"STL 与 C++",items:["STL 容器","输入输出优化","代码风格与调试","复杂度分析"]}
+];
+
+/* 两轮对比 */
+const ROUND_COMPARE=[
+ ["认证形式","集中笔试","现场集中上机认证（机试）"],
+ ["题目数量","约 20 题（选择 / 判断）","4 道编程题，每题 100 分，总分 400 分"],
+ ["考查范围","计算机基础 + C++ 语法 + 简单算法","算法设计与实现：数据结构 / DP / 图论 / 数论 / 字符串"],
+ ["答题方式","读题选答案","编写并提交 C++ 程序，机器评测"],
+ ["评分","按答案正确计分","按通过测试数据比例给分（可部分得分）"],
+ ["时长","约 2 小时","约 4 小时（2026-10-31 14:30–18:30）"],
+ ["晋级","第一轮达省分数线者进入第二轮","第二轮成绩作为省级认证成绩，供后续使用"]
+];
+
+const MOCK_EXAMS=[
+ {id:"A",name:"2026 模拟卷 A（稳扎稳打）",problems:["p02","p03","p05","p08"],minutes:240},
+ {id:"B",name:"2026 模拟卷 B（进阶突破）",problems:["p01","p15","p06","p10"],minutes:240},
+ {id:"C",name:"2026 模拟卷 C（挑战压轴）",problems:["p07","p12","p13","p16"],minutes:240}
+];
+const MOCK_DEADLINE_KEY="csps_mock_deadline";
+
